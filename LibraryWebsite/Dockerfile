@@ -2,20 +2,13 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-# Setup NodeJs
-RUN apt-get update && \
-    apt-get install -y wget && \
-    apt-get install -y gnupg2 && \
-    wget -qO- https://deb.nodesource.com/setup_6.x | bash - && \
-    apt-get install -y build-essential nodejs
-# End setup
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
 # Setup NodeJs
 RUN apt-get update && \
     apt-get install -y wget && \
     apt-get install -y gnupg2 && \
-    wget -qO- https://deb.nodesource.com/setup_6.x | bash - && \
+    wget -qO- https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get install -y build-essential nodejs
 # End setup
 WORKDIR /src
