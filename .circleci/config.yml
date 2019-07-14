@@ -73,6 +73,6 @@ workflows:
           requires:
             - docker_build
           context: "Docker hub credentials"
-            filters:
-              branches:
-                only: master
+          filters:
+            branches:
+              only: master
