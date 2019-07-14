@@ -3,4 +3,4 @@ Website implementing simple Library application. Demonstrates lots of infrastruc
 
 [![CircleCI](https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master.svg?style=svg)](https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master)
 
-Docker image published to Docker Hub : https://cloud.docker.com/u/radekfalhar/repository/docker/radekfalhar/librarywebsite
+Docker image published to Docker Hub : https://hub.docker.com/r/radekfalhar/librarywebsite
