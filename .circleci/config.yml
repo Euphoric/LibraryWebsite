@@ -11,6 +11,11 @@ jobs:
           name: Greeting
           command: echo Hello, world.
 
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
-          name: Print the Current Time
-          command: date
+          name: Build and push Docker image
+          command: |
+            docker build . -f LibraryWebsite\Dockerfile
+#            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+#            docker push ariv3ra/$IMAGE_NAME:$TAG
