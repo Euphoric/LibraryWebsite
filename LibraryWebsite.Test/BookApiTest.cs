@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
@@ -34,11 +35,37 @@ namespace LibraryWebsite
         }
 
         [Fact]
-        public async Task Retrieves_books()
+        public async Task Retrieves_empty_books()
         {
-            var resultStr = await _client.GetStringAsync("api/book");
-            var json = (dynamic)Newtonsoft.Json.JsonConvert.DeserializeObject(resultStr);
-            Assert.Equal(1, json.Count);
+            var books = await _client.GetJsonAsync<Book[]>("api/book");
+            Assert.Empty(books);
+        }
+
+        private class Book
+        {
+            public Guid Id { get; set; }
+
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public string Description { get; set; }
+            public string IBAN { get; set; }
+        }
+
+
+        [Fact]
+        public async Task Creates_and_retrieves_a_book()
+        {
+            Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", IBAN = "IBANQ" };
+            await _client.PostJsonAsync("api/book", bookToCreate);
+
+            var books = await _client.GetJsonAsync<Book[]>("api/book");
+            var createdBook = Assert.Single(books);
+
+            Assert.NotEqual(Guid.Empty, createdBook.Id);
+            Assert.Equal(bookToCreate.Title, createdBook.Title);
+            Assert.Equal(bookToCreate.Author, createdBook.Author);
+            Assert.Equal(bookToCreate.Description, createdBook.Description);
+            Assert.Equal(bookToCreate.IBAN, createdBook.IBAN);
         }
     }
 }
