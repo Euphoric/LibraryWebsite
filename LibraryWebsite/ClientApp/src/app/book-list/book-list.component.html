@@ -1,3 +1,28 @@
-<p>
-  book-list works!
-</p>
+<h1>Books</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th> Title </th>
+      <th> Author </th>
+      <th> Description </th>
+      <th> IBAN </th>
+    </tr>
+  </thead>
+  <tr *ngFor="let book of books">
+    <td>
+      {{book.title}}
+    </td>
+    <td>
+      {{book.author}}
+    </td>
+    <td>
+      {{book.description}}
+    </td>
+    <td>
+      {{book.iban}}
+    </td>
+    <!--<td>
+      <button class='btn btn-info' (click)="updateUser()"> UPDATE DATA</button>
+    </td>-->
+  </tr>
+</table>
