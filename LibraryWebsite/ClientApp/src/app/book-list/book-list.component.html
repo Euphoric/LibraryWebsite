@@ -5,7 +5,7 @@
       <th> Title </th>
       <th> Author </th>
       <th> Description </th>
-      <th> IBAN </th>
+      <th> ISBN-13 </th>
     </tr>
   </thead>
   <tr *ngFor="let book of books">
@@ -19,7 +19,7 @@
       {{book.description}}
     </td>
     <td>
-      {{book.iban}}
+      {{book.isbn13}}
     </td>
     <!--<td>
       <button class='btn btn-info' (click)="updateUser()"> UPDATE DATA</button>

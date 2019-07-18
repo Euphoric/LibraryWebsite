@@ -19,7 +19,7 @@ namespace LibraryWebsite.Controllers
         public void Creates_new_book()
         {
             var controller = new BookController(new BookController.Repository());
-            BookController.Book bookToCreate = new BookController.Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", IBAN = "IBANQ" };
+            BookController.Book bookToCreate = new BookController.Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
             controller.Post(bookToCreate);
 
             IEnumerable<BookController.Book> books = controller.Books().ToList();
@@ -29,7 +29,7 @@ namespace LibraryWebsite.Controllers
             Assert.Equal(bookToCreate.Title, createdBook.Title);
             Assert.Equal(bookToCreate.Author, createdBook.Author);
             Assert.Equal(bookToCreate.Description, createdBook.Description);
-            Assert.Equal(bookToCreate.IBAN, createdBook.IBAN);
+            Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
         }
     }
 }

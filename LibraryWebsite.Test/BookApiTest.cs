@@ -48,14 +48,16 @@ namespace LibraryWebsite
             public string Title { get; set; }
             public string Author { get; set; }
             public string Description { get; set; }
-            public string IBAN { get; set; }
+
+            public string Isbn13 { get; set; }
         }
 
 
         [Fact]
         public async Task Creates_and_retrieves_a_book()
         {
-            Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", IBAN = "IBANQ" };
+            
+            Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
             await _client.PostJsonAsync("api/book", bookToCreate);
 
             var books = await _client.GetJsonAsync<Book[]>("api/book");
@@ -65,7 +67,7 @@ namespace LibraryWebsite
             Assert.Equal(bookToCreate.Title, createdBook.Title);
             Assert.Equal(bookToCreate.Author, createdBook.Author);
             Assert.Equal(bookToCreate.Description, createdBook.Description);
-            Assert.Equal(bookToCreate.IBAN, createdBook.IBAN);
+            Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
         }
     }
 }

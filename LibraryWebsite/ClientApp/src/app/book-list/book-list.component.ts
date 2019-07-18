@@ -25,5 +25,5 @@ interface Book {
   title: string;
   author: string;
   description: string;
-  iban: string;
+  isbn13: string;
 }
