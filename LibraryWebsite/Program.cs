@@ -6,6 +6,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LibraryWebsite
 {
@@ -13,7 +15,12 @@ namespace LibraryWebsite
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            IWebHost webHost = CreateWebHostBuilder(args).Build();
+
+            if (webHost.Services.GetService<IWebHostEnvironment>().IsDevelopment())
+                webHost.Services.GetService<Controllers.BookController.Repository>().SetupDeveloperData();
+
+            webHost.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
