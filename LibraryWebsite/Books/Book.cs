@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibraryWebsite.Controllers
+namespace LibraryWebsite.Books
 {
     public class Book
     {

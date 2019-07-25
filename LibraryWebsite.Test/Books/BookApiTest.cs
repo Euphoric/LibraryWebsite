@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LibraryWebsite
+namespace LibraryWebsite.Books
 {
     public class BookApiTest
     {
@@ -58,7 +58,7 @@ namespace LibraryWebsite
         [Fact]
         public async Task Creates_and_retrieves_a_book()
         {
-            
+
             Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
             await _client.PostJsonAsync("api/book", bookToCreate);
 

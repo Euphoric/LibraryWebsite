@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryWebsite.Controllers
+namespace LibraryWebsite.Books
 {
     [Route("api/[controller]")]
     public class BookController : Controller

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LibraryWebsite
+namespace LibraryWebsite.Diagnostics
 {
     public class DiagnosticApiTest
     {
