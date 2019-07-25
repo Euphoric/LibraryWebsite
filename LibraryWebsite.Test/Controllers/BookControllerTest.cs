@@ -19,10 +19,10 @@ namespace LibraryWebsite.Controllers
         public void Creates_new_book()
         {
             var controller = new BookController(new BookController.Repository());
-            BookController.Book bookToCreate = new BookController.Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
+            Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
             controller.Post(bookToCreate);
 
-            IEnumerable<BookController.Book> books = controller.Books().ToList();
+            IEnumerable<Book> books = controller.Books().ToList();
             var createdBook = Assert.Single(books);
 
             Assert.NotEqual(Guid.Empty, createdBook.Id);
