@@ -11,14 +11,14 @@ namespace LibraryWebsite.Controllers
         [Fact]
         public void Retrieves_empty_books()
         {
-            var controller = new BookController(new BookController.Repository());
+            var controller = new BookController(new BookController.Repository(), null);
             Assert.Empty(controller.Books());
         }
 
         [Fact]
         public void Creates_new_book()
         {
-            var controller = new BookController(new BookController.Repository());
+            var controller = new BookController(new BookController.Repository(), null);
             Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
             controller.Post(bookToCreate);
 

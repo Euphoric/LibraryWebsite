@@ -23,10 +23,12 @@ namespace LibraryWebsite.Controllers
         }
 
         private readonly Repository _repository;
+        private readonly LibraryContext _context;
 
-        public BookController(Repository repository)
+        public BookController(Repository repository, LibraryContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
         [HttpGet]

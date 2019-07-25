@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebsite
 {
@@ -28,6 +29,7 @@ namespace LibraryWebsite
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddDbContext<LibraryContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddSingleton<Controllers.BookController.Repository>();
         }
 
