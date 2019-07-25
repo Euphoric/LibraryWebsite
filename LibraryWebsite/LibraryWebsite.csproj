@@ -18,9 +18,9 @@
 
   <ItemGroup>
     <!-- For running docker from VS -->
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.12" />
     
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0-preview7.19365.7" />
   </ItemGroup>
 
   <ItemGroup>
