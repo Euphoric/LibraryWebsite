@@ -30,7 +30,6 @@ namespace LibraryWebsite
             });
 
             services.AddDbContext<LibraryContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("Database")));
-            services.AddSingleton<Controllers.BookController.Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

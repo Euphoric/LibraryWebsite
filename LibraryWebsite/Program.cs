@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebsite
 {
@@ -17,9 +18,13 @@ namespace LibraryWebsite
         {
             IWebHost webHost = CreateWebHostBuilder(args).Build();
 
-            if (webHost.Services.GetService<IWebHostEnvironment>().IsDevelopment())
-                webHost.Services.GetService<Controllers.BookController.Repository>().SetupDeveloperData();
+            using (var scope = webHost.Services.CreateScope())
+            {
+                scope.ServiceProvider.GetService<LibraryContext>().Database.Migrate();
 
+                if (scope.ServiceProvider.GetService<IWebHostEnvironment>().IsDevelopment())
+                    scope.ServiceProvider.GetService<LibraryContext>().SetupExampleData();
+            }
             webHost.Run();
         }
 

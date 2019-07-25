@@ -1,28 +1,43 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace LibraryWebsite.Controllers
 {
     public class BookControllerTest
     {
-        [Fact]
-        public void Retrieves_empty_books()
+        private static LibraryContext CreateDbContext()
         {
-            var controller = new BookController(new BookController.Repository(), null);
-            Assert.Empty(controller.Books());
+            DbContextOptionsBuilder<LibraryContext> builder = new DbContextOptionsBuilder<LibraryContext>();
+            var dbName = Guid.NewGuid().ToString();
+            builder.UseInMemoryDatabase(dbName);
+            return new LibraryContext(builder.Options);
         }
 
         [Fact]
-        public void Creates_new_book()
+        public async Task Retrieves_empty_books()
         {
-            var controller = new BookController(new BookController.Repository(), null);
-            Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
-            controller.Post(bookToCreate);
+            LibraryContext dbContext = CreateDbContext();
+            var controller = new BookController(dbContext);
 
-            IEnumerable<Book> books = controller.Books().ToList();
+            Assert.Empty(await controller.Books());
+        }
+
+        [Fact]
+        public async Task Creates_new_book()
+        {
+            LibraryContext dbContext = CreateDbContext();
+            var controller = new BookController(dbContext);
+
+            Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
+            await controller.Post(bookToCreate);
+
+            IEnumerable<Book> books = (await controller.Books()).ToList();
             var createdBook = Assert.Single(books);
 
             Assert.NotEqual(Guid.Empty, createdBook.Id);
