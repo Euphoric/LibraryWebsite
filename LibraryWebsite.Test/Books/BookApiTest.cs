@@ -2,14 +2,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -56,20 +52,42 @@ namespace LibraryWebsite.Books
 
 
         [Fact]
-        public async Task Creates_and_retrieves_a_book()
+        public async Task Creates_and_retrieves_books()
         {
-
             Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
-            await _client.PostJsonAsync("api/book", bookToCreate);
+            var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
 
             var books = await _client.GetJsonAsync<Book[]>("api/book");
             var createdBook = Assert.Single(books);
 
-            Assert.NotEqual(Guid.Empty, createdBook.Id);
+            Assert.Equal(bookGuid, createdBook.Id);
             Assert.Equal(bookToCreate.Title, createdBook.Title);
             Assert.Equal(bookToCreate.Author, createdBook.Author);
             Assert.Equal(bookToCreate.Description, createdBook.Description);
             Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
+        }
+
+        [Fact]
+        public async Task Creates_and_retrieves_a_book()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Book bookToCreate = new Book { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN " + i };
+                await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+            }
+
+            {
+                Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
+                Guid bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+
+                var createdBook = await _client.GetJsonAsync<Book>("api/book/" + bookGuid);
+
+                Assert.Equal(bookGuid, createdBook.Id);
+                Assert.Equal(bookToCreate.Title, createdBook.Title);
+                Assert.Equal(bookToCreate.Author, createdBook.Author);
+                Assert.Equal(bookToCreate.Description, createdBook.Description);
+                Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
+            }
         }
     }
 }

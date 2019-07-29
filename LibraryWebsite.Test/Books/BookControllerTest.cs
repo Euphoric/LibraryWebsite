@@ -23,7 +23,7 @@ namespace LibraryWebsite.Books
             LibraryContext dbContext = CreateDbContext();
             var controller = new BookController(dbContext);
 
-            Assert.Empty(await controller.Books());
+            Assert.Empty(await controller.Get());
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace LibraryWebsite.Books
             Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
             await controller.Post(bookToCreate);
 
-            IEnumerable<Book> books = (await controller.Books()).ToList();
+            IEnumerable<Book> books = (await controller.Get()).ToList();
             var createdBook = Assert.Single(books);
 
             Assert.NotEqual(Guid.Empty, createdBook.Id);

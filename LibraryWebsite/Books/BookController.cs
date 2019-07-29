@@ -19,16 +19,24 @@ namespace LibraryWebsite.Books
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Book>> Books()
+        public async Task<IEnumerable<Book>> Get()
         {
             return await _context.Books.ToListAsync();
         }
 
-        public async Task Post([FromBody]Book book)
+        [HttpGet("{id}")]
+        public async Task<Book> Get(Guid id)
+        {
+            return await _context.Books.SingleOrDefaultAsync(bk => bk.Id == id);
+        }
+
+        public async Task<Guid> Post([FromBody]Book book)
         {
             book.Id = Guid.NewGuid();
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
+
+            return book.Id;
         }
     }
 }
