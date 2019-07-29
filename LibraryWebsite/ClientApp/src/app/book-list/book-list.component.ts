@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Book } from "../book"
 
 @Component({
   selector: 'app-book-list',
@@ -18,12 +19,4 @@ export class BookListComponent implements OnInit {
   ngOnInit() {
   }
 
-}
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  description: string;
-  isbn13: string;
 }
