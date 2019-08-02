@@ -1,4 +1,6 @@
-<h1>Add book</h1>
+<h1 *ngIf="!isEdit">Add book</h1>
+<h1 *ngIf="isEdit">Edit book</h1>
+
 <form (ngSubmit)="onSubmit()" #bookForm="ngForm">
   <div class="form-group">
     <label for="title">Title</label>

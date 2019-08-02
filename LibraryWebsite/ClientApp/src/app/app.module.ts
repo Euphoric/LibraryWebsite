@@ -32,6 +32,7 @@ import { BookEditComponent } from './book-edit/book-edit.component';
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'book-list', component: BookListComponent },
       { path: 'book-edit', component: BookEditComponent },
+      { path: 'book-edit/:id', component: BookEditComponent },
     ])
   ],
   providers: [],

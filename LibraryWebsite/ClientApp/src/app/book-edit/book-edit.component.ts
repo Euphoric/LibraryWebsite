@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { Book } from "../book"
 
 @Component({
@@ -9,11 +10,23 @@ import { Book } from "../book"
 })
 export class BookEditComponent implements OnInit {
 
+  editId:string
   model:Book = new Book();
 
   submitted = false;
 
-  constructor(readonly http: HttpClient, @Inject('BASE_URL') readonly baseUrl: string) {
+  get isEdit() {
+    return this.editId != null;
+  }
+
+  constructor(readonly http: HttpClient, @Inject('BASE_URL') readonly baseUrl: string, route: ActivatedRoute) {
+    this.editId = route.snapshot.paramMap.get('id');
+
+    if (this.isEdit) {
+      this.http.get<Book>(this.baseUrl + 'api/book/' + this.editId).subscribe(result => {
+        this.model = result
+      }, error => console.error(error));
+    }
   }
 
   ngOnInit() {
