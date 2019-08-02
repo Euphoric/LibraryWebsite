@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -88,6 +89,34 @@ namespace LibraryWebsite.Books
                 Assert.Equal(bookToCreate.Description, createdBook.Description);
                 Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
             }
+        }
+
+        [Fact]
+        public async Task Updating_nonexistent_book_is_error()
+        {
+            Guid bookGuid = Guid.Parse("43864ebe-8507-440f-babf-eb38e91d252c");
+            Book bookUpdate = new Book { Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
+            var result = await _client.PutJsonErrorResponseAsync("api/book/" + bookGuid, bookUpdate);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task Updates_book()
+        {
+            Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
+            var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+
+            Book bookUpdate = new Book { Id = bookGuid, Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
+            await _client.PutJsonAsync("api/book/" + bookGuid, bookUpdate);
+
+            var books = await _client.GetJsonAsync<Book[]>("api/book");
+            var createdBook = Assert.Single(books);
+
+            Assert.Equal(bookGuid, createdBook.Id);
+            Assert.Equal(bookUpdate.Title, createdBook.Title);
+            Assert.Equal(bookUpdate.Author, createdBook.Author);
+            Assert.Equal(bookUpdate.Description, createdBook.Description);
+            Assert.Equal(bookUpdate.Isbn13, createdBook.Isbn13);
         }
     }
 }

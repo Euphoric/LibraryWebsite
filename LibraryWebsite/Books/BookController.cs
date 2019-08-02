@@ -38,5 +38,25 @@ namespace LibraryWebsite.Books
 
             return book.Id;
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(Guid id, [FromBody]Book book)
+        {
+            // workaround around broken FirstOrDefault in EFInMemory 3.0-preview7
+            var bookToUpdate = (await _context.Books.Where(bk => bk.Id == id).Take(1).ToListAsync()).FirstOrDefault();
+            if (bookToUpdate == null)
+            {
+                return NotFound(id);
+            }
+
+            bookToUpdate.Title = book.Title;
+            bookToUpdate.Author = book.Author;
+            bookToUpdate.Description = book.Description;
+            bookToUpdate.Isbn13 = book.Isbn13;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
