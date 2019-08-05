@@ -33,9 +33,15 @@ export class BookEditComponent implements OnInit {
   }
 
   onSubmit() {
-    this.http.post<Book>(this.baseUrl + 'api/book', this.model).subscribe(result => {
-      this.submitted = true;
-    }, error => console.error(error));
+    if (!this.isEdit) {
+      this.http.post<Book>(this.baseUrl + 'api/book', this.model).subscribe(result => {
+        this.submitted = true;
+      }, error => console.error(error));
+    } else {
+      this.http.put<Book>(this.baseUrl + 'api/book/'+ this.editId, this.model).subscribe(result => {
+        this.submitted = true;
+      }, error => console.error(error));
+    }
   }
 
   // TODO: Remove this when we're done
