@@ -6,7 +6,7 @@ executors:
       docker:
           - image: circleci/buildpack-deps:stretch
 jobs:
-  test:
+  test_dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster
 
@@ -29,6 +29,28 @@ jobs:
       - store_artifacts:
           path: TestResults
           destination: TestResults
+
+  test_angular:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: LibraryWebsite-client-{{ .Branch }}-{{ checksum "LibraryWebsite/ClientApp/package-lock.json" }}
+      - run: cd LibraryWebsite/ClientApp/ && npm install
+      - save_cache:
+          key: LibraryWebsite-client-{{ .Branch }}-{{ checksum "LibraryWebsite/ClientApp/package-lock.json" }}
+          paths:
+            - "LibraryWebsite/ClientApp/node_modules"
+      - run: 
+          command: cd LibraryWebsite/ClientApp/ && npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+          environment:
+            JUNIT_REPORT_PATH: ../TestResults
+            JUNIT_REPORT_NAME: test-results-client.xml
+      - store_test_results:
+          path: LibraryWebsite/ClientApp/TestResults
+      - store_artifacts:
+          path: LibraryWebsite/ClientApp/TestResults
 
 # docker build inspired by https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
   docker_build:
@@ -67,10 +89,12 @@ workflows:
   version: 2
   build_and_publish:
     jobs:
-      - test
+      - test_dotnet
+      - test_angular
       - docker_build:
           requires:
-            - test
+            - test_dotnet
+            - test_angular
       - docker_publish-latest:
           requires:
             - docker_build
