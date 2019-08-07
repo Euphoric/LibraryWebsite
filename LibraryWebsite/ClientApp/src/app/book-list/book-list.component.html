@@ -8,6 +8,7 @@
       <th> Description </th>
       <th> ISBN-13 </th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tr *ngFor="let book of books">
@@ -25,6 +26,9 @@
     </td>
     <td>
       <button class='btn btn-info' [routerLink]="['/book-edit', book.id]">Change</button>
+    </td>
+    <td>
+      <button class='btn btn-info' (click)="onDelete(book)" >Delete</button>
     </td>
   </tr>
 </table>

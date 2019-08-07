@@ -10,13 +10,19 @@ import { Book } from "../book"
 export class BookListComponent implements OnInit {
   public books: Book[];
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Book[]>(baseUrl + 'api/book').subscribe(result => {
-      this.books = result;
-    }, error => console.error(error));
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.refresh();
   }
 
   ngOnInit() {
   }
 
+  async refresh() {
+    this.books = await this.http.get<Book[]>(this.baseUrl + 'api/book').toPromise();
+  }
+
+  async onDelete(book: Book) {
+    await this.http.delete<Book[]>(this.baseUrl + 'api/book/' + book.id).toPromise();
+    await this.refresh();
+  }
 }
