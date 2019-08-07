@@ -23,25 +23,25 @@ export class BookEditComponent implements OnInit {
     this.editId = route.snapshot.paramMap.get('id');
 
     if (this.isEdit) {
-      this.http.get<Book>(this.baseUrl + 'api/book/' + this.editId).subscribe(result => {
-        this.model = result
-      }, error => console.error(error));
+      this.loadBook();
     }
   }
 
   ngOnInit() {
   }
 
-  onSubmit() {
+  async loadBook() {
+    this.model = await this.http.get<Book>(this.baseUrl + 'api/book/' + this.editId).toPromise();
+  }
+
+  async onSubmit() {
     if (!this.isEdit) {
-      this.http.post<Book>(this.baseUrl + 'api/book', this.model).subscribe(result => {
-        this.submitted = true;
-      }, error => console.error(error));
+      await this.http.post<Book>(this.baseUrl + 'api/book', this.model).toPromise();
     } else {
-      this.http.put<Book>(this.baseUrl + 'api/book/'+ this.editId, this.model).subscribe(result => {
-        this.submitted = true;
-      }, error => console.error(error));
+      await this.http.put<Book>(this.baseUrl + 'api/book/' + this.editId, this.model).toPromise();
     }
+
+    this.submitted = true;
   }
 
   // TODO: Remove this when we're done
