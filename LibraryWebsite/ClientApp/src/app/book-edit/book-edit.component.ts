@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from "../book"
 
 @Component({
@@ -19,7 +19,11 @@ export class BookEditComponent implements OnInit {
     return this.editId != null;
   }
 
-  constructor(readonly http: HttpClient, @Inject('BASE_URL') readonly baseUrl: string, route: ActivatedRoute) {
+  constructor(
+    readonly http: HttpClient,
+    @Inject('BASE_URL') readonly baseUrl: string,
+    route: ActivatedRoute,
+    private router: Router) {
     this.editId = route.snapshot.paramMap.get('id');
 
     if (this.isEdit) {
@@ -42,6 +46,8 @@ export class BookEditComponent implements OnInit {
     }
 
     this.submitted = true;
+
+    this.router.navigateByUrl("book-list");
   }
 
   // TODO: Remove this when we're done
