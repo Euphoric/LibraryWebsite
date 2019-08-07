@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -117,6 +119,48 @@ namespace LibraryWebsite.Books
             Assert.Equal(bookUpdate.Author, createdBook.Author);
             Assert.Equal(bookUpdate.Description, createdBook.Description);
             Assert.Equal(bookUpdate.Isbn13, createdBook.Isbn13);
+        }
+
+        [Fact]
+        public async Task Deletes_book()
+        {
+            Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
+            var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+
+            await _client.DeleteAsync("api/book/" + bookGuid);
+
+            var books = await _client.GetJsonAsync<Book[]>("api/book");
+            Assert.Empty(books);
+        }
+
+        [Fact]
+        public async Task Deletes_book_specified_by_id()
+        {
+            List<Guid> createdBookIds = new List<Guid>();
+            for (int i = 0; i < 3; i++)
+            {
+                Book bookToCreate = new Book { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN " + i };
+                var createdBookId = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                createdBookIds.Add(createdBookId);
+            }
+
+            {
+                Book bookToCreate = new Book { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
+                var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+
+                await _client.DeleteAsync("api/book/" + bookGuid);
+
+                var bookIds = (await _client.GetJsonAsync<Book[]>("api/book")).Select(bk => bk.Id).ToArray();
+                Assert.DoesNotContain(bookGuid, bookIds);
+                Assert.Equal(createdBookIds, bookIds);
+            }
+        }
+
+        [Fact]
+        public async Task Deleting_non_existing_book_is_noop()
+        {
+            Guid bookGuid = Guid.Parse("a30b6cd8-2e20-423e-9d81-b48b42ef9f0b");
+            await _client.DeleteAsync("api/book/" + bookGuid);
         }
     }
 }

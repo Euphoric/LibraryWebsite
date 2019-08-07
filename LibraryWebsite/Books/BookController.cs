@@ -58,5 +58,22 @@ namespace LibraryWebsite.Books
 
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            // workaround around broken FirstOrDefault in EFInMemory 3.0-preview7
+            var bookToDelete = (await _context.Books.Where(bk => bk.Id == id).Take(1).ToListAsync()).FirstOrDefault();
+            if (bookToDelete == null)
+            {
+                return Ok();
+            }
+
+            _context.Books.Remove(bookToDelete);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
