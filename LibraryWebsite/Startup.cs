@@ -30,6 +30,9 @@ namespace LibraryWebsite
             });
 
             services.AddDbContext<LibraryContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("Database")));
+
+            services.AddHealthChecks()
+                .AddDbContextCheck<LibraryContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +52,8 @@ namespace LibraryWebsite
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
+            app.UseHealthChecks("/health");
 
             app.UseMvc(routes =>
             {
