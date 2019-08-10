@@ -18,14 +18,25 @@ namespace LibraryWebsite
         {
             IWebHost webHost = CreateWebHostBuilder(args).Build();
 
-            using (var scope = webHost.Services.CreateScope())
+            EnsureDatabaseMigrated(webHost.Services);
+
+            webHost.Run();
+        }
+
+        private static void EnsureDatabaseMigrated(IServiceProvider services)
+        {
+            var config = services.GetRequiredService<IConfiguration>();
+            var shouldMigrate = config.GetValue("MigrateOnStartup", false);
+            if (!shouldMigrate)
+                return;
+
+            using (var scope = services.CreateScope())
             {
                 scope.ServiceProvider.GetService<LibraryContext>().Database.Migrate();
 
                 if (scope.ServiceProvider.GetService<IWebHostEnvironment>().IsDevelopment())
                     scope.ServiceProvider.GetService<LibraryContext>().SetupExampleData();
             }
-            webHost.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
