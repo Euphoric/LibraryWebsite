@@ -12,23 +12,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebsite
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
             IWebHost webHost = CreateWebHostBuilder(args).Build();
 
-            EnsureDatabaseMigrated(webHost.Services);
+            EnsureDatabaseSchemaIsCurrent(webHost.Services);
 
             webHost.Run();
         }
 
-        private static void EnsureDatabaseMigrated(IServiceProvider services)
+        private static void EnsureDatabaseSchemaIsCurrent(IServiceProvider services)
         {
             var config = services.GetRequiredService<IConfiguration>();
             var shouldMigrate = config.GetValue("MigrateOnStartup", false);
             if (!shouldMigrate)
                 return;
+
+            var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseMigration");
+            logger.LogInformation("Migrating to newest database schema.");
 
             using (var scope = services.CreateScope())
             {

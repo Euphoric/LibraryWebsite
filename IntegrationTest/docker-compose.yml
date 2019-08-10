@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+    web:
+        build: 
+            context: ..
+            dockerfile: LibraryWebsite/Dockerfile
+        ports:
+            - "54321:80"
+        depends_on:
+            - db
+        environment:
+            "ConnectionStrings:Database": "Server=db;Database=Library;User=sa;Password=Your_password123;"
+            "Logging:LogLevel:Default": "Debug"
+            "MigrateOnStartup": "true"
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        environment:
+            SA_PASSWORD: "Your_password123"
+            ACCEPT_EULA: "Y"
