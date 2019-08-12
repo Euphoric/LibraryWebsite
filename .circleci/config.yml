@@ -16,7 +16,7 @@ jobs:
           name: Run Tests
           command:  |
             dotnet --version
-            dotnet test -c Release --logger "trx"
+            dotnet test LibraryWebsite.Test -c Release --logger "trx"
       - run:
           name: Convert test results from trx to junit
           when: always
