@@ -70,6 +70,26 @@ jobs:
           paths:
             - ./image.tar
 
+  end_to_end_test:
+    machine: true
+    steps:
+        - attach_workspace:
+            at: /tmp/workspace
+        - checkout
+        # - setup_remote_docker
+        - run:
+            name: Load archived Docker image
+            command: docker load -i /tmp/workspace/image.tar
+        - run:
+            name: Run integration tests
+            command: |
+              docker-compose -f docker-compose.endtoendtest.yml up --build --abort-on-container-exit --exit-code-from end_to_end_test
+        - store_artifacts:
+            path: TestResults
+            destination: TestResults
+        - store_test_results:
+            path: TestResults
+
   docker_publish-latest:
     executor: docker-publisher
     steps:
@@ -95,9 +115,12 @@ workflows:
           requires:
             - test_dotnet
             - test_angular
-      - docker_publish-latest:
+      - end_to_end_test:
           requires:
             - docker_build
+      - docker_publish-latest:
+          requires:
+            - end_to_end_test
           context: "Docker hub credentials"
           filters:
             branches:

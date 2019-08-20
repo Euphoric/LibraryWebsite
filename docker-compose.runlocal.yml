@@ -1,17 +1,13 @@
-version: "3.7"
+version: "3.2"
 services:
     website:
-        # Image used in CI
-        #image: "radekfalhar/librarywebsite"
-
         # Build when running locally
         build: 
-            context: ..
+            context: .
             dockerfile: LibraryWebsite/Dockerfile
         hostname: website
-#        Not really needed, just keeping it her for posterity
-#        ports:
-#           - "80:80"
+        ports:
+           - "54321:80"
         depends_on:
             - db
         environment:
@@ -24,12 +20,3 @@ services:
         environment:
             SA_PASSWORD: "Your_password123"
             ACCEPT_EULA: "Y"
-
-    end_to_end_test:
-        build: 
-            context: ..
-            dockerfile: LibraryWebsite.TestEndToEnd/Dockerfile
-        depends_on:
-            - website
-        environment:
-            "WEB_ADDRESS": "website:80"
