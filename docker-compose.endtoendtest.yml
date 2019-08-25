@@ -31,7 +31,25 @@ services:
             dockerfile: LibraryWebsite.TestEndToEnd/Dockerfile
         depends_on:
             - website
+            - selenium_hub
         environment:
             "WEB_ADDRESS": "website:80"
+            "SELENIUM_HUB": "http://selenium_hub:4444/wd/hub/"
         volumes:
             - "./TestResults:/src/TestResults"
+
+    selenium_hub:
+        image: selenium/hub:3.14.0-gallium
+        depends_on: 
+            - website
+        ports:
+            - "4444:4444"
+
+    selenium_chrome:
+        image: selenium/node-chrome:3.14.0-gallium
+        volumes:
+          - /dev/shm:/dev/shm
+        depends_on:
+          - selenium_hub
+        environment:
+            HUB_HOST: selenium_hub

@@ -19,4 +19,20 @@ services:
         image: "mcr.microsoft.com/mssql/server"
         environment:
             SA_PASSWORD: "Your_password123"
-            ACCEPT_EULA: "Y"
+            ACCEPT_EULA: "Y"        
+
+    selenium_hub:
+        image: selenium/hub:3.14.0-gallium
+        depends_on: 
+            - website
+        ports:
+            - "4444:4444"
+
+    selenium_chrome:
+        image: selenium/node-chrome:3.14.0-gallium
+        volumes:
+          - /dev/shm:/dev/shm
+        depends_on:
+          - selenium_hub
+        environment:
+            HUB_HOST: selenium_hub
