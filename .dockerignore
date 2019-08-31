@@ -19,3 +19,5 @@
 **/values.dev.yaml
 **/.toolstarget
 **/node_modules
+**/_NCrunch_*
+TestResults

@@ -27,6 +27,12 @@ Angular client is in `LibraryWebsite/ClientApp` directory.
 	cd LibraryWebsite/ClientApp/
 	npm run test
 
+### Database tests
+
+Database tests test Entity Framework and it's migrations
+
+    docker-compose -f docker-compose.databasetest.yml up --build --abort-on-container-exit --exit-code-from end_to_end_test
+
 ### End to End tests
 
 EndToEnd tests are in .NET in `LibraryWebsite.TestEndToEnd`.

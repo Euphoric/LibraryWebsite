@@ -1,10 +1,10 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace LibraryWebsite
 {
@@ -34,16 +34,32 @@ namespace LibraryWebsite
 
             using (var scope = _services.CreateScope())
             {
-                IServiceProvider serviceProvider = scope.ServiceProvider;
-                MigrateDatabase(serviceProvider);
+                MigrateDatabase(scope.ServiceProvider);
+                SeedSampleData(scope.ServiceProvider);
             }
         }
 
-        private static void MigrateDatabase(IServiceProvider serviceProvider)
+        public async ValueTask<bool> DoesDatabaseExists()
+        {
+            var database = _services.GetService<LibraryContext>().Database;
+            return await database.CanConnectAsync();
+        }
+
+        public async ValueTask<bool> HasNewestMigrations()
+        {
+            var database = _services.GetService<LibraryContext>().Database;
+            var pendingMigrations = await database.GetPendingMigrationsAsync();
+            return !pendingMigrations.Any();
+        }
+
+        private void MigrateDatabase(IServiceProvider serviceProvider)
         {
             serviceProvider.GetService<LibraryContext>().Database.Migrate();
+        }
 
-            if (serviceProvider.GetService<IWebHostEnvironment>().IsDevelopment())
+        private void SeedSampleData(IServiceProvider serviceProvider)
+        {
+            if (_configuration.GetValue("SeedSampleData", false))
                 serviceProvider.GetService<LibraryContext>().SetupExampleData();
         }
     }

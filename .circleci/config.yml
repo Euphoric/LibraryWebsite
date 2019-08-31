@@ -52,6 +52,21 @@ jobs:
       - store_artifacts:
           path: LibraryWebsite/ClientApp/TestResults
 
+  test_dotnet_database:
+    machine: true
+    steps:
+        - checkout
+        - run:
+            name: Run database tests
+            command: |
+              docker-compose -f docker-compose.databasetest.yml up --build --abort-on-container-exit --exit-code-from database_test
+        - store_artifacts:
+            path: TestResults
+            destination: TestResults
+        - store_test_results:
+            path: TestResults
+
+
 # docker build inspired by https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
   docker_build:
     executor: docker-publisher
@@ -111,10 +126,12 @@ workflows:
     jobs:
       - test_dotnet
       - test_angular
+      - test_dotnet_database
       - docker_build:
           requires:
             - test_dotnet
             - test_angular
+            - test_dotnet_database
       - end_to_end_test:
           requires:
             - docker_build

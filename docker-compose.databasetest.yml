@@ -1,0 +1,20 @@
+version: "3.2"
+services:
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        hostname: db
+        environment:
+            SA_PASSWORD: "Your_password123"
+            ACCEPT_EULA: "Y"
+
+    database_test:
+        build:
+            context: .
+            dockerfile: LibraryWebsite.TestDatabase/Dockerfile
+        depends_on:
+            - db
+        environment:
+            "DATABASE_SERVER": "Server=db;User=sa;Password=Your_password123;"
+            "DATABASE_SERVER_WAIT": "db:1433"
+        volumes:
+            - "./TestResults:/src/TestResults"
