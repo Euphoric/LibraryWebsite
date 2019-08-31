@@ -30,6 +30,7 @@ namespace LibraryWebsite
             });
 
             services.AddDbContext<LibraryContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("Database")));
+            services.AddTransient<DatabaseMigrations>();
 
             services.AddHealthChecks()
                 .AddDbContextCheck<LibraryContext>();
