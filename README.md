@@ -4,6 +4,10 @@ Or it should, but not yet.. as it is heavily in work in progress.
 
 [![CircleCI](https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master.svg?style=svg)](https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master)
 
+## Dependencies
+
+Requires .NET Core 3.0 Preview 8
+
 ## Running
 
 Simplest way to run whole application is to use docker-compose.

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster AS base
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS base
 
 # install trx2junit
 ENV PATH="${PATH}:/root/.dotnet/tools"

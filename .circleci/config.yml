@@ -8,7 +8,7 @@ executors:
 jobs:
   test_dotnet:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster
 
     steps:
       - checkout

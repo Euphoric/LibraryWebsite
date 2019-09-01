@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview7-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y nodejs
 # End setup
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster AS publish
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS publish
 # Setup NodeJs
 RUN apt-get update && \
     apt-get install -y wget && \
