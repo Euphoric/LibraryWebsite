@@ -51,21 +51,18 @@ namespace LibraryWebsite.Books
             if (booksFilename == null)
                 throw new ArgumentNullException(nameof(booksFilename));
 
-            if (!File.Exists(booksFilename))
-            {
-                throw new FileNotFoundException("File not found!", booksFilename);
-            }
-
-            if (string.IsNullOrWhiteSpace(File.ReadAllText(booksFilename)))
-            {
-                throw new Exception("File didnd't contain valid data.");
-            }
-
             using (var reader = new StreamReader(booksFilename))
-            using (var csv = new CsvReader(reader))
             {
-                csv.Configuration.Delimiter = ",";
-                return csv.GetRecords<ParsedBook>().ToArray();
+                if (reader.Peek() == -1)
+                {
+                    throw new Exception("File is empty.");
+                }
+                
+                using (var csv = new CsvReader(reader))
+                {
+                    csv.Configuration.Delimiter = ",";
+                    return csv.GetRecords<ParsedBook>().ToArray();
+                }
             }
         }
     }
