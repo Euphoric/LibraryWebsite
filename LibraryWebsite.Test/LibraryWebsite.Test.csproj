@@ -15,6 +15,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\SampleData\books-small1.csv" Link="Books\TestData\books-small1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\SampleData\books-small2.csv" Link="Books\TestData\books-small2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0-preview8.19405.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview8.19405.11" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0-preview-20190808-03" />
@@ -29,5 +38,12 @@
   <ItemGroup>
     <ProjectReference Include="..\LibraryWebsite\LibraryWebsite.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Books\TestData\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>
