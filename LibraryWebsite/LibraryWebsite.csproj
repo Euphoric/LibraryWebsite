@@ -41,6 +41,13 @@
 
   <ItemGroup>
     <None Include="..\.dockerignore" Link=".dockerignore" />
+    <None Include="..\SampleData\books-small1.csv" Link="SampleData\books-small1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SampleData\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') And !('$(NCRUNCH)' == '1') ">

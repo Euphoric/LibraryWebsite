@@ -22,7 +22,7 @@ namespace LibraryWebsite
                 return;
 
             BookCsvParser parser = new BookCsvParser();
-            var parsedBooks = parser.Parse("../SampleData/books-small1.csv");
+            var parsedBooks = parser.Parse("SampleData/books-small1.csv");
 
             foreach (var parsedBook in parsedBooks)
             {
