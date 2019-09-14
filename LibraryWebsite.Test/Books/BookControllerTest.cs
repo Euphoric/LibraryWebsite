@@ -59,7 +59,7 @@ namespace LibraryWebsite.Books
                 await controller.Post(bookToCreate);
             }
 
-            var books = (await controller.GetPaginated()).ToArray();
+            var books = (await controller.GetPaginated()).Items;
             Assert.Equal(defaultLimit, books.Length);
 
             var expectedTitles = Enumerable.Range(0, defaultLimit).Select(i => $"Title {i:D3}");
@@ -77,7 +77,7 @@ namespace LibraryWebsite.Books
             }
 
             var limit = 7;
-            var books = (await controller.GetPaginated(limit: limit)).ToArray();
+            var books = (await controller.GetPaginated(limit: limit)).Items;
             Assert.Equal(limit, books.Length);
 
             var expectedTitles = Enumerable.Range(0, limit).Select(i => $"Title {i:D3}");
@@ -95,7 +95,7 @@ namespace LibraryWebsite.Books
             }
 
             var page = 1;
-            var books = (await controller.GetPaginated(page: page)).ToArray();
+            var books = (await controller.GetPaginated(page: page)).Items;
             Assert.Equal(defaultLimit, books.Length);
 
             var expectedTitles = Enumerable.Range(defaultLimit * page, defaultLimit).Select(i => $"Title {i:D3}");

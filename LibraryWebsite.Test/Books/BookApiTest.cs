@@ -177,7 +177,8 @@ namespace LibraryWebsite.Books
                 await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
             }
 
-            var books = await _client.GetJsonAsync<Book[]>("api/book/page");
+            var result = await _client.GetJsonAsync<PagingResult<Book>>("api/book/page");
+            var books = result.Items;
             Assert.Equal(5, books.Length);
 
             Assert.Equal(books.OrderBy(x => x.Title), books); // assert books are ordered by title
@@ -196,7 +197,8 @@ namespace LibraryWebsite.Books
             int limit = 7;
             int page = 2;
 
-            var books = await _client.GetJsonAsync<Book[]>($"api/book/page?limit={limit}&page={page}");
+            var result = await _client.GetJsonAsync<PagingResult<Book>>($"api/book/page?limit={limit}&page={page}");
+            var books = result.Items;
             Assert.Equal(limit, books.Length);
 
             var expectedTitles = Enumerable.Range(limit * page, limit).Select(i => $"Title {i:D3}");
