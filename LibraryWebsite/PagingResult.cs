@@ -4,10 +4,6 @@ namespace LibraryWebsite
 {
     public class PagingResult<TItem>
     {
-        public PagingResult()
-        {
-        }
-
         public PagingResult(TItem[] items, int currentPage, int totalPages)
         {
             Items = items;
@@ -15,10 +11,10 @@ namespace LibraryWebsite
             TotalPages = totalPages;
         }
 
-        public TItem[] Items { get; set; }
+        public TItem[] Items { get; }
 
-        public int CurrentPage { get; set; }
+        public int CurrentPage { get; }
 
-        public int TotalPages { get; set; }
+        public int TotalPages { get; }
     }
 }
