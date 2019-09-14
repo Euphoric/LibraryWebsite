@@ -162,5 +162,47 @@ namespace LibraryWebsite.Books
             Guid bookGuid = Guid.Parse("a30b6cd8-2e20-423e-9d81-b48b42ef9f0b");
             await _client.DeleteAsync("api/book/" + bookGuid);
         }
+
+        #region Pagination
+
+        const int defaultLimit = 10;
+
+        [Fact]
+        public async Task Book_pagination_default()
+        {
+            // reverse order to test ordering
+            for (int i = 5; i > 0; i--)
+            {
+                Book bookToCreate = new Book { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+            }
+
+            var books = await _client.GetJsonAsync<Book[]>("api/book/page");
+            Assert.Equal(5, books.Length);
+
+            Assert.Equal(books.OrderBy(x => x.Title), books); // assert books are ordered by title
+        }
+
+        [Fact]
+        public async Task Book_pagination_with_params()
+        {
+            // reverse order to test ordering
+            for (int i = 0; i < 30; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+            }
+
+            int limit = 7;
+            int page = 2;
+
+            var books = await _client.GetJsonAsync<Book[]>($"api/book/page?limit={limit}&page={page}");
+            Assert.Equal(limit, books.Length);
+
+            var expectedTitles = Enumerable.Range(limit * page, limit).Select(i => $"Title {i:D3}");
+            Assert.Equal(expectedTitles, books.Select(x => x.Title));
+        }
+
+        #endregion
     }
 }

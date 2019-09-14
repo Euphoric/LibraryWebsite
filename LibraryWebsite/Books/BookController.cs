@@ -30,6 +30,12 @@ namespace LibraryWebsite.Books
             return await _context.Books.SingleOrDefaultAsync(bk => bk.Id == id);
         }
 
+        [HttpGet("page")]
+        public async Task<IEnumerable<Book>> GetPaginated([FromQuery]int limit = 10, int page = 0)
+        {
+            return await _context.Books.OrderBy(x=>x.Title).Skip(limit * page).Take(limit).ToArrayAsync();
+        }
+
         public async Task<Guid> Post([FromBody]Book book)
         {
             book.Id = Guid.NewGuid();

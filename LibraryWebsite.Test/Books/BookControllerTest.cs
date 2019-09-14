@@ -17,21 +17,23 @@ namespace LibraryWebsite.Books
             return new LibraryContext(builder.Options);
         }
 
+        BookController controller;
+
+        public BookControllerTest()
+        {
+            LibraryContext dbContext = CreateDbContext();
+            controller = new BookController(dbContext);
+        }
+
         [Fact]
         public async Task Retrieves_empty_books()
         {
-            LibraryContext dbContext = CreateDbContext();
-            var controller = new BookController(dbContext);
-
             Assert.Empty(await controller.Get());
         }
 
         [Fact]
         public async Task Creates_new_book()
         {
-            LibraryContext dbContext = CreateDbContext();
-            var controller = new BookController(dbContext);
-
             Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
             await controller.Post(bookToCreate);
 
@@ -43,6 +45,63 @@ namespace LibraryWebsite.Books
             Assert.Equal(bookToCreate.Author, createdBook.Author);
             Assert.Equal(bookToCreate.Description, createdBook.Description);
             Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
+        }
+
+        const int defaultLimit = 10;
+
+        [Fact]
+        public async Task Book_pagination_limit_is_default()
+        {
+            // reverse order to test ordering
+            for (int i = 0; i < 30; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await controller.Post(bookToCreate);
+            }
+
+            var books = (await controller.GetPaginated()).ToArray();
+            Assert.Equal(defaultLimit, books.Length);
+
+            var expectedTitles = Enumerable.Range(0, defaultLimit).Select(i => $"Title {i:D3}");
+            Assert.Equal(expectedTitles, books.Select(x => x.Title));
+        }
+
+        [Fact]
+        public async Task Book_pagination_limit_set()
+        {
+            // reverse order to test ordering
+            for (int i = 0; i < 20; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await controller.Post(bookToCreate);
+            }
+
+            var limit = 7;
+            var books = (await controller.GetPaginated(limit: limit)).ToArray();
+            Assert.Equal(limit, books.Length);
+
+            var expectedTitles = Enumerable.Range(0, limit).Select(i => $"Title {i:D3}");
+            Assert.Equal(expectedTitles, books.Select(x => x.Title));
+        }
+
+        [Fact]
+        public async Task Book_pagination_page()
+        {
+            // reverse order to test ordering
+            for (int i = 0; i < 30; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await controller.Post(bookToCreate);
+            }
+
+            var page = 1;
+            var books = (await controller.GetPaginated(page: page)).ToArray();
+            Assert.Equal(defaultLimit, books.Length);
+
+            var expectedTitles = Enumerable.Range(defaultLimit * page, defaultLimit).Select(i => $"Title {i:D3}");
+            Assert.Equal(expectedTitles, books.Select(x => x.Title));
+
+            // TODO
         }
     }
 }
