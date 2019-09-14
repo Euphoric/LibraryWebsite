@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LibraryWebsite
 {
@@ -11,11 +8,17 @@ namespace LibraryWebsite
         {
         }
 
-        public PagingResult(TItem[] items)
+        public PagingResult(TItem[] items, int currentPage, int totalPages)
         {
             Items = items;
+            CurrentPage = currentPage;
+            TotalPages = totalPages;
         }
 
         public TItem[] Items { get; set; }
+
+        public int CurrentPage { get; set; }
+
+        public int TotalPages { get; set; }
     }
 }

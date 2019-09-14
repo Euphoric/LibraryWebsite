@@ -52,7 +52,6 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Book_pagination_limit_is_default()
         {
-            // reverse order to test ordering
             for (int i = 0; i < 30; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
@@ -69,7 +68,6 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Book_pagination_limit_set()
         {
-            // reverse order to test ordering
             for (int i = 0; i < 20; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
@@ -77,17 +75,19 @@ namespace LibraryWebsite.Books
             }
 
             var limit = 7;
-            var books = (await controller.GetPaginated(limit: limit)).Items;
+            var result = await controller.GetPaginated(limit: limit);
+            var books = result.Items;
             Assert.Equal(limit, books.Length);
 
             var expectedTitles = Enumerable.Range(0, limit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
+
+            Assert.Equal(0, result.CurrentPage);
         }
 
         [Fact]
         public async Task Book_pagination_page()
         {
-            // reverse order to test ordering
             for (int i = 0; i < 30; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
@@ -95,13 +95,66 @@ namespace LibraryWebsite.Books
             }
 
             var page = 1;
-            var books = (await controller.GetPaginated(page: page)).Items;
+            var result = await controller.GetPaginated(page: page);
+            var books = result.Items;
             Assert.Equal(defaultLimit, books.Length);
 
             var expectedTitles = Enumerable.Range(defaultLimit * page, defaultLimit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
 
-            // TODO
+            Assert.Equal(page, result.CurrentPage);
+        }
+
+        [Fact]
+        public async Task Book_pagination_total_pages()
+        {
+            {
+                var totalPages = (await controller.GetPaginated()).TotalPages;
+                Assert.Equal(0, totalPages);
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await controller.Post(bookToCreate);
+            }
+
+            {
+                var totalPages = (await controller.GetPaginated()).TotalPages;
+                Assert.Equal(1, totalPages);
+            }
+
+            for (int i = 0; i < 1; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await controller.Post(bookToCreate);
+            }
+
+            {
+                var totalPages = (await controller.GetPaginated()).TotalPages;
+                Assert.Equal(2, totalPages);
+            }
+
+            {
+                var totalPages = (await controller.GetPaginated(limit: 11)).TotalPages;
+                Assert.Equal(1, totalPages);
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                await controller.Post(bookToCreate);
+            }
+
+            {
+                var totalPages = (await controller.GetPaginated()).TotalPages;
+                Assert.Equal(3, totalPages);
+            }
+
+            {
+                var totalPages = (await controller.GetPaginated(limit: 21)).TotalPages;
+                Assert.Equal(1, totalPages);
+            }
         }
     }
 }

@@ -182,6 +182,9 @@ namespace LibraryWebsite.Books
             Assert.Equal(5, books.Length);
 
             Assert.Equal(books.OrderBy(x => x.Title), books); // assert books are ordered by title
+
+            Assert.Equal(0, result.CurrentPage);
+            Assert.Equal(1, result.TotalPages);
         }
 
         [Fact]
@@ -203,6 +206,9 @@ namespace LibraryWebsite.Books
 
             var expectedTitles = Enumerable.Range(limit * page, limit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
+
+            Assert.Equal(page, result.CurrentPage);
+            Assert.Equal(5, result.TotalPages);
         }
 
         #endregion

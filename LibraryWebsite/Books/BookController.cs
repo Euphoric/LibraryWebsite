@@ -33,15 +33,7 @@ namespace LibraryWebsite.Books
         [HttpGet("page")]
         public async Task<PagingResult<Book>> GetPaginated([FromQuery]int limit = 10, int page = 0)
         {
-            Book[] books =
-                await 
-                _context.Books
-                .OrderBy(x => x.Title)
-                .Skip(limit * page)
-                .Take(limit)
-                .ToArrayAsync();
-
-            return new PagingResult<Book>(books);
+            return await _context.Books.OrderBy(x => x.Title).CreatePaging(limit, page);
         }
 
         public async Task<Guid> Post([FromBody]Book book)
