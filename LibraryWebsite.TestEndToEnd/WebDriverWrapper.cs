@@ -71,6 +71,11 @@ namespace LibraryWebsite.TestEndToEnd
             driver.Navigate().GoToUrl(homeURL);
         }
 
+        internal void NavigateTo(string page)
+        {
+            driver.Navigate().GoToUrl(homeURL + page);
+        }
+
         #region IWebDriver
 
         public string Url { get => driver.Url; set => driver.Url = value; }
