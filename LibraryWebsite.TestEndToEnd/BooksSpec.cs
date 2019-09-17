@@ -28,6 +28,7 @@ namespace LibraryWebsite.TestEndToEnd
             _driver.NavigateTo("/book-list");
 
             WebDriverWait wait = new WebDriverWait(_driver, System.TimeSpan.FromSeconds(15));
+            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
 
             IWebElement title = wait.Until(driver => driver.FindElement(By.XPath("//h1")));
 
@@ -40,9 +41,7 @@ namespace LibraryWebsite.TestEndToEnd
 
             Assert.Equal(new[] { "Title", "Author", "Description", "ISBN-13", "", "" }, headerTexts);
 
-            var rows = table.FindElements(By.XPath("tbody/tr"));
-
-            Assert.Equal(10, rows.Count);
+            wait.Until(dr => dr.FindElements(By.XPath("//table/tbody/tr")).Count == 10);
 
             // paging
 
@@ -60,7 +59,7 @@ namespace LibraryWebsite.TestEndToEnd
 
             var lastPageLink = _driver.FindElement(By.XPath("//pagination-controls//li[position() = (last() - 1)]"));
             lastPageLink.Click();
-
+            
             wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
 
             {
