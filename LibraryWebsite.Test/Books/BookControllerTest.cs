@@ -109,8 +109,9 @@ namespace LibraryWebsite.Books
         public async Task Book_pagination_total_pages()
         {
             {
-                var totalPages = (await controller.GetPaginated()).TotalPages;
-                Assert.Equal(0, totalPages);
+                var result = await controller.GetPaginated();
+                Assert.Equal(0, result.TotalPages);
+                Assert.Equal(0, result.TotalCount);
             }
 
             for (int i = 0; i < 10; i++)
@@ -120,8 +121,9 @@ namespace LibraryWebsite.Books
             }
 
             {
-                var totalPages = (await controller.GetPaginated()).TotalPages;
-                Assert.Equal(1, totalPages);
+                var result = await controller.GetPaginated();
+                Assert.Equal(1, result.TotalPages);
+                Assert.Equal(10, result.TotalCount);
             }
 
             for (int i = 0; i < 1; i++)
@@ -131,13 +133,15 @@ namespace LibraryWebsite.Books
             }
 
             {
-                var totalPages = (await controller.GetPaginated()).TotalPages;
-                Assert.Equal(2, totalPages);
+                var result = await controller.GetPaginated();
+                Assert.Equal(2, result.TotalPages);
+                Assert.Equal(11, result.TotalCount);
             }
 
             {
-                var totalPages = (await controller.GetPaginated(limit: 11)).TotalPages;
-                Assert.Equal(1, totalPages);
+                var result = await controller.GetPaginated(limit: 11);
+                Assert.Equal(1, result.TotalPages);
+                Assert.Equal(11, result.TotalCount);
             }
 
             for (int i = 0; i < 10; i++)
@@ -147,13 +151,15 @@ namespace LibraryWebsite.Books
             }
 
             {
-                var totalPages = (await controller.GetPaginated()).TotalPages;
-                Assert.Equal(3, totalPages);
+                var result = await controller.GetPaginated();
+                Assert.Equal(3, result.TotalPages);
+                Assert.Equal(21, result.TotalCount);
             }
 
             {
-                var totalPages = (await controller.GetPaginated(limit: 21)).TotalPages;
-                Assert.Equal(1, totalPages);
+                var result = await controller.GetPaginated(limit: 21);
+                Assert.Equal(1, result.TotalPages);
+                Assert.Equal(21, result.TotalCount);
             }
         }
     }

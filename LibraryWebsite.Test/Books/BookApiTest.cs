@@ -186,6 +186,7 @@ namespace LibraryWebsite.Books
 
             Assert.Equal(0, result.CurrentPage);
             Assert.Equal(1, result.TotalPages);
+            Assert.Equal(5, result.TotalCount);
         }
 
         [Fact]
@@ -210,6 +211,7 @@ namespace LibraryWebsite.Books
 
             Assert.Equal(page, result.CurrentPage);
             Assert.Equal(5, result.TotalPages);
+            Assert.Equal(30, result.TotalCount);
         }
 
         #endregion

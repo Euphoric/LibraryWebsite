@@ -19,7 +19,7 @@ namespace LibraryWebsite
             int totalCount = await query.CountAsync();
             int totalPages = (int)Math.Ceiling(totalCount / (double)limit);
 
-            return new PagingResult<T>(items, page, totalPages);
+            return new PagingResult<T>(items, page, totalPages, totalCount);
         }
     }
 }
