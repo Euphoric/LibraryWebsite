@@ -11,7 +11,7 @@
       <th></th>
     </tr>
   </thead>
-  <tr *ngFor="let book of books">
+  <tr *ngFor="let book of books | paginate: config">
     <td>
       {{book.title}}
     </td>
@@ -32,3 +32,4 @@
     </td>
   </tr>
 </table>
+<pagination-controls (pageChange)="pageChange($event)" class="my-pagination"></pagination-controls>

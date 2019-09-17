@@ -39,6 +39,34 @@ namespace LibraryWebsite.TestEndToEnd
             var headerTexts = headers.Select(th => th.Text).ToArray();
 
             Assert.Equal(new[] { "Title", "Author", "Description", "ISBN-13", "", "" }, headerTexts);
+
+            var rows = table.FindElements(By.XPath("tbody/tr"));
+
+            Assert.Equal(10, rows.Count);
+
+            // paging
+
+            var selectedTitle = wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text);
+
+            {
+                var nextPageLink = _driver.FindElement(By.ClassName("pagination-next"));
+                nextPageLink.Click();
+            }
+            wait.Until(dr => dr.Url.Contains("page=2"));
+
+            wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
+
+            selectedTitle = wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text);
+
+            var lastPageLink = _driver.FindElement(By.XPath("//pagination-controls//li[position() = (last() - 1)]"));
+            lastPageLink.Click();
+
+            wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
+
+            {
+                var nextPageLink = _driver.FindElement(By.ClassName("pagination-next"));
+                Assert.Contains("disabled", nextPageLink.GetAttribute("class"));
+            }
         }
     }
 }
