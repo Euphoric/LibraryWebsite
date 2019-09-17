@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { BookListComponent } from './book-list.component';
 
@@ -10,7 +11,7 @@ describe('BookListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule],
+      imports: [RouterTestingModule, HttpClientTestingModule, NgxPaginationModule],
       providers: [{ provide: 'BASE_URL', useValue: 'www.test.com', },],
       declarations: [ BookListComponent ] 
     })
