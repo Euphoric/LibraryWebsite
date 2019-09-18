@@ -22,7 +22,7 @@ namespace LibraryWebsite.TestEndToEnd
             _driver.Dispose();
         }
 
-        [Fact(Skip = "Fix")]
+        [Fact]
         public void Books_list()
         {
             _driver.NavigateTo("/book-list");

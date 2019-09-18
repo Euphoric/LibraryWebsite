@@ -6,7 +6,7 @@ services:
 
         # Build when running locally
 #        build: 
-#            context: ..
+#            context: .
 #            dockerfile: LibraryWebsite/Dockerfile
         hostname: website
 #        Not really needed, just keeping it her for posterity
@@ -15,9 +15,8 @@ services:
         depends_on:
             - db
         environment:
+            "ASPNETCORE_ENVIRONMENT": "Staging"
             "ConnectionStrings:Database": "Server=db;Database=Library;User=sa;Password=Your_password123;"
-            "Logging:LogLevel:Default": "Debug"
-            "MigrateOnStartup": "true"
 
     db:
         image: "mcr.microsoft.com/mssql/server"
