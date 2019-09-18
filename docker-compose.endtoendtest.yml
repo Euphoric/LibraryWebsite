@@ -7,7 +7,8 @@ services:
         # Build when running locally
 #        build: 
 #            context: .
-#            dockerfile: LibraryWebsite/Dockerfile
+#            dockerfile: Dockerfile
+#            target: final
         hostname: website
 #        Not really needed, just keeping it her for posterity
 #        ports:

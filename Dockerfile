@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-buster-slim AS runtime_image
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -36,7 +36,9 @@ COPY . .
 WORKDIR "/src/LibraryWebsite"
 RUN dotnet publish "LibraryWebsite.csproj" -c Release -o /app --no-restore
 
-FROM base AS final
+
+# Build runtime image
+FROM runtime_image AS final
 WORKDIR /app
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "LibraryWebsite.dll"]
