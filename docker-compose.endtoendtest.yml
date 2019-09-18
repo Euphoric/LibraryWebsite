@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.4"
 services:
     website:
         # Image used in CI
@@ -28,7 +28,8 @@ services:
     end_to_end_test:
         build: 
             context: .
-            dockerfile: LibraryWebsite.TestEndToEnd/Dockerfile
+            dockerfile: Dockerfile
+            target: end_to_end
         depends_on:
             - website
             - selenium_hub
