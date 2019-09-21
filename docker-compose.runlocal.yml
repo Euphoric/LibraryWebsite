@@ -1,11 +1,10 @@
-version: "3.4"
+version: "3.2"
 services:
     website:
         # Build when running locally
         build: 
             context: .
-            dockerfile: Dockerfile
-            target: final
+            dockerfile: LibraryWebsite/Dockerfile
         hostname: website
         ports:
            - "54321:80"
