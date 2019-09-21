@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.4
 services:
     db:
         image: "mcr.microsoft.com/mssql/server"
@@ -10,8 +10,7 @@ services:
     database_test:
         build:
             context: .
-            dockerfile: Dockerfile
-            target: database_test
+            dockerfile: LibraryWebsite.TestDatabase/Dockerfile
         depends_on:
             - db
         environment:
