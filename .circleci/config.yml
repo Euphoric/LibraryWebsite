@@ -124,7 +124,7 @@ workflows:
   version: 2
   build_and_publish:
     jobs:
-      - test_dotnet
+      - test_unit_dotnet
       - test_angular
       - test_dotnet_database
       - docker_build
@@ -134,7 +134,7 @@ workflows:
       - docker_publish-latest:
           requires:
             - end_to_end_test
-            - test_dotnet
+            - test_unit_dotnet
             - test_angular
             - test_dotnet_database
           context: "Docker hub credentials"
