@@ -6,29 +6,22 @@ executors:
       docker:
           - image: circleci/buildpack-deps:stretch
 jobs:
-  test_dotnet:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster
-
+  test_unit_dotnet:
+    machine: true
     steps:
-      - checkout
-      - run:
-          name: Run Tests
-          command:  |
-            dotnet --version
-            dotnet test LibraryWebsite.Test -c Release --logger "trx"
-      - run:
-          name: Convert test results from trx to junit
-          when: always
-          command: |
-              export PATH="$PATH:/root/.dotnet/tools"
-              dotnet tool install -g trx2junit
-              trx2junit **/TestResults/*.trx --output TestResults/dotnet
-      - store_test_results:
-          path: TestResults
-      - store_artifacts:
-          path: TestResults
-          destination: TestResults
+        - run:
+            name: Build test image
+            command: |
+              docker build -t $radekfalhar/librarywebsite_test:latest -f Dockerfile-test .
+        - run:
+            name: Run unit tests
+            command: |
+              docker run -v TestResults:/src/TestResults radekfalhar/librarywebsite_test unit_dotnet
+        - store_artifacts:
+            path: TestResults
+            destination: TestResults
+        - store_test_results:
+            path: TestResults      
 
   test_angular:
     docker:
@@ -56,6 +49,10 @@ jobs:
     machine: true
     steps:
         - checkout
+        - run:
+            name: Build test image
+            command: |
+              docker build -t $radekfalhar/librarywebsite_test:latest -f Dockerfile-test .
         - run:
             name: Run database tests
             command: |
@@ -95,7 +92,11 @@ jobs:
             name: Load archived Docker image
             command: docker load -i /tmp/workspace/image.tar
         - run:
-            name: Run integration tests
+            name: Build test image
+            command: |
+              docker build -t $radekfalhar/librarywebsite_test:latest -f Dockerfile-test .            
+        - run:
+            name: Run end-to-end tests
             command: |
               docker-compose -f docker-compose.endtoendtest.yml up --build --abort-on-container-exit --exit-code-from end_to_end_test
         - store_artifacts:
