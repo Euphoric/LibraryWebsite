@@ -1,0 +1,1 @@
+docker-compose -f docker-compose.databasetest.yml up --build --abort-on-container-exit --exit-code-from database_test

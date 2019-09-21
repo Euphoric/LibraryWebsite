@@ -10,9 +10,10 @@ services:
     database_test:
         build:
             context: .
-            dockerfile: LibraryWebsite.TestDatabase/Dockerfile
+            dockerfile: Dockerfile-test
         depends_on:
             - db
+        command: database
         environment:
             "DATABASE_SERVER": "Server=db;User=sa;Password=Your_password123;"
             "DATABASE_SERVER_WAIT": "db:1433"

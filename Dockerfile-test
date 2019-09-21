@@ -1,0 +1,38 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS test_image
+# Setup NodeJs
+RUN apt-get update && \
+    apt-get install -y wget && \
+    apt-get install -y gnupg2 && \
+    wget -qO- https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get install -y build-essential nodejs
+# End setup
+
+# install trx2junit
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet tool install -g trx2junit
+
+# Cache NuGet packages
+WORKDIR /src
+COPY ["LibraryWebsite.sln", "."]
+COPY ["LibraryWebsite/*.csproj", "LibraryWebsite/"]
+COPY ["LibraryWebsite.Test/*.csproj", "LibraryWebsite.Test/"]
+COPY ["LibraryWebsite.TestEndToEnd/*.csproj", "LibraryWebsite.TestEndToEnd/"]
+COPY ["LibraryWebsite.TestDatabase/*.csproj", "LibraryWebsite.TestDatabase/"]
+RUN dotnet restore
+
+# Cache node_modules
+WORKDIR /src
+COPY ["LibraryWebsite/ClientApp/package.json","LibraryWebsite/ClientApp/package-lock.json", "LibraryWebsite/ClientApp/"]
+RUN cd /src/LibraryWebsite/ClientApp; npm install
+
+# copy remaining application files
+COPY . .
+
+# build solution
+RUN dotnet build "LibraryWebsite.sln" -c Release --no-restore
+
+# enable execution permission for shell files
+RUN ["chmod", "+x", "./run_tests_in_docker.sh"]
+RUN ["chmod", "+x", "./IntegrationTest/wait_for_it.sh"]
+
+ENTRYPOINT ["bash", "./run_tests_in_docker.sh"]

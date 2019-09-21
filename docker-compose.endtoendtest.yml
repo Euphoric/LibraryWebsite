@@ -1,13 +1,7 @@
 version: "3.2"
 services:
     website:
-        # Image used in CI
         image: "radekfalhar/librarywebsite"
-
-        # Build when running locally
-#        build: 
-#            context: .
-#            dockerfile: LibraryWebsite/Dockerfile
         hostname: website
 #        Not really needed, just keeping it her for posterity
 #        ports:
@@ -27,10 +21,11 @@ services:
     end_to_end_test:
         build: 
             context: .
-            dockerfile: LibraryWebsite.TestEndToEnd/Dockerfile
+            dockerfile: Dockerfile-test
         depends_on:
             - website
             - selenium_hub
+        command: endToEnd
         environment:
             "WEB_ADDRESS": "website:80"
             "SELENIUM_HUB": "http://selenium_hub:4444/wd/hub/"
