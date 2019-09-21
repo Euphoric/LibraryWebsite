@@ -35,7 +35,7 @@ Angular client is in `LibraryWebsite/ClientApp` directory.
 
 Database tests test Entity Framework and it's migrations
 
-    docker-compose -f docker-compose.databasetest.yml up --build --abort-on-container-exit --exit-code-from database_test
+    .\run_database_test.ps1
 
 ### End to End tests
 
@@ -44,7 +44,7 @@ EndToEnd tests are in .NET in `LibraryWebsite.TestEndToEnd`.
 To run these tests, whole application environment must be running.
 Running tests directly can be simply done using
 
-	docker-compose -f docker-compose.endtoendtest.yml up --build --abort-on-container-exit --exit-code-from end_to_end_test
+	.\run_endToEnd_test.ps1
 
 To debug the tests individually, start up the environment using 
 
