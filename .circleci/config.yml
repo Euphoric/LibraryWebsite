@@ -9,6 +9,7 @@ jobs:
   test_unit_dotnet:
     machine: true
     steps:
+        - checkout
         - run:
             name: Build test image
             command: |
