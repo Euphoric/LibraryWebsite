@@ -127,17 +127,16 @@ workflows:
       - test_dotnet
       - test_angular
       - test_dotnet_database
-      - docker_build:
-          requires:
-            - test_dotnet
-            - test_angular
-            - test_dotnet_database
+      - docker_build
       - end_to_end_test:
           requires:
             - docker_build
       - docker_publish-latest:
           requires:
             - end_to_end_test
+            - test_dotnet
+            - test_angular
+            - test_dotnet_database
           context: "Docker hub credentials"
           filters:
             branches:
