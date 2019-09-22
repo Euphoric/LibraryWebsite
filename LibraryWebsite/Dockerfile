@@ -1,23 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-buster-slim AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-alpine AS publish
 # Setup NodeJs
-RUN apt-get update && \
-    apt-get install -y wget && \
-    apt-get install -y gnupg2 && \
-    wget -qO- https://deb.nodesource.com/setup_10.x | bash - && \
-    apt-get install -y nodejs
-# End setup
-
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS publish
-# Setup NodeJs
-RUN apt-get update && \
-    apt-get install -y wget && \
-    apt-get install -y gnupg2 && \
-    wget -qO- https://deb.nodesource.com/setup_10.x | bash - && \
-    apt-get install -y build-essential nodejs
-# End setup
+RUN apk update
+RUN apk add --update npm=10.14.2-r0
 
 # Cache NuGet packages
 WORKDIR /src
@@ -36,7 +20,15 @@ COPY . .
 WORKDIR "/src/LibraryWebsite"
 RUN dotnet publish "LibraryWebsite.csproj" -c Release -o /app --no-restore
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-alpine3.9 AS base
+# Setup NodeJs
+RUN apk update
+RUN apk add --update npm=10.14.2-r0
+
 WORKDIR /app
+
+EXPOSE 80
+EXPOSE 443
+
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "LibraryWebsite.dll"]
