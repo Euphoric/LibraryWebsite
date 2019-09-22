@@ -1,6 +1,6 @@
 ﻿namespace LibraryWebsite
 {
-    public class PagingResult<TItem>
+    public class PagingResultDto<TItem>
     {
         public TItem[] Items { get; set; }
 
