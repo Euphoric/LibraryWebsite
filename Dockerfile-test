@@ -1,11 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS test_image
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-alpine AS publish
 # Setup NodeJs
-RUN apt-get update && \
-    apt-get install -y wget && \
-    apt-get install -y gnupg2 && \
-    wget -qO- https://deb.nodesource.com/setup_10.x | bash - && \
-    apt-get install -y build-essential nodejs
-# End setup
+RUN apk update
+RUN apk add --update npm=10.14.2-r0
 
 # install trx2junit
 ENV PATH="${PATH}:/root/.dotnet/tools"
@@ -35,4 +31,4 @@ RUN dotnet build "LibraryWebsite.sln" -c Release --no-restore
 RUN ["chmod", "+x", "./run_tests_in_docker.sh"]
 RUN ["chmod", "+x", "./IntegrationTest/wait_for_it.sh"]
 
-ENTRYPOINT ["bash", "./run_tests_in_docker.sh"]
+ENTRYPOINT ["sh", "./run_tests_in_docker.sh"]
