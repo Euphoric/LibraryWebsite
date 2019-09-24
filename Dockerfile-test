@@ -1,4 +1,8 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-alpine AS publish
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-alpine AS publish
+
+# enable globalization support
+RUN apk add --no-cache icu-libs
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 # install trx2junit
 ENV PATH="${PATH}:/root/.dotnet/tools"

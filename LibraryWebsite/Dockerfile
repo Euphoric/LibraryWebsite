@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-alpine AS publish
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-alpine AS publish
 # Setup NodeJs
 RUN apk update
 RUN apk add --update npm=10.14.2-r0
@@ -20,10 +20,14 @@ COPY . .
 WORKDIR "/src/LibraryWebsite"
 RUN dotnet publish "LibraryWebsite.csproj" -c Release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-alpine3.9 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-alpine3.9 AS base
 # Setup NodeJs
 RUN apk update
 RUN apk add --update npm=10.14.2-r0
+
+# enable globalization support
+RUN apk add --no-cache icu-libs
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 WORKDIR /app
 
