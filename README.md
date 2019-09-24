@@ -6,7 +6,7 @@ Or it should, but not yet.. as it is heavily in work in progress.
 
 ## Dependencies
 
-Requires .NET Core 3.0 Preview 8
+Requires .NET Core 3.0
 
 ## Running
 
