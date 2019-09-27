@@ -41,7 +41,8 @@ namespace LibraryWebsite.TestEndToEnd
 
             Assert.Equal(new[] { "Title", "Author", "Description", "ISBN-13", "", "" }, headerTexts);
 
-            wait.Until(dr => dr.FindElements(By.XPath("//table/tbody/tr")).Count == 10);
+            const int defaultRowCount = 10;
+            wait.Until(dr => dr.FindElements(By.XPath("//table//tr")).Count == defaultRowCount + 1);
 
             // paging
 
