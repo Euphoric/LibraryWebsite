@@ -22,29 +22,25 @@ jobs:
             path: TestResults
             destination: TestResults
         - store_test_results:
-            path: TestResults      
+            path: TestResults
 
-  test_angular:
-    docker:
-      - image: circleci/node:10-browsers
+  test_unit_angular:
+    machine: true
     steps:
-      - checkout
-      - restore_cache:
-          key: LibraryWebsite-client-{{ .Branch }}-{{ checksum "LibraryWebsite/ClientApp/package-lock.json" }}
-      - run: cd LibraryWebsite/ClientApp/ && npm install
-      - save_cache:
-          key: LibraryWebsite-client-{{ .Branch }}-{{ checksum "LibraryWebsite/ClientApp/package-lock.json" }}
-          paths:
-            - "LibraryWebsite/ClientApp/node_modules"
-      - run: 
-          command: cd LibraryWebsite/ClientApp/ && npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
-          environment:
-            JUNIT_REPORT_PATH: ../TestResults
-            JUNIT_REPORT_NAME: test-results-client.xml
-      - store_test_results:
-          path: LibraryWebsite/ClientApp/TestResults
-      - store_artifacts:
-          path: LibraryWebsite/ClientApp/TestResults
+        - checkout
+        - run:
+            name: Build test image
+            command: |
+              docker build -t radekfalhar/librarywebsite_test_angular:latest -f Dockerfile-test-angular .
+        - run:
+            name: Run unit tests
+            command: |
+              docker run -v TestResults:/src/TestResults radekfalhar/librarywebsite_test_angular
+        - store_artifacts:
+            path: TestResults
+            destination: TestResults
+        - store_test_results:
+            path: TestResults
 
   test_dotnet_database:
     machine: true
@@ -126,7 +122,7 @@ workflows:
   build_and_publish:
     jobs:
       - test_unit_dotnet
-      - test_angular
+      - test_unit_angular
       - test_dotnet_database
       - docker_build
       - end_to_end_test:
@@ -136,7 +132,7 @@ workflows:
           requires:
             - end_to_end_test
             - test_unit_dotnet
-            - test_angular
+            - test_unit_angular
             - test_dotnet_database
           context: "Docker hub credentials"
           filters:

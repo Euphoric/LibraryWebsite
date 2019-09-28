@@ -1,0 +1,18 @@
+FROM circleci/node:10-browsers AS test_angular
+
+# set user to non-admin, so npm doesn't complain later
+USER node
+
+# Cache node_modules
+COPY --chown=node:node ["LibraryWebsite/ClientApp/package.json","LibraryWebsite/ClientApp/package-lock.json", "/src/"]
+WORKDIR /src
+RUN npm install
+
+# copy remaining application files
+COPY "LibraryWebsite/ClientApp" .
+
+USER root
+# enable execution permission for shell files
+RUN ["chmod", "+x", "./run_tests_in_docker.sh"]
+
+ENTRYPOINT ["sh", "./run_tests_in_docker.sh"]
