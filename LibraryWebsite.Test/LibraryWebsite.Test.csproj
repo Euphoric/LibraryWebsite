@@ -25,10 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\SampleData\books-small1.csv" Link="Books\TestData\books-small1.csv">
+    <None Include="..\LibraryWebsite\SampleData\books-small1.csv" Link="Books\TestData\books-small1.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\SampleData\books-small2.csv" Link="Books\TestData\books-small2.csv">
+    <None Include="..\LibraryWebsite\SampleData\books-small2.csv" Link="Books\TestData\books-small2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\LibraryWebsite\SampleData\books.csv" Link="Books\TestData\books.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
