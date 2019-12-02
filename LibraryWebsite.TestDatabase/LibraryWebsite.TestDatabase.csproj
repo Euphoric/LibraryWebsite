@@ -33,4 +33,14 @@
     <ProjectReference Include="..\LibraryWebsite\LibraryWebsite.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SampleData\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LibraryWebsite\SampleData\books-small1.csv" Link="SampleData\books-small1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
