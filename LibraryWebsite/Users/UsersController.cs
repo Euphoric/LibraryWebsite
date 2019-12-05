@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryWebsite.Users
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
@@ -41,7 +41,7 @@ namespace LibraryWebsite.Users
 
             var token = GenerateSecurityToken(request.Username == "Admin" ? Role.Admin : Role.User);
 
-            return new AuthenticatedUser {Username = "Admin", Token = token};
+            return new AuthenticatedUser { Username = request.Username, Token = token };
         }
 
         private string GenerateSecurityToken(string role)

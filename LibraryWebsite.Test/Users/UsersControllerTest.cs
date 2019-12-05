@@ -27,6 +27,16 @@ namespace LibraryWebsite.Users
             Assert.Equal("Admin", response.Value.Username);
             Assert.NotNull(response.Value.Token);
 
+            var request2 = new AuthenticateRequest() { Username = "User", Password = "UserPass" };
+            var response2 = _controller.Authenticate(request2);
+
+            Assert.Null(response2.Result);
+
+            Assert.Equal("User", response2.Value.Username);
+            Assert.NotNull(response2.Value.Token);
+
+            Assert.NotEqual(response.Value.Token, response2.Value.Token);
+
             return Task.CompletedTask;
         }
 

@@ -129,7 +129,7 @@ namespace LibraryWebsite.Users
             var authentication = new AuthenticateRequestDto { Username = "User", Password = "UserPass" };
             var response = await _client.PostJsonAsync<AuthenticatedUserDto>("api/users/authenticate", authentication);
 
-            Assert.Equal("Admin", response.Username);
+            Assert.Equal("User", response.Username);
             Assert.NotNull(response.Token);
 
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
