@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LibraryWebsite.Books
+namespace LibraryWebsite.Users
 {
 
     public class UsersApiTest
@@ -42,6 +42,11 @@ namespace LibraryWebsite.Books
             public string Username { get; set; }
 
             public string Password { get; set; }
+        }
+
+        private class AuthenticatedUserDto
+        {
+            public string Username { get; set; }
         }
 
         private class ErrorResponse
@@ -91,12 +96,12 @@ namespace LibraryWebsite.Books
         }
 
         [Fact]
-        public async Task Authenticates_user_with_corrent_credentials()
+        public async Task Authenticates_user_with_correct_credentials()
         {
             var authentication = new AuthenticateRequestDto { Username = "Admin", Password = "Administrator" };
-            await _client.PostJsonAsync("api/users/authenticate", authentication);
+            var response = await _client.PostJsonAsync<AuthenticatedUserDto>("api/users/authenticate", authentication);
 
-
+            Assert.Equal("Admin", response.Username);
         }
     }
 }

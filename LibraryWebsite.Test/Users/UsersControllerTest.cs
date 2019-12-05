@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +9,23 @@ namespace LibraryWebsite.Users
 {
     public class UsersControllerTest
     {
-        UsersController controller;
+        readonly UsersController _controller;
 
         public UsersControllerTest()
         {
-            controller = new UsersController();
+            _controller = new UsersController();
         }
 
         [Fact]
         public Task User_authentication()
         {
             var request = new AuthenticateRequest() { Username = "Admin", Password = "Administrator" };
-            var response  = controller.Authenticate(request);
+            var response  = _controller.Authenticate(request);
 
-            Assert.IsType<OkResult>(response);
-            
+            Assert.Null(response.Result);
+
+            Assert.Equal("Admin", response.Value.UserName);
+
             return Task.CompletedTask;
         }
 
@@ -32,9 +33,9 @@ namespace LibraryWebsite.Users
         public Task Existing_user_incorrect_password()
         {
             var request = new AuthenticateRequest() { Username = "Admin", Password = "abcd" };
-            var response = controller.Authenticate(request);
-
-            Assert.IsType<BadRequestObjectResult>(response);
+            var response = _controller.Authenticate(request);
+            
+            Assert.IsType<BadRequestObjectResult>(response.Result);
 
             return Task.CompletedTask;
         }

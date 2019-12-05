@@ -13,7 +13,7 @@ namespace LibraryWebsite.Users
     {
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateRequest request)
+        public ActionResult<AuthenticatedUser> Authenticate([FromBody]AuthenticateRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -31,7 +31,7 @@ namespace LibraryWebsite.Users
                 return BadRequest(new { Message = "Username or password is incorrect" });
             }
 
-            return Ok();
+            return new AuthenticatedUser {UserName = "Admin"};
         }
 
         //[Authorize(Roles = Role.Admin)]
