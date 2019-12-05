@@ -45,7 +45,7 @@ namespace LibraryWebsite.Users
         {
             string secret = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             string userId = "Admin";
-            string userRole = "Admin";
+            string userRole = Role.Admin;
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -62,6 +62,14 @@ namespace LibraryWebsite.Users
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+
+        [Authorize(Roles = Role.Admin)]
+        [HttpGet("testAdmin")]
+        public string TestAdmin()
+        {
+            return "authenticated!";
         }
 
         //[Authorize(Roles = Role.Admin)]

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -105,6 +106,19 @@ namespace LibraryWebsite.Users
 
             Assert.Equal("Admin", response.Username);
             Assert.NotNull(response.Token);
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
+
+            var response2 = await _client.GetAsync("api/users/testAdmin");
+
+            Assert.Equal("authenticated!", await response2.Content.ReadAsStringAsync());
+        }
+
+        [Fact]
+        public async Task Unauthenticated_user_should_401()
+        {
+            var response = await _client.GetJsonErrorResponseAsync("api/users/testAdmin");
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }
