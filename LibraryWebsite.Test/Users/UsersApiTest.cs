@@ -99,7 +99,7 @@ namespace LibraryWebsite.Users
         }
 
         [Fact]
-        public async Task Authenticates_user_with_correct_credentials()
+        public async Task Authenticates_admin_with_correct_credentials()
         {
             var authentication = new AuthenticateRequestDto { Username = "Admin", Password = "Administrator" };
             var response = await _client.PostJsonAsync<AuthenticatedUserDto>("api/users/authenticate", authentication);
@@ -110,8 +110,10 @@ namespace LibraryWebsite.Users
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
 
             var response2 = await _client.GetAsync("api/users/testAdmin");
-
             Assert.Equal("authenticated!", await response2.Content.ReadAsStringAsync());
+
+            var response3 = await _client.GetAsync("api/users/testUser");
+            Assert.Equal("authenticated!", await response3.Content.ReadAsStringAsync());
         }
 
         [Fact]
@@ -119,6 +121,24 @@ namespace LibraryWebsite.Users
         {
             var response = await _client.GetJsonErrorResponseAsync("api/users/testAdmin");
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Authenticates_user_with_correct_credentials()
+        {
+            var authentication = new AuthenticateRequestDto { Username = "User", Password = "UserPass" };
+            var response = await _client.PostJsonAsync<AuthenticatedUserDto>("api/users/authenticate", authentication);
+
+            Assert.Equal("Admin", response.Username);
+            Assert.NotNull(response.Token);
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
+
+            var response2 = await _client.GetJsonErrorResponseAsync("api/users/testAdmin");
+            Assert.Equal(HttpStatusCode.Forbidden, response2.StatusCode);
+
+            var response3 = await _client.GetAsync("api/users/testUser");
+            Assert.Equal("authenticated!", await response3.Content.ReadAsStringAsync());
         }
     }
 }

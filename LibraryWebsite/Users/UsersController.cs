@@ -29,23 +29,25 @@ namespace LibraryWebsite.Users
                 });
             }
 
-            bool isLoggedIn = request.Username == "Admin" && request.Password == "Administrator";
+            bool isLoggedIn = 
+                (request.Username == "Admin" && request.Password == "Administrator") ||
+                (request.Username == "User" && request.Password == "UserPass")
+                ;
 
             if (!isLoggedIn)
             {
                 return BadRequest(new { Message = "Username or password is incorrect" });
             }
 
-            var token = GenerateSecurityToken();
+            var token = GenerateSecurityToken(request.Username == "Admin" ? Role.Admin : Role.User);
 
             return new AuthenticatedUser {Username = "Admin", Token = token};
         }
 
-        private string GenerateSecurityToken()
+        private string GenerateSecurityToken(string role)
         {
             string secret = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             string userId = "Admin";
-            string userRole = Role.Admin;
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -55,7 +57,7 @@ namespace LibraryWebsite.Users
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, userId),
-                    new Claim(ClaimTypes.Role, userRole)
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -64,10 +66,16 @@ namespace LibraryWebsite.Users
             return tokenHandler.WriteToken(token);
         }
 
-
         [Authorize(Roles = Role.Admin)]
         [HttpGet("testAdmin")]
         public string TestAdmin()
+        {
+            return "authenticated!";
+        }
+
+        [Authorize(Roles = Role.Admin + ","+Role.User)]
+        [HttpGet("testUser")]
+        public string TestUser()
         {
             return "authenticated!";
         }
