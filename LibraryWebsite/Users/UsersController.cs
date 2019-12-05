@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryWebsite.Users
@@ -39,15 +36,14 @@ namespace LibraryWebsite.Users
                 return BadRequest(new { Message = "Username or password is incorrect" });
             }
 
-            var token = GenerateSecurityToken(request.Username == "Admin" ? Role.Admin : Role.User);
+            var token = GenerateSecurityToken(request.Username, request.Username == "Admin" ? Role.Admin : Role.User);
 
             return new AuthenticatedUser { Username = request.Username, Token = token };
         }
 
-        private string GenerateSecurityToken(string role)
+        private string GenerateSecurityToken(string userName, string role)
         {
             string secret = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string userId = "Admin";
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -56,7 +52,7 @@ namespace LibraryWebsite.Users
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, userId),
+                    new Claim(ClaimTypes.Name, userName),
                     new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -70,14 +66,16 @@ namespace LibraryWebsite.Users
         [HttpGet("testAdmin")]
         public string TestAdmin()
         {
-            return "authenticated!";
+            var userName = HttpContext.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            return userName + " authenticated!";
         }
 
         [Authorize(Roles = Role.Admin + ","+Role.User)]
         [HttpGet("testUser")]
         public string TestUser()
         {
-            return "authenticated!";
+            var userName = HttpContext.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            return userName + " authenticated!";
         }
 
         //[Authorize(Roles = Role.Admin)]

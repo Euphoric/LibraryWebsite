@@ -110,10 +110,10 @@ namespace LibraryWebsite.Users
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
 
             var response2 = await _client.GetAsync("api/users/testAdmin");
-            Assert.Equal("authenticated!", await response2.Content.ReadAsStringAsync());
+            Assert.Equal("Admin authenticated!", await response2.Content.ReadAsStringAsync());
 
             var response3 = await _client.GetAsync("api/users/testUser");
-            Assert.Equal("authenticated!", await response3.Content.ReadAsStringAsync());
+            Assert.Equal("Admin authenticated!", await response3.Content.ReadAsStringAsync());
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace LibraryWebsite.Users
             Assert.Equal(HttpStatusCode.Forbidden, response2.StatusCode);
 
             var response3 = await _client.GetAsync("api/users/testUser");
-            Assert.Equal("authenticated!", await response3.Content.ReadAsStringAsync());
+            Assert.Equal("User authenticated!", await response3.Content.ReadAsStringAsync());
         }
     }
 }
