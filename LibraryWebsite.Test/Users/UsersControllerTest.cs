@@ -24,7 +24,8 @@ namespace LibraryWebsite.Users
 
             Assert.Null(response.Result);
 
-            Assert.Equal("Admin", response.Value.UserName);
+            Assert.Equal("Admin", response.Value.Username);
+            Assert.NotNull(response.Value.Token);
 
             return Task.CompletedTask;
         }

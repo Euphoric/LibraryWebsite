@@ -47,6 +47,8 @@ namespace LibraryWebsite.Users
         private class AuthenticatedUserDto
         {
             public string Username { get; set; }
+
+            public string Token { get; set; }
         }
 
         private class ErrorResponse
@@ -102,6 +104,7 @@ namespace LibraryWebsite.Users
             var response = await _client.PostJsonAsync<AuthenticatedUserDto>("api/users/authenticate", authentication);
 
             Assert.Equal("Admin", response.Username);
+            Assert.NotNull(response.Token);
         }
     }
 }
