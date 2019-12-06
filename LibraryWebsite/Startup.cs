@@ -35,7 +35,11 @@ namespace LibraryWebsite
             services.AddHealthChecks()
                 .AddDbContextCheck<LibraryContext>();
 
-            new JwtAuthentication().SetupSecurity(services);
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("Security");
+            services.Configure<JwtAuthentication.SecurityConfig>(appSettingsSection);
+
+            new JwtAuthentication(Configuration).SetupSecurity(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

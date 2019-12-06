@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace LibraryWebsite.Books
@@ -22,7 +23,12 @@ namespace LibraryWebsite.Books
 
         public BookApiTest()
         {
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>{{"Security:Secret", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" } })
+                .Build();
+
             var builder = WebHost.CreateDefaultBuilder()
+                            .UseConfiguration(config)
                             .UseEnvironment(Environments.Production)
                             .UseStartup<Startup>()
                             .ConfigureTestServices(TestingStartup.ConfigureServices)

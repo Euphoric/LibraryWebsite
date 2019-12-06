@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace LibraryWebsite.Users
@@ -13,7 +14,11 @@ namespace LibraryWebsite.Users
 
         public UsersControllerTest()
         {
-            _controller = new UsersController();
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> { { "Security:Secret", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" } })
+                .Build();
+
+            _controller = new UsersController(config);
         }
 
         [Fact]

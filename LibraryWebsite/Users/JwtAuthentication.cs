@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,9 +12,28 @@ namespace LibraryWebsite.Users
 {
     public class JwtAuthentication
     {
+        private readonly IConfiguration _configuration;
+
+        public JwtAuthentication(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public class SecurityConfig
+        {
+            public string Secret { get; set; }
+        }
+
         private SymmetricSecurityKey SecurityKey()
         {
-            var key = Encoding.ASCII.GetBytes("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            // configure strongly typed settings objects
+            var configSection = _configuration.GetSection("Security");
+            var config = configSection.Get<SecurityConfig>();
+
+            if (config == null || string.IsNullOrEmpty(config.Secret))
+                throw new Exception("Security secret was not set.");
+
+            var key = Encoding.ASCII.GetBytes(config.Secret);
 
             return new SymmetricSecurityKey(key);
         }

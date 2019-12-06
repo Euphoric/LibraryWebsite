@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace LibraryWebsite.Users
 {
@@ -8,6 +9,13 @@ namespace LibraryWebsite.Users
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public UsersController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public ActionResult<AuthenticatedUser> Authenticate([FromBody]AuthenticateRequest request)
@@ -32,7 +40,7 @@ namespace LibraryWebsite.Users
             }
 
             string[] roles = request.Username == "Admin" ? new[] {Role.Admin, Role.User} : new[] {Role.User};
-            var token = new JwtAuthentication().GenerateSecurityToken(request.Username, roles);
+            var token = new JwtAuthentication(_configuration).GenerateSecurityToken(request.Username, roles);
 
             return new AuthenticatedUser { Username = request.Username, Token = token };
         }

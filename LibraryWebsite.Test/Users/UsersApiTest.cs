@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace LibraryWebsite.Users
@@ -24,7 +25,12 @@ namespace LibraryWebsite.Users
 
         public UsersApiTest()
         {
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> { { "Security:Secret", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" } })
+                .Build();
+
             var builder = WebHost.CreateDefaultBuilder()
+                            .UseConfiguration(config)
                             .UseEnvironment(Environments.Production)
                             .UseStartup<Startup>()
                             .ConfigureTestServices(TestingStartup.ConfigureServices)
