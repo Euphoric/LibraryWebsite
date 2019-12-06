@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace LibraryWebsite.Books
@@ -23,22 +18,7 @@ namespace LibraryWebsite.Books
 
         public BookApiTest()
         {
-            var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>{{"Security:Secret", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" } })
-                .Build();
-
-            var builder = WebHost.CreateDefaultBuilder()
-                            .UseConfiguration(config)
-                            .UseEnvironment(Environments.Production)
-                            .UseStartup<Startup>()
-                            .ConfigureTestServices(TestingStartup.ConfigureServices)
-
-                            // override default startup configuration for testing purposes
-                            .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Warning).AddConsole())
-                            ;
-
-            _testServer = new TestServer(builder);
-            _testServer.BaseAddress = new Uri("https://localhost/"); // use HTTPS for all requests
+            _testServer = TestServerCreator.CreateTestServer();
             _client = _testServer.CreateClient();
         }
 
