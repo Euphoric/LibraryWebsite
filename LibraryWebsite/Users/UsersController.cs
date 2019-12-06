@@ -36,12 +36,13 @@ namespace LibraryWebsite.Users
                 return BadRequest(new { Message = "Username or password is incorrect" });
             }
 
-            var token = GenerateSecurityToken(request.Username, request.Username == "Admin" ? Role.Admin : Role.User);
+            string[] roles = request.Username == "Admin" ? new[] {Role.Admin, Role.User} : new[] {Role.User};
+            var token = GenerateSecurityToken(request.Username, roles);
 
             return new AuthenticatedUser { Username = request.Username, Token = token };
         }
 
-        private string GenerateSecurityToken(string userName, string role)
+        private string GenerateSecurityToken(string userName, string[] roles)
         {
             string secret = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -50,13 +51,14 @@ namespace LibraryWebsite.Users
             var key = Encoding.ASCII.GetBytes(secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, userName),
-                    new Claim(ClaimTypes.Role, role)
-                }),
+                Subject = new ClaimsIdentity(new []
+                    {
+                        new Claim(ClaimTypes.Name, userName),
+                    }
+                    .Concat(roles.Select(role => new Claim(ClaimTypes.Role, role)))),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
@@ -70,7 +72,7 @@ namespace LibraryWebsite.Users
             return userName + " authenticated!";
         }
 
-        [Authorize(Roles = Role.Admin + ","+Role.User)]
+        [Authorize(Roles = Role.User)]
         [HttpGet("testUser")]
         public string TestUser()
         {
