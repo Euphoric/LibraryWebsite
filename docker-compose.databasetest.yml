@@ -15,7 +15,7 @@ services:
             - db
         command: database
         environment:
-            "DATABASE_SERVER": "Server=db;User=sa;Password=Your_password123;"
+            "ConnectionStrings:TestDatabaseServer": "Server=db;User=sa;Password=Your_password123;"
             "DATABASE_SERVER_WAIT": "db:1433"
         volumes:
             - "./TestResults:/src/TestResults"

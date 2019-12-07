@@ -27,23 +27,20 @@ namespace LibraryWebsite
 
         public Database_migrations_test()
         {
-            string databaseName = "LibraryTestDb_" + Guid.NewGuid();
-
-            string databaseServer = 
-                Environment.GetEnvironmentVariable("DATABASE_SERVER") 
-                ?? "Server=localhost\\SQLEXPRESS;Trusted_Connection=True;";
-
-            string databaseConnectionString = $"{databaseServer}Database={databaseName};";
-
-            var configurationBuilder = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>() {
-                    { "ConnectionStrings:Database", databaseConnectionString }
-                })
-                ;
-
-            _configuration = configurationBuilder.Build();
+            _configuration = 
+                new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional:false)
+                .AddJsonFile("appsettings.Local.json", optional: true)
+                .AddEnvironmentVariables()
+                .AddInMemoryCollection(new Dictionary<string, string>())
+                .Build();
 
             _configuration["MigrateOnStartup"] = true.ToString();
+
+            string databaseServer = _configuration.GetConnectionString("TestDatabaseServer");
+            string databaseName = "LibraryTestDb_" + Guid.NewGuid();
+            string databaseConnectionString = $"{databaseServer}Database={databaseName};";
+            _configuration["ConnectionStrings:Database"] = databaseConnectionString;
 
             _services = SetupServices(_configuration);
         }
