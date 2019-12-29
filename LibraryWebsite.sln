@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryWebsite.Test", "Libr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryWebsite.TestEndToEnd", "LibraryWebsite.TestEndToEnd\LibraryWebsite.TestEndToEnd.csproj", "{682D5D8A-FA45-41E0-8CB1-58EA6F09D719}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryWebsite.TestDatabase", "LibraryWebsite.TestDatabase\LibraryWebsite.TestDatabase.csproj", "{0A54535A-AC0D-4DF0-A2C5-2B07615FD12F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryWebsite.TestDatabase", "LibraryWebsite.TestDatabase\LibraryWebsite.TestDatabase.csproj", "{0A54535A-AC0D-4DF0-A2C5-2B07615FD12F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14EFA116-48B8-405B-926E-794DB755F299}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
