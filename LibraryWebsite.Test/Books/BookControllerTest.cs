@@ -47,7 +47,7 @@ namespace LibraryWebsite.Books
             Assert.Equal(bookToCreate.Isbn13, createdBook.Isbn13);
         }
 
-        const int defaultLimit = 10;
+        const int DefaultLimit = 10;
 
         [Fact]
         public async Task Book_pagination_limit_is_default()
@@ -59,9 +59,9 @@ namespace LibraryWebsite.Books
             }
 
             var books = (await controller.GetPaginated()).Items;
-            Assert.Equal(defaultLimit, books.Length);
+            Assert.Equal(DefaultLimit, books.Length);
 
-            var expectedTitles = Enumerable.Range(0, defaultLimit).Select(i => $"Title {i:D3}");
+            var expectedTitles = Enumerable.Range(0, DefaultLimit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
         }
 
@@ -97,9 +97,9 @@ namespace LibraryWebsite.Books
             var page = 1;
             var result = await controller.GetPaginated(page: page);
             var books = result.Items;
-            Assert.Equal(defaultLimit, books.Length);
+            Assert.Equal(DefaultLimit, books.Length);
 
-            var expectedTitles = Enumerable.Range(defaultLimit * page, defaultLimit).Select(i => $"Title {i:D3}");
+            var expectedTitles = Enumerable.Range(DefaultLimit * page, DefaultLimit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
 
             Assert.Equal(page, result.CurrentPage);

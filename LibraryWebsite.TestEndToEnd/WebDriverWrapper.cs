@@ -9,10 +9,10 @@ using Xunit.Abstractions;
 
 namespace LibraryWebsite.TestEndToEnd
 {
-    public class WebDriverWrapper : IDisposable, IWebDriver
+    public class WebDriverWrapper : IWebDriver
     {
-        private readonly IWebDriver driver;
-        public readonly string homeURL;
+        private readonly IWebDriver _driver;
+        private readonly string _homeUrl;
         private readonly string _testName;
 
         internal static WebDriverWrapper Open(ITestOutputHelper output)
@@ -28,15 +28,15 @@ namespace LibraryWebsite.TestEndToEnd
 
             if (seleniumHubUri == null)
             {
-                homeURL = WebAddresses.LocalUri;
-                driver = new ChromeDriver();
+                _homeUrl = WebAddresses.LocalUri;
+                _driver = new ChromeDriver();
             }
             else
             {
-                homeURL = WebAddresses.WebsiteUri;
+                _homeUrl = WebAddresses.WebsiteUri;
                 ChromeOptions options = new ChromeOptions();
                 options.PlatformName = "linux";
-                driver = new RemoteWebDriver(new Uri(seleniumHubUri), options);
+                _driver = new RemoteWebDriver(new Uri(seleniumHubUri), options);
             }
         }
 
@@ -57,70 +57,70 @@ namespace LibraryWebsite.TestEndToEnd
                 string screenshotName = Path.Combine(basePath, "Screenshot", _testName + ".png");
                 Directory.CreateDirectory(Path.GetDirectoryName(screenshotName));
 
-                var ss = ((ITakesScreenshot)driver).GetScreenshot();
+                var ss = ((ITakesScreenshot)_driver).GetScreenshot();
                 ss.SaveAsFile(screenshotName);
             }
             finally
             {
-                driver.Quit();
+                _driver.Quit();
             }
         }
 
         internal void NavigateHome()
         {
-            driver.Navigate().GoToUrl(homeURL);
+            _driver.Navigate().GoToUrl(_homeUrl);
         }
 
         internal void NavigateTo(string page)
         {
-            driver.Navigate().GoToUrl(homeURL + page);
+            _driver.Navigate().GoToUrl(_homeUrl + page);
         }
 
         #region IWebDriver
 
-        public string Url { get => driver.Url; set => driver.Url = value; }
+        public string Url { get => _driver.Url; set => _driver.Url = value; }
 
-        public string Title => driver.Title;
+        public string Title => _driver.Title;
 
-        public string PageSource => driver.PageSource;
+        public string PageSource => _driver.PageSource;
 
-        public string CurrentWindowHandle => driver.CurrentWindowHandle;
+        public string CurrentWindowHandle => _driver.CurrentWindowHandle;
 
-        public ReadOnlyCollection<string> WindowHandles => driver.WindowHandles;
+        public ReadOnlyCollection<string> WindowHandles => _driver.WindowHandles;
 
         public void Close()
         {
-            driver.Close();
+            _driver.Close();
         }
 
         public void Quit()
         {
-            driver.Quit();
+            _driver.Quit();
         }
 
         public IOptions Manage()
         {
-            return driver.Manage();
+            return _driver.Manage();
         }
 
         public INavigation Navigate()
         {
-            return driver.Navigate();
+            return _driver.Navigate();
         }
 
         public ITargetLocator SwitchTo()
         {
-            return driver.SwitchTo();
+            return _driver.SwitchTo();
         }
 
         public IWebElement FindElement(By by)
         {
-            return driver.FindElement(by);
+            return _driver.FindElement(by);
         }
 
         public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
-            return driver.FindElements(by);
+            return _driver.FindElements(by);
         }
 
         #endregion
