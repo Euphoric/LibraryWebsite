@@ -13,13 +13,13 @@ namespace LibraryWebsite
 {
     public static class Program
     {
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             IWebHost webHost = CreateWebHostBuilder(args).Build();
 
             try
             {
-                webHost.Services
+                await webHost.Services
                     .GetRequiredService<DatabaseMigrations>()
                     .EnsureDatabaseSchemaIsCurrent();
 

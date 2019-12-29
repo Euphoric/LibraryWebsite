@@ -24,7 +24,7 @@ namespace LibraryWebsite
             _configuration = configuration;
         }
 
-        public void EnsureDatabaseSchemaIsCurrent()
+        public async ValueTask EnsureDatabaseSchemaIsCurrent()
         {
             var shouldMigrate = _configuration.GetValue("MigrateOnStartup", false);
             if (!shouldMigrate)
@@ -34,9 +34,11 @@ namespace LibraryWebsite
 
             using (var scope = _services.CreateScope())
             {
-                MigrateDatabase(scope.ServiceProvider);
+                await MigrateDatabase(scope.ServiceProvider);
                 SeedSampleData(scope.ServiceProvider);
             }
+
+            await Task.CompletedTask;
         }
 
         public async ValueTask<bool> DoesDatabaseExists()
@@ -52,9 +54,9 @@ namespace LibraryWebsite
             return !pendingMigrations.Any();
         }
 
-        private void MigrateDatabase(IServiceProvider serviceProvider)
+        private async ValueTask MigrateDatabase(IServiceProvider serviceProvider)
         {
-            serviceProvider.GetService<LibraryContext>().Database.Migrate();
+            await serviceProvider.GetService<LibraryContext>().Database.MigrateAsync();
         }
 
         private void SeedSampleData(IServiceProvider serviceProvider)

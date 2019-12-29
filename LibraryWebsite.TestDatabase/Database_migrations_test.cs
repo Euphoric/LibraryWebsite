@@ -71,7 +71,7 @@ namespace LibraryWebsite
 
             Assert.False(await dbMigrations.DoesDatabaseExists());
 
-            dbMigrations.EnsureDatabaseSchemaIsCurrent();
+            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             Assert.False(await dbMigrations.DoesDatabaseExists());
         }
@@ -83,7 +83,7 @@ namespace LibraryWebsite
 
             Assert.False(await dbMigrations.DoesDatabaseExists());
 
-            dbMigrations.EnsureDatabaseSchemaIsCurrent();
+            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             Assert.True(await dbMigrations.DoesDatabaseExists());
         }
@@ -93,7 +93,7 @@ namespace LibraryWebsite
         {
             var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
 
-            dbMigrations.EnsureDatabaseSchemaIsCurrent();
+            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             Assert.True(await dbMigrations.HasNewestMigrations());
         }
@@ -105,7 +105,7 @@ namespace LibraryWebsite
 
             var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
 
-            dbMigrations.EnsureDatabaseSchemaIsCurrent();
+            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             Assert.False(await _services.GetRequiredService<LibraryContext>().Books.AnyAsync());
         }
@@ -117,7 +117,7 @@ namespace LibraryWebsite
 
             var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
 
-            dbMigrations.EnsureDatabaseSchemaIsCurrent();
+            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             Assert.True(await _services.GetRequiredService<LibraryContext>().Books.AnyAsync());
         }
