@@ -41,7 +41,10 @@ namespace LibraryWebsite
                 .UseStartup<Startup>()
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {
-                    config.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+                    if (builderContext.HostingEnvironment.IsDevelopment())
+                    {
+                        config.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+                    }
                 });
     }
 }

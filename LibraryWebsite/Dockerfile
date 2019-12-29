@@ -20,7 +20,7 @@ COPY . .
 WORKDIR "/src/LibraryWebsite"
 RUN dotnet publish "LibraryWebsite.csproj" -c Release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.0-alpine3.10 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.0-alpine3.10 AS final
 # Setup NodeJs
 RUN apk update
 RUN apk add --update npm=10.16.3-r0
