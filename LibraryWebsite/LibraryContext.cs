@@ -16,7 +16,7 @@ namespace LibraryWebsite
 
         public DbSet<Book> Books { get; set; }
 
-        internal void SetupExampleData()
+        internal async ValueTask SetupExampleData()
         {
             if (Books.Any())
                 return;
@@ -34,10 +34,10 @@ namespace LibraryWebsite
                     Isbn13 = parsedBook.Isbn13
                 };
 
-                Books.Add(book);
+                await Books.AddAsync(book);
             }
 
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 }

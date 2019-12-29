@@ -37,7 +37,7 @@ namespace LibraryWebsite
                 var libraryContext = scope.ServiceProvider.GetService<LibraryContext>();
 
                 await MigrateDatabase(libraryContext);
-                SeedSampleData(libraryContext);
+                await SeedSampleData(libraryContext);
             }
 
             await Task.CompletedTask;
@@ -48,11 +48,11 @@ namespace LibraryWebsite
             await libraryContext.Database.MigrateAsync();
         }
 
-        private void SeedSampleData(LibraryContext libraryContext)
+        private async ValueTask SeedSampleData(LibraryContext libraryContext)
         {
             if (_configuration.GetValue("SeedSampleData", false))
             {
-                libraryContext.SetupExampleData();
+                await libraryContext.SetupExampleData();
             }
         }
 
