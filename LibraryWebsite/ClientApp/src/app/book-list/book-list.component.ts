@@ -4,15 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from "../book"
 
 interface BookReponse {
-  items: Book[]
-  totalPages: number
-  totalCount: number
+  items: Book[];
+  totalPages: number;
+  totalCount: number;
 }
 
 interface PagingConfig {
-  currentPage: number
-  itemsPerPage: number
-  totalItems: number
+  currentPage: number;
+  itemsPerPage: number;
+  totalItems: number;
 }
 
 @Component({
