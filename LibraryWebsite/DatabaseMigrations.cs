@@ -34,11 +34,26 @@ namespace LibraryWebsite
 
             using (var scope = _services.CreateScope())
             {
-                await MigrateDatabase(scope.ServiceProvider);
-                SeedSampleData(scope.ServiceProvider);
+                var libraryContext = scope.ServiceProvider.GetService<LibraryContext>();
+
+                await MigrateDatabase(libraryContext);
+                SeedSampleData(libraryContext);
             }
 
             await Task.CompletedTask;
+        }
+
+        private async ValueTask MigrateDatabase(LibraryContext libraryContext)
+        {
+            await libraryContext.Database.MigrateAsync();
+        }
+
+        private void SeedSampleData(LibraryContext libraryContext)
+        {
+            if (_configuration.GetValue("SeedSampleData", false))
+            {
+                libraryContext.SetupExampleData();
+            }
         }
 
         public async ValueTask<bool> DoesDatabaseExists()
@@ -52,17 +67,6 @@ namespace LibraryWebsite
             var database = _services.GetService<LibraryContext>().Database;
             var pendingMigrations = await database.GetPendingMigrationsAsync();
             return !pendingMigrations.Any();
-        }
-
-        private async ValueTask MigrateDatabase(IServiceProvider serviceProvider)
-        {
-            await serviceProvider.GetService<LibraryContext>().Database.MigrateAsync();
-        }
-
-        private void SeedSampleData(IServiceProvider serviceProvider)
-        {
-            if (_configuration.GetValue("SeedSampleData", false))
-                serviceProvider.GetService<LibraryContext>().SetupExampleData();
         }
     }
 }

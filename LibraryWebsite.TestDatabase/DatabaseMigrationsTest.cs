@@ -8,7 +8,7 @@ using Xunit;
 
 namespace LibraryWebsite
 {
-    public class Database_migrations_test : IAsyncLifetime
+    public class DatabaseMigrationsTest : IAsyncLifetime
     {
         private static ServiceProvider SetupServices(IConfiguration configuration)
         {
@@ -25,7 +25,7 @@ namespace LibraryWebsite
         readonly IConfigurationRoot _configuration;
         readonly ServiceProvider _services;
 
-        public Database_migrations_test()
+        public DatabaseMigrationsTest()
         {
             _configuration = 
                 new ConfigurationBuilder()
