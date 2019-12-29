@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,20 +7,33 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace LibraryWebsite
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             IWebHost webHost = CreateWebHostBuilder(args).Build();
 
-            webHost.Services
-                .GetRequiredService<DatabaseMigrations>()
-                .EnsureDatabaseSchemaIsCurrent();
+            try
+            {
+                webHost.Services
+                    .GetRequiredService<DatabaseMigrations>()
+                    .EnsureDatabaseSchemaIsCurrent();
 
-            webHost.Run();
+                webHost.Run();
+
+                return 0;
+            }
+            catch (Exception e)
+            {
+                var logger = webHost.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Program");
+                logger.LogCritical(e, "Error when starting or running web server.");
+
+                return 1;
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
