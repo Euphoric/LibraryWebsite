@@ -7,7 +7,8 @@ executors:
           - image: circleci/buildpack-deps:stretch
 jobs:
   test_unit_dotnet:
-    machine: true
+    machine:
+        image: ubuntu-1604:201903-01
     steps:
         - checkout
         - run:
@@ -25,7 +26,8 @@ jobs:
             path: TestResults
 
   test_unit_angular:
-    machine: true
+    machine:
+        image: ubuntu-1604:201903-01
     steps:
         - checkout
         - run:
@@ -43,7 +45,8 @@ jobs:
             path: TestResults
 
   test_dotnet_database:
-    machine: true
+    machine:
+        image: ubuntu-1604:201903-01
     steps:
         - checkout
         - run:
@@ -80,7 +83,8 @@ jobs:
             - ./image.tar
 
   end_to_end_test:
-    machine: true
+    machine:
+        image: ubuntu-1604:201903-01
     steps:
         - attach_workspace:
             at: /tmp/workspace
