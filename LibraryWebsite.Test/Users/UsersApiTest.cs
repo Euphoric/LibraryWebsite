@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace LibraryWebsite.Users
 {
@@ -15,9 +16,9 @@ namespace LibraryWebsite.Users
         private readonly TestServer _testServer;
         private readonly HttpClient _client;
 
-        public UsersApiTest()
+        public UsersApiTest(ITestOutputHelper outputHelper)
         {
-            _testServer = TestServerCreator.CreateTestServer();
+            _testServer = TestServerCreator.CreateTestServer(outputHelper);
             _client = _testServer.CreateClient();
         }
 

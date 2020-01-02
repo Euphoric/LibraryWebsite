@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace LibraryWebsite.Health
 {
@@ -11,9 +12,9 @@ namespace LibraryWebsite.Health
         private readonly TestServer _testServer;
         private readonly HttpClient _client;
 
-        public HealthApiTest()
+        public HealthApiTest(ITestOutputHelper outputHelper)
         {
-            _testServer = TestServerCreator.CreateTestServer();
+            _testServer = TestServerCreator.CreateTestServer(outputHelper);
             _client = _testServer.CreateClient();
         }
 
