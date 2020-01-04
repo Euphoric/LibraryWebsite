@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using LibraryWebsite.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,12 @@ namespace LibraryWebsite
 
             services.AddHealthChecks()
                 .AddDbContextCheck<LibraryContext>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
+                options.AddPolicy(Policy.IsUser, policy => { policy.RequireClaim(ClaimTypes.Role, Role.User); });
+            });
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("Security");

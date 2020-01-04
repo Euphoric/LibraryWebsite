@@ -45,7 +45,7 @@ namespace LibraryWebsite.Users
             return new AuthenticatedUser { Username = request.Username, Token = token };
         }
 
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Policy = Policy.IsAdmin)]
         [HttpGet("testAdmin")]
         public string TestAdmin()
         {
@@ -53,7 +53,7 @@ namespace LibraryWebsite.Users
             return userName + " authenticated!";
         }
 
-        [Authorize(Roles = Role.User)]
+        [Authorize(Policy = Policy.IsAdmin)]
         [HttpGet("testUser")]
         public string TestUser()
         {
@@ -61,7 +61,7 @@ namespace LibraryWebsite.Users
             return userName + " authenticated!";
         }
 
-        //[Authorize(Roles = Role.Admin)]
+        //[Authorize(Policy = Policy.IsAdmin)]
         //[HttpGet]
         //public IActionResult GetAll()
         //{
