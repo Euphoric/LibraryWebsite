@@ -4,13 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.EntityFramework.Options;
+using LibraryWebsite.Identity;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.Extensions.Options;
 
 namespace LibraryWebsite
 {
-    public class LibraryContext : DbContext
+    public class LibraryContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public LibraryContext(DbContextOptions<LibraryContext> options)
-            :base(options)
+        public LibraryContext(
+            DbContextOptions<LibraryContext> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions)
+            :base(options, operationalStoreOptions)
         {
         }
 

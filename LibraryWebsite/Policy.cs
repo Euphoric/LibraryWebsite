@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibraryWebsite.Users
+namespace LibraryWebsite
 {
     /// <summary>
     /// Authentication policies.
