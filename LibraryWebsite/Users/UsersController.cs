@@ -53,7 +53,7 @@ namespace LibraryWebsite.Users
             return userName + " authenticated!";
         }
 
-        [Authorize(Policy = Policy.IsAdmin)]
+        [Authorize(Policy = Policy.IsUser)]
         [HttpGet("testUser")]
         public string TestUser()
         {
