@@ -10,39 +10,13 @@ namespace LibraryWebsite
 {
     public class DatabaseMigrationsTest : IAsyncLifetime
     {
-        private static ServiceProvider SetupServices(IConfiguration configuration)
-        {
-            ServiceCollection services = new ServiceCollection();
-
-            services.AddSingleton(configuration);
-            services.AddTransient<DatabaseMigrations>();
-            services.AddLogging();
-            services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
-
-            return services.BuildServiceProvider();
-        }
-
-        readonly IConfigurationRoot _configuration;
+        readonly IConfiguration _configuration;
         readonly ServiceProvider _services;
 
         public DatabaseMigrationsTest()
         {
-            _configuration = 
-                new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional:false)
-                .AddJsonFile("appsettings.Local.json", optional: true)
-                .AddEnvironmentVariables()
-                .AddInMemoryCollection(new Dictionary<string, string>())
-                .Build();
-
-            _configuration["MigrateOnStartup"] = true.ToString();
-
-            string databaseServer = _configuration.GetConnectionString("TestDatabaseServer");
-            string databaseName = "LibraryTestDb_" + Guid.NewGuid();
-            string databaseConnectionString = $"{databaseServer}Database={databaseName};";
-            _configuration["ConnectionStrings:Database"] = databaseConnectionString;
-
-            _services = SetupServices(_configuration);
+            _services = DatabaseTestServices.SetupDatabaseTestServices();
+            _configuration = _services.GetRequiredService<IConfiguration>();
         }
 
         public Task InitializeAsync()

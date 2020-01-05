@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -14,44 +12,19 @@ namespace LibraryWebsite
 {
     public class IdentityServerMigrationsTest : IAsyncLifetime
     {
-        private static ServiceProvider SetupServices(IConfiguration configuration)
+        private static void AddIdentityServices(ServiceCollection services)
         {
-            ServiceCollection services = new ServiceCollection();
-
-            services.AddSingleton(configuration);
-            services.AddTransient<DatabaseMigrations>();
-            services.AddLogging();
-            services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
-
             services
                 .AddIdentityCore<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<LibraryContext>();
-
-            return services.BuildServiceProvider();
         }
 
-        readonly IConfigurationRoot _configuration;
         readonly ServiceProvider _services;
 
         public IdentityServerMigrationsTest()
         {
-            _configuration =
-                new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .AddJsonFile("appsettings.Local.json", optional: true)
-                    .AddEnvironmentVariables()
-                    .AddInMemoryCollection(new Dictionary<string, string>())
-                    .Build();
-
-            _configuration["MigrateOnStartup"] = true.ToString();
-
-            string databaseServer = _configuration.GetConnectionString("TestDatabaseServer");
-            string databaseName = "LibraryTestDb_" + Guid.NewGuid();
-            string databaseConnectionString = $"{databaseServer}Database={databaseName};";
-            _configuration["ConnectionStrings:Database"] = databaseConnectionString;
-
-            _services = SetupServices(_configuration);
+            _services = DatabaseTestServices.SetupDatabaseTestServices(AddIdentityServices);
         }
 
         public Task InitializeAsync()
