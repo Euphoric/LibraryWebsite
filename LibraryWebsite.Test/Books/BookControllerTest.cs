@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace LibraryWebsite.Books
@@ -14,7 +16,10 @@ namespace LibraryWebsite.Books
             DbContextOptionsBuilder<LibraryContext> builder = new DbContextOptionsBuilder<LibraryContext>();
             var dbName = Guid.NewGuid().ToString();
             builder.UseInMemoryDatabase(dbName);
-            return new LibraryContext(builder.Options);
+
+            var operationalStoreOptions = Options.Create(new OperationalStoreOptions());
+
+            return new LibraryContext(builder.Options, operationalStoreOptions);
         }
 
         BookController controller;

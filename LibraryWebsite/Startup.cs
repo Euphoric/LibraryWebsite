@@ -1,7 +1,12 @@
+using System.Collections.Generic;
+using IdentityModel;
+using IdentityServer4.Models;
+using LibraryWebsite.Identity;
+using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
-using LibraryWebsite.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,11 +47,35 @@ namespace LibraryWebsite
                 options.AddPolicy(Policy.IsUser, policy => { policy.RequireClaim(ClaimTypes.Role, Role.User); });
             });
 
-            // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("Security");
-            services.Configure<JwtAuthentication.SecurityConfig>(appSettingsSection);
+            services
+                .AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<LibraryContext>();
 
-            new JwtAuthentication(Configuration).SetupSecurity(services);
+            services
+                .AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, LibraryContext>(options =>
+                {
+                    options.IdentityResources.AddEmail();
+
+                    options.ApiResources["LibraryWebsiteAPI"].UserClaims = new List<string>
+                    {
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.Email,
+                        JwtClaimTypes.Role
+                    };
+
+                    options.Clients.Add(new Client()
+                    {
+                        ClientId="PublicApi",
+                        AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                        RequireClientSecret = false
+                    });
+                });
+            
+            services
+                .AddAuthentication()
+                .AddIdentityServerJwt();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +93,8 @@ namespace LibraryWebsite
             }
 
             app.UseHttpsRedirection();
+
+            app.UseIdentityServer();
 
             app.UseAuthentication();
             app.UseAuthorization();

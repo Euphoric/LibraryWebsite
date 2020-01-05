@@ -1,4 +1,6 @@
-﻿namespace LibraryWebsite.Users
+﻿using System;
+
+namespace LibraryWebsite
 {
     public static class Role
     {
