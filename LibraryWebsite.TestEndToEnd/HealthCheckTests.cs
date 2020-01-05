@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -9,9 +10,15 @@ namespace LibraryWebsite.TestEndToEnd
         [Fact]
         public async Task Checks_health_status()
         {
-            var webAddress = WebAddresses.WebsiteUri;
+            using var httpClientHandler = new HttpClientHandler
+            {
+                // ignores certificate errors
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+            };
 
-            using HttpClient client = new HttpClient();
+            using var client = new HttpClient(httpClientHandler);
+
+            var webAddress = WebAddresses.WebsiteUri;
             var result = await client.GetStringAsync(webAddress + "/health");
             Assert.Equal("Healthy", result);
         }

@@ -4,13 +4,13 @@ namespace LibraryWebsite.TestEndToEnd
 {
     public static class WebAddresses
     {
-        public static string LocalAddress { get; private set; } = "localhost:5000";
+        public static string LocalAddress { get; } = "localhost:5001";
 
         public static string LocalUri
         {
             get
             {
-                return "http://" + LocalAddress;
+                return "https://" + LocalAddress;
             }
         }
 
@@ -18,7 +18,7 @@ namespace LibraryWebsite.TestEndToEnd
         {
             get
             {
-                return "http://" + (Environment.GetEnvironmentVariable("WEB_ADDRESS") ?? LocalAddress);
+                return "https://" + (Environment.GetEnvironmentVariable("WEB_ADDRESS") ?? LocalAddress);
             }
         }
     }
