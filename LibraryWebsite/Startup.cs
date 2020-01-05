@@ -92,6 +92,8 @@ namespace LibraryWebsite
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
+
             app.UseIdentityServer();
 
             app.UseAuthentication();

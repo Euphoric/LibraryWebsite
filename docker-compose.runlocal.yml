@@ -7,7 +7,8 @@ services:
             dockerfile: LibraryWebsite/Dockerfile
         hostname: website
         ports:
-           - "54321:80"
+           - "8010:80"
+           - "44310:443"
         depends_on:
             - db
         environment:
