@@ -19,14 +19,14 @@ namespace LibraryWebsite.Books
             public int Id { get; set; }
 
             [Name("original_title")]
-            public string Title { get; set; }
+            public string Title { get; set; } = string.Empty;
 
             [Name("authors")]
-            public string Authors { get; set; }
+            public string Authors { get; set; } = string.Empty;
 
             [Name("isbn13")]
             [TypeConverter(typeof(Isbn13Converter))]
-            public string Isbn13 { get; set; }
+            public string Isbn13 { get; set; } = string.Empty;
         }
 
         private class Isbn13Converter : DefaultTypeConverter
