@@ -9,7 +9,7 @@ namespace LibraryWebsite.Identity
     [Route("api/[controller]")]
     public class IdentityController : ControllerBase
     {
-        [Authorize(Policy = Policy.IsAdmin)]
+        [Authorize(Policy = Policies.IsAdmin)]
         [HttpGet("testAdmin")]
         public string TestAdmin()
         {
@@ -17,7 +17,7 @@ namespace LibraryWebsite.Identity
             return userName + " authenticated!";
         }
 
-        [Authorize(Policy = Policy.IsUser)]
+        [Authorize(Policy = Policies.IsUser)]
         [HttpGet("testUser")]
         public string TestUser()
         {

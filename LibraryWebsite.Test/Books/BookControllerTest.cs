@@ -64,7 +64,7 @@ namespace LibraryWebsite.Books
             }
 
             var books = (await controller.GetPaginated()).Items;
-            Assert.Equal(DefaultLimit, books.Length);
+            Assert.Equal(DefaultLimit, books.Count);
 
             var expectedTitles = Enumerable.Range(0, DefaultLimit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
@@ -82,7 +82,7 @@ namespace LibraryWebsite.Books
             var limit = 7;
             var result = await controller.GetPaginated(limit: limit);
             var books = result.Items;
-            Assert.Equal(limit, books.Length);
+            Assert.Equal(limit, books.Count);
 
             var expectedTitles = Enumerable.Range(0, limit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));
@@ -102,7 +102,7 @@ namespace LibraryWebsite.Books
             var page = 1;
             var result = await controller.GetPaginated(page: page);
             var books = result.Items;
-            Assert.Equal(DefaultLimit, books.Length);
+            Assert.Equal(DefaultLimit, books.Count);
 
             var expectedTitles = Enumerable.Range(DefaultLimit * page, DefaultLimit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));

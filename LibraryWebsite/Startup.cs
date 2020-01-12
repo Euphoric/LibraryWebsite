@@ -43,8 +43,8 @@ namespace LibraryWebsite
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Policy.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
-                options.AddPolicy(Policy.IsUser, policy => { policy.RequireClaim(ClaimTypes.Role, Role.User); });
+                options.AddPolicy(Policies.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
+                options.AddPolicy(Policies.IsUser, policy => { policy.RequireClaim(ClaimTypes.Role, Role.User); });
             });
 
             services

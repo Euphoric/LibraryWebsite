@@ -12,7 +12,7 @@ namespace LibraryWebsite
             TotalCount = totalCount;
         }
 
-        public TItem[] Items { get; }
+        public ICollection<TItem> Items { get; }
 
         public int CurrentPage { get; }
 

@@ -29,11 +29,13 @@ namespace LibraryWebsite.Books
             public string Isbn13 { get; set; }
         }
 
+#pragma warning disable CA1812 // Internal class that is never instantiated
         private class Isbn13Converter : DefaultTypeConverter
+#pragma warning restore CA1812 // Internal class that is never instantiated
         {
             public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
             {
-                if (text == string.Empty)
+                if (string.IsNullOrEmpty(text))
                     return string.Empty;
 
                 var val = double.Parse(text, CultureInfo.InvariantCulture);
