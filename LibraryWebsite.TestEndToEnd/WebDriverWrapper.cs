@@ -3,16 +3,17 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Xunit.Abstractions;
 
 namespace LibraryWebsite.TestEndToEnd
 {
-    public class WebDriverWrapper : IWebDriver
+    public sealed class WebDriverWrapper : IWebDriver
     {
         private readonly IWebDriver _driver;
-        private readonly string _homeUrl;
+        private readonly Uri _homeUrl;
         private readonly string _testName;
 
         internal static WebDriverWrapper Open(ITestOutputHelper output)
@@ -20,7 +21,7 @@ namespace LibraryWebsite.TestEndToEnd
             return new WebDriverWrapper(output);
         }
 
-        public WebDriverWrapper(ITestOutputHelper output)
+        private WebDriverWrapper(ITestOutputHelper output)
         {
             _testName = GetTestName(output);
 
@@ -73,11 +74,12 @@ namespace LibraryWebsite.TestEndToEnd
 
         internal void NavigateTo(string page)
         {
-            _driver.Navigate().GoToUrl(_homeUrl + page);
+            _driver.Navigate().GoToUrl(new Uri(_homeUrl + page));
         }
 
         #region IWebDriver
 
+        [SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "3rd party Interface implementation")]
         public string Url { get => _driver.Url; set => _driver.Url = value; }
 
         public string Title => _driver.Title;

@@ -19,7 +19,7 @@ namespace LibraryWebsite.TestEndToEnd
             using var client = new HttpClient(httpClientHandler);
 
             var webAddress = WebAddresses.WebsiteUri;
-            var result = await client.GetStringAsync(webAddress + "/health");
+            var result = await client.GetStringAsync(new Uri(webAddress + "health"));
             Assert.Equal("Healthy", result);
         }
     }

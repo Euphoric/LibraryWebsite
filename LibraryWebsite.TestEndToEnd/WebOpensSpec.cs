@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace LibraryWebsite.TestEndToEnd
 {
-    public class WebOpensSpec : IDisposable
+    public sealed class WebOpensSpec : IDisposable
     {
         private readonly WebDriverWrapper _driver;
 

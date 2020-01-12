@@ -6,19 +6,21 @@ namespace LibraryWebsite.TestEndToEnd
     {
         public static string LocalAddress { get; } = "localhost:5001";
 
-        public static string LocalUri
+        public static Uri LocalUri
         {
             get
             {
-                return "https://" + LocalAddress;
+                var address = "https://" + LocalAddress;
+                return new Uri(address);
             }
         }
 
-        public static string WebsiteUri
+        public static Uri WebsiteUri
         {
             get
             {
-                return "https://" + (Environment.GetEnvironmentVariable("WEB_ADDRESS") ?? LocalAddress);
+                var address = "https://" + (Environment.GetEnvironmentVariable("WEB_ADDRESS") ?? LocalAddress);
+                return new Uri(address);
             }
         }
     }

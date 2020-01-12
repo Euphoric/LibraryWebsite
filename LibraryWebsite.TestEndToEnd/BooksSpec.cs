@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace LibraryWebsite.TestEndToEnd
 {
-    public class BooksSpec : IDisposable
+    public sealed class BooksSpec : IDisposable
     {
         private readonly WebDriverWrapper _driver;
 
@@ -52,7 +52,7 @@ namespace LibraryWebsite.TestEndToEnd
                 var nextPageLink = _driver.FindElement(By.ClassName("pagination-next"));
                 nextPageLink.Click();
             }
-            wait.Until(dr => dr.Url.Contains("page=2"));
+            wait.Until(dr => dr.Url.Contains("page=2", StringComparison.InvariantCulture));
 
             wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
 
@@ -65,7 +65,7 @@ namespace LibraryWebsite.TestEndToEnd
 
             {
                 var nextPageLink = _driver.FindElement(By.ClassName("pagination-next"));
-                Assert.Contains("disabled", nextPageLink.GetAttribute("class"));
+                Assert.Contains("disabled", nextPageLink.GetAttribute("class"), StringComparison.InvariantCulture);
             }
         }
     }

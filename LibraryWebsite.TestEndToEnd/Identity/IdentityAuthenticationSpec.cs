@@ -17,7 +17,7 @@ namespace LibraryWebsite.TestEndToEnd.Identity
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            using var client = new HttpClient(httpClientHandler) {BaseAddress = new Uri(WebAddresses.WebsiteUri)};
+            using var client = new HttpClient(httpClientHandler) {BaseAddress = WebAddresses.WebsiteUri};
 
             var discoveryDocumentResponse = await client.GetDiscoveryDocumentAsync();
             Assert.False(discoveryDocumentResponse.IsError, discoveryDocumentResponse.Error);
@@ -32,16 +32,17 @@ namespace LibraryWebsite.TestEndToEnd.Identity
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            using var client = new HttpClient(httpClientHandler) {BaseAddress = new Uri(WebAddresses.WebsiteUri)};
+            using var client = new HttpClient(httpClientHandler) {BaseAddress = WebAddresses.WebsiteUri};
 
             var discoveryDocument = await client.GetDiscoveryDocumentAsync();
             Assert.False(discoveryDocument.IsError);
 
-            var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest()
+            using var request = new ClientCredentialsTokenRequest()
             {
                 Address = discoveryDocument.TokenEndpoint,
                 ClientId = "PublicApi"
-            });
+            };
+            var response = await client.RequestClientCredentialsTokenAsync(request);
 
             Assert.False(response.IsError, response.Error);
             Assert.NotNull(response.AccessToken);
