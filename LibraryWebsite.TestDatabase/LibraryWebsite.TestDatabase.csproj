@@ -6,6 +6,9 @@
     <IsPackable>false</IsPackable>
 
     <RootNamespace>LibraryWebsite</RootNamespace>
+
+    <!-- Non-nullable refernces -->
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

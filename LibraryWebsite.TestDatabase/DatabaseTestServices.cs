@@ -22,7 +22,7 @@ namespace LibraryWebsite
             return services.BuildServiceProvider();
         }
 
-        public static ServiceProvider SetupDatabaseTestServices(Action<ServiceCollection> configure = null)
+        public static ServiceProvider SetupDatabaseTestServices(Action<ServiceCollection>? configure = null)
         {
             configure ??= (a => { });
 
