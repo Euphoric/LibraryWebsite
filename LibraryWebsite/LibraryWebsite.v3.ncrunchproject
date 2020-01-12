@@ -3,8 +3,5 @@
     <CustomBuildProperties>
       <Value>RunAnalyzers = false</Value>
     </CustomBuildProperties>
-    <IgnoredTests>
-      <AllTestsSelector />
-    </IgnoredTests>
   </Settings>
 </ProjectConfiguration>

@@ -1,5 +1,8 @@
 ﻿<ProjectConfiguration>
   <Settings>
+    <CustomBuildProperties>
+      <Value>RunAnalyzers = false</Value>
+    </CustomBuildProperties>
     <HiddenComponentWarnings>
       <Value>AspNetTestHostCompatibility</Value>
     </HiddenComponentWarnings>
