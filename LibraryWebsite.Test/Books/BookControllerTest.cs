@@ -9,7 +9,7 @@ using Xunit;
 
 namespace LibraryWebsite.Books
 {
-    public class BookControllerTest
+    public sealed class BookControllerTest : IDisposable
     {
         private static LibraryContext CreateDbContext()
         {
@@ -22,27 +22,34 @@ namespace LibraryWebsite.Books
             return new LibraryContext(builder.Options, operationalStoreOptions);
         }
 
-        BookController controller;
+        readonly BookController _controller;
+        private readonly LibraryContext _dbContext;
 
         public BookControllerTest()
         {
-            LibraryContext dbContext = CreateDbContext();
-            controller = new BookController(dbContext);
+            _dbContext = CreateDbContext();
+            _controller = new BookController(_dbContext);
+        }
+
+        public void Dispose()
+        {
+            _dbContext?.Dispose();
+            _controller?.Dispose();
         }
 
         [Fact]
         public async Task Retrieves_empty_books()
         {
-            Assert.Empty(await controller.Get());
+            Assert.Empty(await _controller.Get());
         }
 
         [Fact]
         public async Task Creates_new_book()
         {
             Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
-            await controller.Post(bookToCreate);
+            await _controller.Post(bookToCreate);
 
-            IEnumerable<Book> books = (await controller.Get()).ToList();
+            IEnumerable<Book> books = (await _controller.Get()).ToList();
             var createdBook = Assert.Single(books);
 
             Assert.NotEqual(Guid.Empty, createdBook.Id);
@@ -60,10 +67,10 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 30; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await controller.Post(bookToCreate);
+                await _controller.Post(bookToCreate);
             }
 
-            var books = (await controller.GetPaginated()).Items;
+            var books = (await _controller.GetPaginated()).Items;
             Assert.Equal(DefaultLimit, books.Count);
 
             var expectedTitles = Enumerable.Range(0, DefaultLimit).Select(i => $"Title {i:D3}");
@@ -76,11 +83,11 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 20; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await controller.Post(bookToCreate);
+                await _controller.Post(bookToCreate);
             }
 
             var limit = 7;
-            var result = await controller.GetPaginated(limit: limit);
+            var result = await _controller.GetPaginated(limit: limit);
             var books = result.Items;
             Assert.Equal(limit, books.Count);
 
@@ -96,11 +103,11 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 30; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await controller.Post(bookToCreate);
+                await _controller.Post(bookToCreate);
             }
 
             var page = 1;
-            var result = await controller.GetPaginated(page: page);
+            var result = await _controller.GetPaginated(page: page);
             var books = result.Items;
             Assert.Equal(DefaultLimit, books.Count);
 
@@ -114,7 +121,7 @@ namespace LibraryWebsite.Books
         public async Task Book_pagination_total_pages()
         {
             {
-                var result = await controller.GetPaginated();
+                var result = await _controller.GetPaginated();
                 Assert.Equal(0, result.TotalPages);
                 Assert.Equal(0, result.TotalCount);
             }
@@ -122,11 +129,11 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 10; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await controller.Post(bookToCreate);
+                await _controller.Post(bookToCreate);
             }
 
             {
-                var result = await controller.GetPaginated();
+                var result = await _controller.GetPaginated();
                 Assert.Equal(1, result.TotalPages);
                 Assert.Equal(10, result.TotalCount);
             }
@@ -134,17 +141,17 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 1; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await controller.Post(bookToCreate);
+                await _controller.Post(bookToCreate);
             }
 
             {
-                var result = await controller.GetPaginated();
+                var result = await _controller.GetPaginated();
                 Assert.Equal(2, result.TotalPages);
                 Assert.Equal(11, result.TotalCount);
             }
 
             {
-                var result = await controller.GetPaginated(limit: 11);
+                var result = await _controller.GetPaginated(limit: 11);
                 Assert.Equal(1, result.TotalPages);
                 Assert.Equal(11, result.TotalCount);
             }
@@ -152,17 +159,17 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 10; i++)
             {
                 Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await controller.Post(bookToCreate);
+                await _controller.Post(bookToCreate);
             }
 
             {
-                var result = await controller.GetPaginated();
+                var result = await _controller.GetPaginated();
                 Assert.Equal(3, result.TotalPages);
                 Assert.Equal(21, result.TotalCount);
             }
 
             {
-                var result = await controller.GetPaginated(limit: 21);
+                var result = await _controller.GetPaginated(limit: 21);
                 Assert.Equal(1, result.TotalPages);
                 Assert.Equal(21, result.TotalCount);
             }
