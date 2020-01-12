@@ -45,9 +45,13 @@ namespace LibraryWebsite.TestEndToEnd
         {
             var type = output.GetType();
             var testMember = type.GetField("test", BindingFlags.Instance | BindingFlags.NonPublic);
-            var test = (ITest)testMember.GetValue(output);
-            var testName = test.DisplayName;
-            return testName;
+            var test = (ITest?) testMember?.GetValue(output);
+            var testName = test?.DisplayName;
+            if (testName == null)
+            {
+                throw new InvalidOperationException("Unable to find test name.");
+            }
+            return testName!;
         }
 
         public void Dispose()
