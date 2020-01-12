@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LibraryWebsite.Migrations
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1724:Type names should not match namespaces", Justification = "Fine for migration.")]
     public partial class IdentityServer : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

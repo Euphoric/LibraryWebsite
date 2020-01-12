@@ -29,9 +29,7 @@ namespace LibraryWebsite.Books
             public string Isbn13 { get; set; }
         }
 
-#pragma warning disable CA1812 // Internal class that is never instantiated
         private class Isbn13Converter : DefaultTypeConverter
-#pragma warning restore CA1812 // Internal class that is never instantiated
         {
             public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
             {
@@ -48,24 +46,22 @@ namespace LibraryWebsite.Books
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static")]
         public IEnumerable<ParsedBook> Parse(string booksFilename)
         {
             if (booksFilename == null)
                 throw new ArgumentNullException(nameof(booksFilename));
 
-            using (var reader = new StreamReader(booksFilename))
+            using var reader = new StreamReader(booksFilename);
+            if (reader.Peek() == -1)
             {
-                if (reader.Peek() == -1)
-                {
-                    throw new Exception("File is empty.");
-                }
-                
-                using (var csv = new CsvReader(reader))
-                {
-                    csv.Configuration.Delimiter = ",";
-                    return csv.GetRecords<ParsedBook>().ToArray();
-                }
+                throw new Exception("File is empty.");
             }
+
+            using var csv = new CsvReader(reader);
+
+            csv.Configuration.Delimiter = ",";
+            return csv.GetRecords<ParsedBook>().ToArray();
         }
     }
 }

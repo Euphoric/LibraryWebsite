@@ -23,3 +23,6 @@ dotnet_diagnostic.CA1054.severity = suggestion
 
 # CA1812: An instance of an assembly-level type is not created by code in the assembly.
 dotnet_diagnostic.CA1812.severity = suggestion
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = suggestion

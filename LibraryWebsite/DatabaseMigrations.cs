@@ -43,7 +43,7 @@ namespace LibraryWebsite
             await Task.CompletedTask;
         }
 
-        private async ValueTask MigrateDatabase(LibraryContext libraryContext)
+        private static async ValueTask MigrateDatabase(LibraryContext libraryContext)
         {
             await libraryContext.Database.MigrateAsync();
         }
