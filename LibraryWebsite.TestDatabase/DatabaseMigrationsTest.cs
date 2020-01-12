@@ -39,7 +39,7 @@ namespace LibraryWebsite
         [Fact]
         public async Task Nothing_happens_if_migrations_are_configured_off()
         {
-            _configuration["MigrateOnStartup"] = false.ToString();
+            _configuration["MigrateOnStartup"] = "false";
 
             var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
 
@@ -75,7 +75,7 @@ namespace LibraryWebsite
         [Fact]
         public async Task Doesnt_seed_sample_data_after_migration_if_not_configured()
         {
-            _configuration["SeedSampleData"] = false.ToString();
+            _configuration["SeedSampleData"] = "false";
 
             var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
 
@@ -87,7 +87,7 @@ namespace LibraryWebsite
         [Fact]
         public async Task Seeds_sample_data_after_migration()
         {
-            _configuration["SeedSampleData"] = true.ToString();
+            _configuration["SeedSampleData"] = "true";
 
             var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
 

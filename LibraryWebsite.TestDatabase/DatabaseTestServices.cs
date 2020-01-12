@@ -34,7 +34,7 @@ namespace LibraryWebsite
                     .AddInMemoryCollection(new Dictionary<string, string>())
                     .Build();
 
-            configuration["MigrateOnStartup"] = true.ToString();
+            configuration["MigrateOnStartup"] = "true";
 
             string databaseServer = configuration.GetConnectionString("TestDatabaseServer");
             string databaseName = "LibraryTestDb_" + Guid.NewGuid();
