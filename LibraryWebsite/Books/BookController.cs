@@ -47,8 +47,7 @@ namespace LibraryWebsite.Books
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(Guid id, [FromBody]Book book)
         {
-            // workaround around broken FirstOrDefault in EFInMemory 3.0-preview7
-            var bookToUpdate = (await _context.Books.Where(bk => bk.Id == id).Take(1).ToListAsync()).FirstOrDefault();
+            var bookToUpdate = await _context.Books.FirstOrDefaultAsync(bk => bk.Id == id);
             if (bookToUpdate == null)
             {
                 return NotFound(id);
