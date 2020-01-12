@@ -50,7 +50,7 @@ namespace Microsoft.AspNetCore.Components
         /// <param name="content">Content for the request body. This will be JSON-encoded and sent as a string.</param>
         /// <returns>The response parsed as an object of the generic type.</returns>
         public static Task<T> PostJsonAsync<T>(this HttpClient httpClient, string requestUri, object content)
-            => httpClient.SendJsonAsync<T>(HttpMethod.Post, requestUri, content);
+            => httpClient.SendJsonAsync<T>(HttpMethod.Post, requestUri, content, ParseResponse<T>);
 
         /// <summary>
         /// Sends a PUT request to the specified URI, including the specified <paramref name="content"/>
@@ -72,7 +72,7 @@ namespace Microsoft.AspNetCore.Components
         /// <param name="content">Content for the request body. This will be JSON-encoded and sent as a string.</param>
         /// <returns>The response parsed as an object of the generic type.</returns>
         public static Task<T> PutJsonAsync<T>(this HttpClient httpClient, string requestUri, object content)
-            => httpClient.SendJsonAsync<T>(HttpMethod.Put, requestUri, content);
+            => httpClient.SendJsonAsync<T>(HttpMethod.Put, requestUri, content, ParseResponse<T>);
 
         /// <summary>
         /// Sends an HTTP request to the specified URI, including the specified <paramref name="content"/>
@@ -83,7 +83,7 @@ namespace Microsoft.AspNetCore.Components
         /// <param name="requestUri">The URI that the request will be sent to.</param>
         /// <param name="content">Content for the request body. This will be JSON-encoded and sent as a string.</param>
         public static Task SendJsonAsync(this HttpClient httpClient, HttpMethod method, string requestUri, object content)
-            => httpClient.SendJsonAsync<IgnoreResponse>(method, requestUri, content);
+            => httpClient.SendJsonAsync<IgnoreResponse>(method, requestUri, content, message => Task.FromResult(new IgnoreResponse()));
 
         /// <summary>
         /// Sends an HTTP request to the specified URI, including the specified <paramref name="content"/>
@@ -95,7 +95,12 @@ namespace Microsoft.AspNetCore.Components
         /// <param name="requestUri">The URI that the request will be sent to.</param>
         /// <param name="content">Content for the request body. This will be JSON-encoded and sent as a string.</param>
         /// <returns>The response parsed as an object of the generic type.</returns>
-        public static async Task<T> SendJsonAsync<T>(this HttpClient httpClient, HttpMethod method, string requestUri, object content)
+        public static async Task<T> SendJsonAsync<T>(
+            this HttpClient httpClient, 
+            HttpMethod method,
+            string requestUri,
+            object content,
+            Func<HttpResponseMessage, Task<T>> parseResponse)
         {
             httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
@@ -111,15 +116,13 @@ namespace Microsoft.AspNetCore.Components
             // attempt to process the response content
             response.EnsureSuccessStatusCode();
 
-            if (typeof(T) == typeof(IgnoreResponse))
-            {
-                return default;
-            }
-            else
-            {
-                var stringContent = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
-            }
+            return await parseResponse(response);
+        }
+
+        private static async Task<T> ParseResponse<T>(HttpResponseMessage response)
+        {
+            var stringContent = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
         }
 
         private class IgnoreResponse { }

@@ -21,7 +21,7 @@ namespace Microsoft.AspNetCore.Components
             => httpClient.SendJsonErrorResponseAsync(HttpMethod.Put, requestUri, content);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods")]
-        public static async Task<ErrorResponse> SendJsonErrorResponseAsync(this HttpClient httpClient, HttpMethod method, string requestUri, object content)
+        public static async Task<ErrorResponse> SendJsonErrorResponseAsync(this HttpClient httpClient, HttpMethod method, string requestUri, object? content)
         {
             var requestJson = JsonSerializer.Serialize(content, JsonSerializerOptionsProvider.Options);
             using var request = new HttpRequestMessage(method, requestUri)

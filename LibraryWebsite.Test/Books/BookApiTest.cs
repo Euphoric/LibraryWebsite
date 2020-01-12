@@ -34,11 +34,11 @@ namespace LibraryWebsite.Books
         {
             public Guid Id { get; set; }
 
-            public string Title { get; set; }
-            public string Author { get; set; }
-            public string Description { get; set; }
+            public string? Title { get; set; }
+            public string? Author { get; set; }
+            public string? Description { get; set; }
 
-            public string Isbn13 { get; set; }
+            public string? Isbn13 { get; set; }
         }
 
 
@@ -162,7 +162,7 @@ namespace LibraryWebsite.Books
             }
 
             var result = await _client.GetJsonAsync<PagingResultDto<BookDto>>("api/book/page");
-            var books = result.Items;
+            var books = result.Items ?? Array.Empty<BookDto>();
             Assert.Equal(5, books.Count);
 
             Assert.Equal(books.OrderBy(x => x.Title), books); // assert books are ordered by title
@@ -186,7 +186,7 @@ namespace LibraryWebsite.Books
             int page = 2;
 
             var result = await _client.GetJsonAsync<PagingResultDto<BookDto>>($"api/book/page?limit={limit}&page={page}");
-            var books = result.Items;
+            var books = result.Items ?? Array.Empty<BookDto>();
             Assert.Equal(limit, books.Count);
 
             var expectedTitles = Enumerable.Range(limit * page, limit).Select(i => $"Title {i:D3}");

@@ -10,10 +10,10 @@ namespace LibraryWebsite.Books
     public class BookCsvParserTest
     {
         [Fact]
-        public void Parse_null_is_error()
+        public void Parse_empty_path_is_error()
         {
             var parser = new BookCsvParser();
-            Assert.Throws<ArgumentNullException>(() => parser.Parse(null));
+            Assert.Throws<ArgumentException>(() => parser.Parse(""));
         }
 
         [Fact]
