@@ -163,7 +163,7 @@ namespace LibraryWebsite.Books
 
             var result = await _client.GetJsonAsync<PagingResultDto<BookDto>>("api/book/page");
             var books = result.Items;
-            Assert.Equal(5, books.Length);
+            Assert.Equal(5, books.Count);
 
             Assert.Equal(books.OrderBy(x => x.Title), books); // assert books are ordered by title
 
@@ -187,7 +187,7 @@ namespace LibraryWebsite.Books
 
             var result = await _client.GetJsonAsync<PagingResultDto<BookDto>>($"api/book/page?limit={limit}&page={page}");
             var books = result.Items;
-            Assert.Equal(limit, books.Length);
+            Assert.Equal(limit, books.Count);
 
             var expectedTitles = Enumerable.Range(limit * page, limit).Select(i => $"Title {i:D3}");
             Assert.Equal(expectedTitles, books.Select(x => x.Title));

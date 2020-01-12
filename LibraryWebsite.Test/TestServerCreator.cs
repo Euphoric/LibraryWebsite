@@ -29,6 +29,8 @@ namespace LibraryWebsite
 
         public static async Task AddTestingUsers(TestServer testServer)
         {
+            testServer = testServer ?? throw new ArgumentNullException(nameof(testServer));
+
             var services = testServer.Host.Services;
             using (var roleStore = services.GetRequiredService<RoleManager<IdentityRole>>())
             {

@@ -44,11 +44,12 @@ namespace LibraryWebsite.Identity
             var discoveryDocument = await _client.GetDiscoveryDocumentAsync();
             Assert.False(discoveryDocument.IsError);
 
-            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest()
+            using var request = new ClientCredentialsTokenRequest()
             {
                 Address = discoveryDocument.TokenEndpoint,
                 ClientId = "PublicApi"
-            });
+            };
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
 
             Assert.False(response.IsError, response.Error);
             Assert.NotNull(response.AccessToken);
@@ -60,14 +61,15 @@ namespace LibraryWebsite.Identity
             var discoveryDocument = await _client.GetDiscoveryDocumentAsync();
             Assert.False(discoveryDocument.IsError);
 
-            var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest()
+            using var request = new PasswordTokenRequest()
             {
                 Address = discoveryDocument.TokenEndpoint,
                 ClientId = "PublicApi",
 
                 UserName = "Admin",
                 Password = "Administrator_1"
-            });
+            };
+            var response = await _client.RequestPasswordTokenAsync(request);
 
             Assert.False(response.IsError, response.Error);
             Assert.NotNull(response.AccessToken);
@@ -78,14 +80,15 @@ namespace LibraryWebsite.Identity
             var discoveryDocument = await _client.GetDiscoveryDocumentAsync();
             Assert.False(discoveryDocument.IsError);
 
-            var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest()
+            using var request = new PasswordTokenRequest()
             {
                 Address = discoveryDocument.TokenEndpoint,
                 ClientId = "PublicApi",
 
                 UserName = userName,
                 Password = password
-            });
+            };
+            var response = await _client.RequestPasswordTokenAsync(request);
 
             Assert.False(response.IsError, response.Error);
             Assert.NotNull(response.AccessToken);

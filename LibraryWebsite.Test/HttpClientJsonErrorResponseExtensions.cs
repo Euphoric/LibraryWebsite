@@ -20,13 +20,15 @@ namespace Microsoft.AspNetCore.Components
         public static Task<ErrorResponse> PutJsonErrorResponseAsync(this HttpClient httpClient, string requestUri, object content)
             => httpClient.SendJsonErrorResponseAsync(HttpMethod.Put, requestUri, content);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods")]
         public static async Task<ErrorResponse> SendJsonErrorResponseAsync(this HttpClient httpClient, HttpMethod method, string requestUri, object content)
         {
             var requestJson = JsonSerializer.Serialize(content, JsonSerializerOptionsProvider.Options);
-            var response = await httpClient.SendAsync(new HttpRequestMessage(method, requestUri)
+            using var request = new HttpRequestMessage(method, requestUri)
             {
                 Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
-            });
+            };
+            var response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {

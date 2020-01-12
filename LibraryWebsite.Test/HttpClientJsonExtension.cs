@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -23,6 +24,7 @@ namespace Microsoft.AspNetCore.Components
         /// <returns>The response parsed as an object of the generic type.</returns>
         public static async Task<T> GetJsonAsync<T>(this HttpClient httpClient, string requestUri)
         {
+            httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             var stringContent = await httpClient.GetStringAsync(requestUri);
             return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
         }
@@ -95,11 +97,15 @@ namespace Microsoft.AspNetCore.Components
         /// <returns>The response parsed as an object of the generic type.</returns>
         public static async Task<T> SendJsonAsync<T>(this HttpClient httpClient, HttpMethod method, string requestUri, object content)
         {
+            httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
             var requestJson = JsonSerializer.Serialize(content, JsonSerializerOptionsProvider.Options);
-            var response = await httpClient.SendAsync(new HttpRequestMessage(method, requestUri)
+            using var request = new HttpRequestMessage(method, requestUri)
             {
                 Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
-            });
+            };
+
+            var response = await httpClient.SendAsync(request);
 
             // Make sure the call was successful before we
             // attempt to process the response content
@@ -116,6 +122,6 @@ namespace Microsoft.AspNetCore.Components
             }
         }
 
-        class IgnoreResponse { }
+        private class IgnoreResponse { }
     }
 }
