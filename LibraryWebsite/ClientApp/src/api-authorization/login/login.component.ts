@@ -124,5 +124,5 @@ export class LoginComponent implements OnInit {
 }
 
 interface INavigationState {
-  [ReturnUrlType]: string;
+  returnUrl: string;
 }

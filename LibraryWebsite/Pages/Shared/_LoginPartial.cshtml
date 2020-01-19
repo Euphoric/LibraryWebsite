@@ -16,9 +16,11 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
+            @* ReSharper disable once Mvc.AreaNotResolved *@
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
         </li>
         <li class="nav-item">
+            @* ReSharper disable once Mvc.AreaNotResolved *@
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
             </form>
@@ -27,9 +29,11 @@
     else
     {
         <li class="nav-item">
+            @* ReSharper disable once Mvc.AreaNotResolved *@
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Register</a>
         </li>
         <li class="nav-item">
+            @* ReSharper disable once Mvc.AreaNotResolved *@
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">Login</a>
         </li>
     }

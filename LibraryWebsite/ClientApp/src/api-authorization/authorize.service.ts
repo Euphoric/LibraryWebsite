@@ -61,7 +61,7 @@ export class AuthorizeService {
   public getAccessToken(): Observable<string> {
     return from(this.ensureUserManagerInitialized())
       .pipe(mergeMap(() => from(this.userManager.getUser())),
-        map(user => user && user.access_token));
+        map((user:User) => user && user.access_token));
   }
 
   // We try to authenticate the user in three different ways:
@@ -196,6 +196,6 @@ export class AuthorizeService {
     return from(this.ensureUserManagerInitialized())
       .pipe(
         mergeMap(() => this.userManager.getUser()),
-        map(u => u && u.profile));
+        map((user:User) => user && user.profile));
   }
 }
