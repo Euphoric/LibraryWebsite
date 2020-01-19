@@ -58,7 +58,7 @@ namespace LibraryWebsite.Books
                 throw new Exception("File is empty.");
             }
 
-            using var csv = new CsvReader(reader);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             csv.Configuration.Delimiter = ",";
             return csv.GetRecords<ParsedBook>().ToArray();
