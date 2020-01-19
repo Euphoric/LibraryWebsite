@@ -9,7 +9,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
 import { BookListComponent } from './book-list/book-list.component';
 import { BookEditComponent } from './book-edit/book-edit.component';
 
@@ -18,7 +17,6 @@ import { BookEditComponent } from './book-edit/book-edit.component';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
     BookListComponent,
     BookEditComponent
   ],
@@ -29,7 +27,6 @@ import { BookEditComponent } from './book-edit/book-edit.component';
     NgxPaginationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
       { path: 'book-list', component: BookListComponent },
       { path: 'book-edit', component: BookEditComponent },
       { path: 'book-edit/:id', component: BookEditComponent },
