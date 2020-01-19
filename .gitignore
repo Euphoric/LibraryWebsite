@@ -341,3 +341,4 @@ healthchecksdb
 
 # local application settings, useful for keeping settings that should not be shared
 appsettings.Local.json
+/LibraryWebsite/ClientApp/src/TESTS.xml

@@ -1,6 +1,6 @@
 // ReSharper disable InconsistentNaming
 
-export const ApplicationName = 'WebApplication4';
+export const ApplicationName = 'LibraryWebsite';
 
 export const ReturnUrlType = 'returnUrl';
 

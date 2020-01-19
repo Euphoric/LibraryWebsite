@@ -1,11 +1,14 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
 import { AuthorizeInterceptor } from './authorize.interceptor';
 
 describe('AuthorizeInterceptor', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AuthorizeInterceptor]
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      providers: [AuthorizeInterceptor, { provide: 'BASE_URL', useValue: 'www.test.com', }],
     });
   });
 
