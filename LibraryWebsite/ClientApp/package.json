@@ -27,7 +27,7 @@
     "core-js": "^2.6.5",
     "jquery": "^3.4.1",
     "ngx-pagination": "^4.1.0",
-    "oidc-client": "^1.6.1",
+    "oidc-client": "1.9.1",
     "popper.js": "^1.14.3",
     "rxjs": "^6.5.3",
     "zone.js": "~0.9.1"
