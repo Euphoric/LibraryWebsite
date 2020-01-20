@@ -67,9 +67,15 @@ namespace LibraryWebsite
 
                     options.Clients.Add(new Client()
                     {
-                        ClientId="PublicApi",
+                        ClientId = "PublicApi",
                         AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                         RequireClientSecret = false
+                    });
+
+                    options.Clients.AddIdentityServerSPA("LibraryWebsite", config =>
+                    {
+                        config.WithLogoutRedirectUri("/authentication/logout-callback");
+                        config.WithRedirectUri("/authentication/login-callback");
                     });
                 });
             
