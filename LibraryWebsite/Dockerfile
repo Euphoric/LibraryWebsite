@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.100-alpine3.10 AS publish
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.101-alpine3.10 AS publish
 # Setup NodeJs
 RUN apk update
-RUN apk add --update npm=10.16.3-r0
+RUN apk add --update npm=10.19.0-r0
 
 # Cache NuGet packages
 WORKDIR /src
@@ -20,10 +20,10 @@ COPY . .
 WORKDIR "/src/LibraryWebsite"
 RUN dotnet publish "LibraryWebsite.csproj" -c Release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.0-alpine3.10 AS final
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.1-alpine3.10 AS final
 # Setup NodeJs
 RUN apk update
-RUN apk add --update npm=10.16.3-r0
+RUN apk add --update npm=10.19.0-r0
 
 # enable globalization support
 RUN apk add --no-cache icu-libs
