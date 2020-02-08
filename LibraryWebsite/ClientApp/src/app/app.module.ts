@@ -11,6 +11,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { BookListComponent } from './book-list/book-list.component';
 import { BookEditComponent } from './book-edit/book-edit.component';
+import { ApiAuthorizationModule } from "../api-authorization/api-authorization.module";
+import { AuthorizeInterceptor } from "../api-authorization/authorize.interceptor";
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { BookEditComponent } from './book-edit/book-edit.component';
     HttpClientModule,
     FormsModule,
     NgxPaginationModule,
+    ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'book-list', component: BookListComponent },
@@ -32,7 +35,9 @@ import { BookEditComponent } from './book-edit/book-edit.component';
       { path: 'book-edit/:id', component: BookEditComponent },
     ])
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

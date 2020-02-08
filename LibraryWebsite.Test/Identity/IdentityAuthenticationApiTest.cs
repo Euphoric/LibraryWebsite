@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -127,6 +128,17 @@ namespace LibraryWebsite.Identity
 
             var response3 = await _client.GetAsync("api/identity/testUser");
             Assert.Equal("User authenticated!", await response3.Content.ReadAsStringAsync());
+        }
+
+        [Fact]
+        public async Task Retrieves_LibraryWebsite_Oidc_client_configuration()
+        {
+            var response = await _client.GetJsonAsync<Dictionary<string, string>>("_configuration/LibraryWebsite");
+
+            Assert.Equal(6, response.Count);
+
+            Assert.Equal(_testServer.BaseAddress+"authentication/login-callback", response["redirect_uri"]);
+            Assert.Equal(_testServer.BaseAddress+"authentication/logout-callback", response["post_logout_redirect_uri"]);
         }
     }
 }
