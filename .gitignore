@@ -341,3 +341,6 @@ healthchecksdb
 
 # local application settings, useful for keeping settings that should not be shared
 appsettings.Local.json
+
+# Angular test results
+/LibraryWebsite/ClientApp/src/TESTS.xml

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --progress=false",
     "build": "ng build",
     "build:ssr": "ng run LibraryWebsite:server:dev",
     "test": "ng test",
