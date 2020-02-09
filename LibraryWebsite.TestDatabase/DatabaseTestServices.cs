@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using LibraryWebsite.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,11 @@ namespace LibraryWebsite
             services.AddLogging();
             services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
             services.AddTransient<SampleDataSeeder>();
+
+            services
+                .AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<LibraryContext>();
 
             configure(services);
 

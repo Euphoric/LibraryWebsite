@@ -12,19 +12,11 @@ namespace LibraryWebsite
 {
     public class IdentityServerMigrationsTest : IAsyncLifetime
     {
-        private static void AddIdentityServices(ServiceCollection services)
-        {
-            services
-                .AddIdentityCore<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<LibraryContext>();
-        }
-
         readonly ServiceProvider _services;
 
         public IdentityServerMigrationsTest()
         {
-            _services = DatabaseTestServices.SetupDatabaseTestServices(AddIdentityServices);
+            _services = DatabaseTestServices.SetupDatabaseTestServices();
         }
 
         public Task InitializeAsync()

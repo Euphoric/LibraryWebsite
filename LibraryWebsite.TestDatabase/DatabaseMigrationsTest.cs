@@ -3,7 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using LibraryWebsite.Identity;
+using Microsoft.AspNetCore.Identity;
 using Xunit;
 
 namespace LibraryWebsite
@@ -93,7 +96,11 @@ namespace LibraryWebsite
 
             await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
+            // books were seeded
             Assert.True(await _services.GetRequiredService<LibraryContext>().Books.AnyAsync());
+
+            // users were seeded
+            Assert.True(await _services.GetRequiredService<UserManager<ApplicationUser>>().Users.AnyAsync());
         }
     }
 }
