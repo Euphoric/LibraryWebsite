@@ -100,7 +100,11 @@ namespace LibraryWebsite
             Assert.True(await _services.GetRequiredService<LibraryContext>().Books.AnyAsync());
 
             // users were seeded
-            Assert.True(await _services.GetRequiredService<UserManager<ApplicationUser>>().Users.AnyAsync());
+            var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
+            
+            Assert.NotEmpty(await userManager.GetUsersInRoleAsync(Role.Admin));
+            Assert.NotEmpty(await userManager.GetUsersInRoleAsync(Role.Librarian));
+            Assert.NotEmpty(await userManager.GetUsersInRoleAsync(Role.Reader));
         }
     }
 }

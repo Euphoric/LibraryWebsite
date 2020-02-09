@@ -55,14 +55,17 @@ namespace LibraryWebsite
             if (await _userManager.Users.AnyAsync())
                 return;
 
-            var admin = new ApplicationUser() {UserName = "admin@sample.com", Email = "admin@sample.com"};
+            var admin = new ApplicationUser {UserName = "admin@sample.com", Email = "admin@sample.com"};
             await _userManager.CreateAsync(admin, "Abcdefgh!1");
+            await _userManager.AddToRoleAsync(admin, Role.Admin);
 
-            var librarian = new ApplicationUser() {UserName = "librarian@sample.com", Email = "librarian@sample.com"};
+            var librarian = new ApplicationUser {UserName = "librarian@sample.com", Email = "librarian@sample.com"};
             await _userManager.CreateAsync(librarian, "Abcdefgh!1");
+            await _userManager.AddToRoleAsync(librarian, Role.Librarian);
 
-            var reader = new ApplicationUser() {UserName = "reader@sample.com", Email = "reader@sample.com"};
+            var reader = new ApplicationUser {UserName = "reader@sample.com", Email = "reader@sample.com"};
             await _userManager.CreateAsync(reader, "Abcdefgh!1");
+            await _userManager.AddToRoleAsync(reader, Role.Reader);
         }
     }
 }
