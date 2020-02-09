@@ -106,7 +106,7 @@ namespace LibraryWebsite.Identity
             Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
             Assert.Equal("Admin authenticated!", await response2.Content.ReadAsStringAsync());
 
-            var response3 = await _client.GetAsync("api/identity/testUser");
+            var response3 = await _client.GetAsync("api/identity/testLibrarian");
             Assert.Equal(HttpStatusCode.OK, response3.StatusCode);
             Assert.Equal("Admin authenticated!", await response3.Content.ReadAsStringAsync());
         }
@@ -126,7 +126,7 @@ namespace LibraryWebsite.Identity
             var response2 = await _client.GetJsonErrorResponseAsync("api/identity/testAdmin");
             Assert.Equal(HttpStatusCode.Forbidden, response2.StatusCode);
 
-            var response3 = await _client.GetAsync("api/identity/testUser");
+            var response3 = await _client.GetAsync("api/identity/testLibrarian");
             Assert.Equal("User authenticated!", await response3.Content.ReadAsStringAsync());
         }
 

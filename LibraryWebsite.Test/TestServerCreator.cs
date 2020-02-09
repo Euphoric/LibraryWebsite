@@ -35,7 +35,8 @@ namespace LibraryWebsite
             using (var roleStore = services.GetRequiredService<RoleManager<IdentityRole>>())
             {
                 await roleStore.CreateAsync(new IdentityRole(Role.Admin));
-                await roleStore.CreateAsync(new IdentityRole(Role.User));
+                await roleStore.CreateAsync(new IdentityRole(Role.Librarian));
+                await roleStore.CreateAsync(new IdentityRole(Role.Reader));
             }
 
             using var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
@@ -47,7 +48,7 @@ namespace LibraryWebsite
                 NormalizedUserName = "Admin name"
             };
             await userManager.CreateAsync(adminUser, "Administrator_1");
-            await userManager.AddToRolesAsync(adminUser, new[] {Role.Admin, Role.User});
+            await userManager.AddToRolesAsync(adminUser, new[] {Role.Admin, Role.Librarian});
 
             var ordinaryUser = new ApplicationUser
             {
@@ -56,7 +57,7 @@ namespace LibraryWebsite
                 NormalizedUserName = "Admin name"
             };
             await userManager.CreateAsync(ordinaryUser, "User_1");
-            await userManager.AddToRolesAsync(ordinaryUser, new[] {Role.User});
+            await userManager.AddToRolesAsync(ordinaryUser, new[] {Role.Librarian});
         }
     }
 }

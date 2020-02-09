@@ -17,9 +17,9 @@ namespace LibraryWebsite.Identity
             return userName + " authenticated!";
         }
 
-        [Authorize(Policy = Policies.IsUser)]
-        [HttpGet("testUser")]
-        public string TestUser()
+        [Authorize(Policy = Policies.IsLibrarian)]
+        [HttpGet("testLibrarian")]
+        public string TestLibrarian()
         {
             var userName = HttpContext.User.Identity.Name;
             return userName + " authenticated!";
