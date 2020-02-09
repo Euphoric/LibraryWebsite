@@ -16,6 +16,7 @@ namespace LibraryWebsite
             services.AddTransient<DatabaseMigrations>();
             services.AddLogging();
             services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
+            services.AddTransient<SampleDataSeeder>();
 
             configure(services);
 

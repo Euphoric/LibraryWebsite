@@ -34,10 +34,10 @@ namespace LibraryWebsite
 
             using (var scope = _services.CreateScope())
             {
-                var libraryContext = scope.ServiceProvider.GetService<LibraryContext>();
+                var libraryContext = scope.ServiceProvider.GetRequiredService<LibraryContext>();
 
                 await MigrateDatabase(libraryContext);
-                await SeedSampleData(libraryContext);
+                await SeedSampleData(scope.ServiceProvider.GetRequiredService<SampleDataSeeder>());
             }
 
             await Task.CompletedTask;
@@ -48,11 +48,11 @@ namespace LibraryWebsite
             await libraryContext.Database.MigrateAsync();
         }
 
-        private async ValueTask SeedSampleData(LibraryContext libraryContext)
+        private async ValueTask SeedSampleData(SampleDataSeeder sampleDataSeeder)
         {
             if (_configuration.GetValue("SeedSampleData", false))
             {
-                await libraryContext.SetupExampleData();
+                await sampleDataSeeder.SetupExampleData();
             }
         }
 
