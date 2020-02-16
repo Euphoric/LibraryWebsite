@@ -37,13 +37,13 @@ namespace LibraryWebsite
 
             await Policy
                 .Handle<SqlException>()
-                .RetryAsync(3, OnMigrationRetry)
+                .WaitAndRetryAsync(5, retryCount => TimeSpan.FromSeconds(retryCount * 5), OnMigrationRetry)
                 .ExecuteAsync(MigrateAndSeedDatabase);
         }
 
-        private void OnMigrationRetry(Exception failedException, int retryCount)
+        private void OnMigrationRetry(Exception exception, TimeSpan nextTryTimeout, int retryCount, Context context)
         {
-            _logger.LogWarning(failedException, "Failed try {0} of migrating database.", retryCount);
+            _logger.LogWarning(exception, "Failed try {0} of migrating database. Waiting {1} before next try.", retryCount, nextTryTimeout);
         }
 
         private async Task MigrateAndSeedDatabase()
