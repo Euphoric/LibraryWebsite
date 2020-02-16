@@ -31,6 +31,16 @@ namespace LibraryWebsite.Identity
             httpClient.SetBearerToken(response.AccessToken);
         }
 
+        public static async Task LoginAsLibrarian(this HttpClient httpClient)
+        {
+            await httpClient.LoginAsUser("Librarian", "Librarian_1");
+        }
+
+        public static async Task LoginAsAdmin(this HttpClient httpClient)
+        {
+            await httpClient.LoginAsUser("Admin", "Administrator_1");
+        }
+
         public static async Task AddTestingUsers(this IServiceProvider services)
         {
             using (var roleStore = services.GetRequiredService<RoleManager<IdentityRole>>())
@@ -50,6 +60,15 @@ namespace LibraryWebsite.Identity
             };
             await userManager.CreateAsync(adminUser, "Administrator_1");
             await userManager.AddToRolesAsync(adminUser, new[] {Role.Admin, Role.Librarian});
+
+            var librarianUser = new ApplicationUser
+            {
+                UserName = "Librarian",
+                Email = "Librarian@library.com",
+                NormalizedUserName = "Librarian name"
+            };
+            await userManager.CreateAsync(librarianUser, "Librarian_1");
+            await userManager.AddToRolesAsync(librarianUser, new[] {Role.Librarian});
 
             var ordinaryUser = new ApplicationUser
             {
