@@ -24,7 +24,7 @@ namespace LibraryWebsite.Identity
 
         public async Task InitializeAsync()
         {
-            await TestServerCreator.AddTestingUsers(_testServer);
+            await _testServer.Host.Services.AddTestingUsers();
         }
 
         public Task DisposeAsync()
@@ -76,31 +76,10 @@ namespace LibraryWebsite.Identity
             Assert.NotNull(response.AccessToken);
         }
 
-                private async Task LoginAsUser(string userName, string password)
-        {
-            var discoveryDocument = await _client.GetDiscoveryDocumentAsync();
-            Assert.False(discoveryDocument.IsError);
-
-            using var request = new PasswordTokenRequest()
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                ClientId = "PublicApi",
-
-                UserName = userName,
-                Password = password
-            };
-            var response = await _client.RequestPasswordTokenAsync(request);
-
-            Assert.False(response.IsError, response.Error);
-            Assert.NotNull(response.AccessToken);
-
-            _client.SetBearerToken(response.AccessToken);
-        }
-
         [Fact]
         public async Task Authenticates_admin_with_correct_credentials()
         {
-            await LoginAsUser("Admin", "Administrator_1");
+            await _client.LoginAsUser("Admin", "Administrator_1");
 
             var response2 = await _client.GetAsync("api/identity/testAdmin");
             Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
@@ -121,7 +100,7 @@ namespace LibraryWebsite.Identity
         [Fact]
         public async Task Authenticates_user_with_correct_credentials()
         {
-            await LoginAsUser("User", "User_1");
+            await _client.LoginAsUser("User", "User_1");
 
             var response2 = await _client.GetJsonErrorResponseAsync("api/identity/testAdmin");
             Assert.Equal(HttpStatusCode.Forbidden, response2.StatusCode);
@@ -137,8 +116,8 @@ namespace LibraryWebsite.Identity
 
             Assert.Equal(6, response.Count);
 
-            Assert.Equal(_testServer.BaseAddress+"authentication/login-callback", response["redirect_uri"]);
-            Assert.Equal(_testServer.BaseAddress+"authentication/logout-callback", response["post_logout_redirect_uri"]);
+            Assert.Equal(_testServer.BaseAddress + "authentication/login-callback", response["redirect_uri"]);
+            Assert.Equal(_testServer.BaseAddress + "authentication/logout-callback", response["post_logout_redirect_uri"]);
         }
     }
 }
