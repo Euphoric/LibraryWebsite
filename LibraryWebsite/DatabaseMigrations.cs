@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.Data.SqlClient;
+using Polly;
+using Polly.Retry;
 
 namespace LibraryWebsite
 {
@@ -32,15 +35,25 @@ namespace LibraryWebsite
 
             _logger.LogInformation("Migrating to newest database schema.");
 
-            using (var scope = _services.CreateScope())
-            {
-                var libraryContext = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+            await Policy
+                .Handle<SqlException>()
+                .RetryAsync(3, OnMigrationRetry)
+                .ExecuteAsync(MigrateAndSeedDatabase);
+        }
 
-                await MigrateDatabase(libraryContext);
-                await SeedSampleData(scope.ServiceProvider.GetRequiredService<SampleDataSeeder>());
-            }
+        private void OnMigrationRetry(Exception failedException, int retryCount)
+        {
+            _logger.LogWarning(failedException, "Failed try {0} of migrating database.", retryCount);
+        }
 
-            await Task.CompletedTask;
+        private async Task MigrateAndSeedDatabase()
+        {
+            using var scope = _services.CreateScope();
+
+            var libraryContext = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+
+            await MigrateDatabase(libraryContext);
+            await SeedSampleData(scope.ServiceProvider.GetRequiredService<SampleDataSeeder>());
         }
 
         private static async ValueTask MigrateDatabase(LibraryContext libraryContext)
