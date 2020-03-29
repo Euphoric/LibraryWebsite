@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "_NCrunch_*": true,
+        "*.ncrunchsolution": true,
+        "**/.vs": true,
+        "**/.vscode": true,
+        "**/*.ncrunchproject": true,
+        "**/*.user": true,
+        "**/bin": true,
+        "**/obj": true,
+        "**/TestResults": true
+    }
+}
