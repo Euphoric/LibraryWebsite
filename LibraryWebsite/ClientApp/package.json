@@ -25,7 +25,7 @@
     "aspnet-prerendering": "^3.0.1",
     "bootstrap": "^4.3.1",
     "core-js": "^2.6.5",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "ngx-pagination": "^4.1.0",
     "oidc-client": "1.9.1",
     "popper.js": "^1.14.3",
