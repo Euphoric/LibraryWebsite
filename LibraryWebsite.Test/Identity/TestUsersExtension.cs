@@ -29,6 +29,9 @@ namespace LibraryWebsite.Identity
             Assert.NotNull(response.AccessToken);
 
             httpClient.SetBearerToken(response.AccessToken);
+
+            // to validate the token, the validation time must be higher than the creation time, this gives it few ms for that
+            await Task.Delay(5);
         }
 
         public static async Task LoginAsLibrarian(this HttpClient httpClient)
