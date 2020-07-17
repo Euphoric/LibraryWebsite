@@ -15,7 +15,11 @@ Running below command will start up whole application environment.
 
     docker-compose -f docker-compose.runlocal.yml up --build
 
-The application can be run outside docker as long as you have an SQL Server available and change connection string in `appsettings.json` appropriately.
+And in your browser, open
+
+    https://localhost:44310/
+
+The application can be run outside docker as long as you have an SQL Server available and change connection string in `LibraryWebsite/appsettings.[Environment].json` appropriately.
 Setting `MigrateOnStartup` in `appsettings.json` will create a database and migrate to newest schema.
 
 ### .NET Unit tests
