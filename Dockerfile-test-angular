@@ -1,4 +1,4 @@
-FROM circleci/node:10-browsers AS test_angular
+FROM circleci/node:12-browsers AS test_angular
 
 # set user to non-admin, so npm doesn't complain later
 USER node
