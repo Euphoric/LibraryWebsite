@@ -15,4 +15,6 @@ USER root
 # enable execution permission for shell files
 RUN ["chmod", "+x", "./run_tests_in_docker.sh"]
 
+RUN npm run build
+
 ENTRYPOINT ["sh", "./run_tests_in_docker.sh"]
