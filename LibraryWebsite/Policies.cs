@@ -9,5 +9,6 @@ namespace LibraryWebsite
     {
         public const string IsAdmin = "IsAdmin";
         public const string IsLibrarian = "IsLibrarian";
+        public const string CanEditBooks = "CanEditBooks";
     }
 }

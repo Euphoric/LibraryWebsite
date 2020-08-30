@@ -6,13 +6,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LibraryWebsite.Identity;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace LibraryWebsite.Books
 {
 
-    public class BookApiTest
+    public class BookApiTest : IAsyncLifetime
     {
         private readonly TestServer _testServer;
         private readonly HttpClient _client;
@@ -21,6 +22,16 @@ namespace LibraryWebsite.Books
         {
             _testServer = TestServerCreator.CreateTestServer(outputHelper);
             _client = _testServer.CreateClient();
+        }
+
+        public async Task InitializeAsync()
+        {
+            await _testServer.Host.Services.AddTestingUsers();
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
         }
 
         [Fact]
@@ -45,8 +56,12 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Creates_and_retrieves_books()
         {
+            await _client.LoginAsLibrarian();
+
             BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
             var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+
+            await _client.LogoutUser();
 
             var books = await _client.GetJsonAsync<BookDto[]>("api/book");
             var createdBook = Assert.Single(books);
@@ -61,6 +76,8 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Creates_and_retrieves_a_book()
         {
+            await _client.LoginAsLibrarian();
+
             for (int i = 0; i < 3; i++)
             {
                 BookDto bookToCreate = new BookDto { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN " + i };
@@ -70,6 +87,8 @@ namespace LibraryWebsite.Books
             {
                 BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
                 Guid bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+
+                await _client.LogoutUser();
 
                 var createdBook = await _client.GetJsonAsync<BookDto>("api/book/" + bookGuid);
 
@@ -84,6 +103,8 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Updating_nonexistent_book_is_error()
         {
+            await _client.LoginAsLibrarian();
+
             Guid bookGuid = Guid.Parse("43864ebe-8507-440f-babf-eb38e91d252c");
             BookDto bookUpdate = new BookDto { Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
             var result = await _client.PutJsonErrorResponseAsync("api/book/" + bookGuid, bookUpdate);
@@ -93,11 +114,15 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Updates_book()
         {
+            await _client.LoginAsLibrarian();
+
             BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
             var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
 
             BookDto bookUpdate = new BookDto { Id = bookGuid, Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
             await _client.PutJsonAsync("api/book/" + bookGuid, bookUpdate);
+
+            await _client.LogoutUser();
 
             var books = await _client.GetJsonAsync<BookDto[]>("api/book");
             var createdBook = Assert.Single(books);
@@ -112,10 +137,14 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Deletes_book()
         {
+            await _client.LoginAsLibrarian();
+
             BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
             var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
 
             await _client.DeleteAsync("api/book/" + bookGuid);
+
+            await _client.LogoutUser();
 
             var books = await _client.GetJsonAsync<BookDto[]>("api/book");
             Assert.Empty(books);
@@ -124,6 +153,8 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Deletes_book_specified_by_id()
         {
+            await _client.LoginAsLibrarian();
+
             List<Guid> createdBookIds = new List<Guid>();
             for (int i = 0; i < 3; i++)
             {
@@ -138,6 +169,8 @@ namespace LibraryWebsite.Books
 
                 await _client.DeleteAsync("api/book/" + bookGuid);
 
+                await _client.LogoutUser();
+
                 var bookIds = (await _client.GetJsonAsync<BookDto[]>("api/book")).Select(bk => bk.Id).ToArray();
                 Assert.DoesNotContain(bookGuid, bookIds);
                 Assert.Equal(createdBookIds, bookIds);
@@ -147,19 +180,26 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Deleting_non_existing_book_is_noop()
         {
+            await _client.LoginAsLibrarian();
+
             Guid bookGuid = Guid.Parse("a30b6cd8-2e20-423e-9d81-b48b42ef9f0b");
-            await _client.DeleteAsync("api/book/" + bookGuid);
+            var result = await _client.DeleteAsync("api/book/" + bookGuid);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
 
         [Fact]
         public async Task Book_pagination_default_parameters()
         {
+            await _client.LoginAsLibrarian();
+
             // reverse order to test ordering
             for (int i = 5; i > 0; i--)
             {
                 BookDto bookToCreate = new BookDto { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
             }
+
+            await _client.LogoutUser();
 
             var result = await _client.GetJsonAsync<PagingResultDto<BookDto>>("api/book/page");
             var books = result.Items ?? Array.Empty<BookDto>();
@@ -175,12 +215,16 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Book_pagination_with_params()
         {
+            await _client.LoginAsLibrarian();
+
             // reverse order to test ordering
             for (int i = 0; i < 30; i++)
             {
                 BookDto bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
             }
+
+            await _client.LogoutUser();
 
             int limit = 7;
             int page = 2;

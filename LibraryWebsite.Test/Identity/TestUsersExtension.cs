@@ -44,6 +44,13 @@ namespace LibraryWebsite.Identity
             await httpClient.LoginAsUser("Admin", "Administrator_1");
         }
 
+        public static Task LogoutUser(this HttpClient httpClient)
+        {
+            httpClient.SetBearerToken(null);
+
+            return Task.CompletedTask;
+        }
+
         public static async Task AddTestingUsers(this IServiceProvider services)
         {
             using (var roleStore = services.GetRequiredService<RoleManager<IdentityRole>>())

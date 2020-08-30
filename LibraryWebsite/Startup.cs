@@ -46,6 +46,7 @@ namespace LibraryWebsite
             {
                 options.AddPolicy(Policies.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
                 options.AddPolicy(Policies.IsLibrarian, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Librarian); });
+                options.AddPolicy(Policies.CanEditBooks, policy => policy.RequireClaim(ClaimTypes.Role,Role.Librarian) );
             });
 
             services

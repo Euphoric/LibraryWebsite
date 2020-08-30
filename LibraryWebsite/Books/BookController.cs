@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,7 @@ namespace LibraryWebsite.Books
             return await _context.Books.OrderBy(x => x.Title).CreatePaging(limit, page);
         }
 
+        [Authorize(Policy = Policies.CanEditBooks)]
         public async Task<Guid> Post([FromBody]Book book)
         {
             book.Id = Guid.NewGuid();
@@ -45,6 +47,7 @@ namespace LibraryWebsite.Books
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Policies.CanEditBooks)]
         public async Task<ActionResult> Put(Guid id, [FromBody]Book book)
         {
             var bookToUpdate = await _context.Books.FirstOrDefaultAsync(bk => bk.Id == id);
@@ -64,6 +67,7 @@ namespace LibraryWebsite.Books
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = Policies.CanEditBooks)]
         public async Task<ActionResult> Delete(Guid id)
         {
             // workaround around broken FirstOrDefault in EFInMemory 3.0-preview7
