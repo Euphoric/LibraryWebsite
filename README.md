@@ -1,5 +1,5 @@
 # LibraryWebsite
-Website implementing simple Library application. Demonstrates lots of infrastructure concepts of using ASP.NET Core 3.0, Angular, CI/CD, etc..
+Website implementing simple Library application. Demonstrates lots of infrastructure concepts of using ASP.NET Core 3, Blazor, CI/CD, etc..
 Or it should, but not yet.. as it is heavily in work in progress.
 
 [![CircleCI](https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master.svg?style=svg)](https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master)
@@ -27,13 +27,6 @@ Setting `MigrateOnStartup` in `appsettings.json` will create a database and migr
 .NET Unit tests are in `LibraryWebsite.Test`
 
     dotnet test LibraryWebsite.Test
-
-### Angular tests
-
-Angular client is in `LibraryWebsite/ClientApp` directory. 
-
-	cd LibraryWebsite/ClientApp/
-	npm run test
 
 ### Database tests
 
