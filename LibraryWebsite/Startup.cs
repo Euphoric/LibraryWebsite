@@ -7,7 +7,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,13 +26,7 @@ namespace LibraryWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.EnableEndpointRouting = false);
-
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+            services.AddControllersWithViews();
 
             services.AddDbContext<LibraryContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddTransient<DatabaseMigrations>();
@@ -67,7 +60,7 @@ namespace LibraryWebsite
                         JwtClaimTypes.Role
                     };
 
-                    options.Clients.Add(new Client()
+                    options.Clients.Add(new IdentityServer4.Models.Client
                     {
                         ClientId = "PublicApi",
                         AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
@@ -94,6 +87,7 @@ namespace LibraryWebsite
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebAssemblyDebugging();
             }
             else
             {
@@ -103,6 +97,7 @@ namespace LibraryWebsite
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
 
             app.UseIdentityServer();
 
@@ -110,29 +105,16 @@ namespace LibraryWebsite
             app.UseAuthorization();
 
             app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseHealthChecks("/health");
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
+                endpoints.MapRazorPages();
+                endpoints.MapControllers();
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

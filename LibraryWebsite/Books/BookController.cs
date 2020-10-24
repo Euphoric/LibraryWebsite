@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebsite.Books
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class BookController : Controller
     {
