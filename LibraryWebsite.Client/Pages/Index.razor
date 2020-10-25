@@ -1,7 +1,59 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<h1>Welcome!</h1>
+<p>Welcome to library example application!</p>
+<p>This is example application intended to showcase features of ASP.NET Core 3.1, Blazor client, Docker and CI/CD behind it.</p>
+<h2>Default users</h2>
+<table class="table">
+    <tr>
+        <th>Login</th>
+        <th>Password</th>
+        <th>Roles</th>
+    </tr>
+    <tr>
+        <td>admin@sample.com</td>
+        <td>Abcdefgh!1</td>
+        <td>Admin</td>
+    </tr>
+    <tr>
+        <td>librarian@sample.com</td>
+        <td>Abcdefgh!1</td>
+        <td>Librarian</td>
+    </tr>
+    <tr>
+        <td>reader@sample.com</td>
+        <td>Abcdefgh!1</td>
+        <td>Reader</td>
+    </tr>
+</table>
+<h2>Features</h2>
+<p>Feature-wise the application is a simple library application.</p>
+<h4>Done</h4>
+<ul>
+    <li>Displaying and editing books</li>
+</ul>
+<h4>TODO</h4>
+<ul>
+    <li>Borrowing and returning books</li>
+    <li>User administration : Admins, Library clerks, Readers, Guests</li>
+</ul>
+ 
+<h2>Technology</h2>
+<h4>Implemented</h4>
+<ul>
+    <li>Code is hosted on <a href="https://github.com/Euphoric/LibraryWebsite">Github</a></li>
+    <li>Backend is APS.NET Core 3.1 in C#</li>
+    <li>Frontend is Blazor with Bootstrap</li>
+    <li>User authentication and identity uses IdentityServer4</li>
+    <li>CI is done using <a href="https://circleci.com/gh/Euphoric/LibraryWebsite/tree/master">CircleCI</a></li>
+    <li>Docker image of the application is built by CI</li>
+    <li>Unit tests are run for C#</li>
+    <li>Database tests are run for Entity Framework and it's migrations</li>
+    <li>End-to-end tests are run on CI in Docker, using Selenium in C#.</li>
+</ul>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h4>TODO</h4>
+<ul>
+    <li>Continuous Deployment of application</li>
+    <li>Logging and monitoring</li>
+</ul>

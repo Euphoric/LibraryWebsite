@@ -20,14 +20,14 @@ namespace LibraryWebsite.TestEndToEnd
             _driver.Dispose();
         }
 
-        [Fact(Skip = "FIX for Blazor")]
+        [Fact]
         public void Welcome_is_present()
         {
             _driver.NavigateHome();
             
             WebDriverWait wait = new WebDriverWait(_driver,System.TimeSpan.FromSeconds(15));
 
-            IWebElement element = wait.Until(driver => driver.FindElement(By.XPath("//app-home//h1")));
+            IWebElement element = wait.Until(driver => driver.FindElement(By.XPath("//app//h1")));
             
             Assert.Equal("Welcome!", element.Text);
         }

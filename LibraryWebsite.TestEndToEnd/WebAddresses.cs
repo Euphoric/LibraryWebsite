@@ -4,7 +4,7 @@ namespace LibraryWebsite.TestEndToEnd
 {
     public static class WebAddresses
     {
-        public static string LocalAddress { get; } = "localhost:44310";
+        public static string LocalAddress { get; } = "localhost:5001";
 
         public static Uri LocalUri
         {
