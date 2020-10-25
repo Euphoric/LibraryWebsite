@@ -1,0 +1,93 @@
+@page "/book-list"
+@page "/book-list/{PageNumber:int}"
+@inject HttpClient Http
+
+<h1>Books</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Description</th>
+        <th>ISBN-13</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var book in books)
+    {
+        <tr>
+            <td>@book.Title</td>
+            <td>@book.Author</td>
+            <td>@book.Description</td>
+            <td>@book.Isbn13</td>
+            <td></td>
+            <td></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="pagination">
+    <a href="book-list/1" class="pagination-first">First page</a>
+    <a href="book-list/@(PageNumber - 1)" class="pagination-prev">Previous page</a>
+    <a href="book-list/@(PageNumber + 1)" class="pagination-next">Next page</a>
+    <a href="book-list/@LastPage" class="pagination-last">Last page</a>
+</div>
+@code {
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "DTO")]
+    public class PagingResultDto<TItem>
+    {
+        public ICollection<TItem> Items { get; set; }
+
+        public int CurrentPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int TotalCount { get; set; }
+    }
+
+    private class BookDto
+    {
+        public Guid Id { get; set; }
+
+        public string? Title { get; set; }
+        public string? Author { get; set; }
+        public string? Description { get; set; }
+
+        public string? Isbn13 { get; set; }
+    }
+
+    [Parameter]
+    public int PageNumber
+    {
+        get;
+        set;
+    }
+
+    public int LastPage { get; set; }
+
+    public bool IsFirstPage => PageNumber <= 1;
+    public bool IsLastPage => PageNumber >= LastPage;
+
+    private ICollection<BookDto> books = new List<BookDto>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (PageNumber < 1) PageNumber = 1;
+
+        await RefreshTodoList();
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task RefreshTodoList()
+    {
+        var pagedResult = await Http.GetFromJsonAsync<PagingResultDto<BookDto>>("/api/book/page?page=" + (PageNumber - 1));
+        books = pagedResult.Items;
+        LastPage = pagedResult.TotalPages;
+    }
+}

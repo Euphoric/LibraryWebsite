@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    
+    <!-- Non-nullable refernces -->
+    <Nullable>enable</Nullable>
+
   </PropertyGroup>
 
   <ItemGroup>
