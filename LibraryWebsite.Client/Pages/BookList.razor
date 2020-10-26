@@ -4,6 +4,8 @@
 
 <h1>Books</h1>
 
+<a href="book-edit" class="btn btn-primary">Add book</a>
+
 <table class="table">
     <thead>
     <tr>
@@ -48,17 +50,6 @@
         public int TotalPages { get; set; }
 
         public int TotalCount { get; set; }
-    }
-
-    private class BookDto
-    {
-        public Guid Id { get; set; }
-
-        public string? Title { get; set; }
-        public string? Author { get; set; }
-        public string? Description { get; set; }
-
-        public string? Isbn13 { get; set; }
     }
 
     [Parameter]
