@@ -71,6 +71,7 @@ namespace LibraryWebsite
                     {
                         config.WithLogoutRedirectUri("/authentication/logout-callback");
                         config.WithRedirectUri("/authentication/login-callback");
+                        config.WithScopes("email");
                     });
                 });
             

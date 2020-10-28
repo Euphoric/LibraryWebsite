@@ -36,7 +36,7 @@ namespace LibraryWebsite.TestEndToEnd
             return new String(stringChars);
         }
 
-        [Fact(Skip = "FIX for Blazor")]
+        [Fact]
         public void User_registers_and_logs_in()
         {
             _driver.NavigateTo("");
@@ -48,8 +48,8 @@ namespace LibraryWebsite.TestEndToEnd
             var userPassword = "Abcdefgh!1";
 
             {
-                IWebElement loginLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"register_user\"]")));
-                loginLink.Click();
+                IWebElement registerLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"register_user\"]")));
+                registerLink.Click();
 
                 IWebElement emailInput = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"Input_Email\"]")));
                 emailInput.SendKeys(userEmail);
@@ -63,7 +63,7 @@ namespace LibraryWebsite.TestEndToEnd
                 IWebElement registerButton = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"registerSubmit\"]")));
                 registerButton.Click();
 
-                var manageUserLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"manage_user\"]")));
+                IWebElement manageUserLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"manage_user\"]")));
                 Assert.Contains(userEmail, manageUserLink.Text, StringComparison.InvariantCultureIgnoreCase);
 
                 IWebElement logoutLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"logout_user\"]")));
@@ -83,7 +83,7 @@ namespace LibraryWebsite.TestEndToEnd
                 IWebElement registerButton = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"login-submit\"]")));
                 registerButton.Click();
 
-                var manageUserLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"manage_user\"]")));
+                IWebElement manageUserLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"manage_user\"]")));
                 Assert.Contains(userEmail, manageUserLink.Text, StringComparison.InvariantCultureIgnoreCase);
 
                 IWebElement logoutLink = wait.Until(driver => driver.FindElement(By.XPath("//*[@id=\"logout_user\"]")));
