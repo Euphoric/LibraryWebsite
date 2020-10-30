@@ -94,7 +94,8 @@ namespace LibraryWebsite
                                 IdentityServerConstants.StandardScopes.OpenId,
                                 IdentityServerConstants.StandardScopes.Profile,
                                 IdentityServerConstants.StandardScopes.Email,
-                                "roles"
+                                "roles",
+                                "LibraryWebsiteAPI"
                             }
                         }
                     );

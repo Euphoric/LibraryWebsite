@@ -1,12 +1,11 @@
 using System;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Text;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace LibraryWebsite.Client
 {
@@ -17,7 +16,18 @@ namespace LibraryWebsite.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddHttpClient("api", options=>options.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+                .AddHttpMessageHandler(sp => 
+                {
+                    var handler = new CustomAuthorizationMessageHandler(sp.GetRequiredService<IAccessTokenProvider>())
+                        .ConfigureHandler(
+                            authorizedUrls: new[] { builder.HostEnvironment.BaseAddress },
+                            scopes: new[] { "LibraryWebsiteAPI" });
+
+                    return handler;
+                });
+
+            builder.Services.AddScoped(sp => sp.GetService<IHttpClientFactory>().CreateClient("api"));
 
             builder.Services.AddOidcAuthentication(options =>
             {
@@ -28,6 +38,7 @@ namespace LibraryWebsite.Client
                 options.ProviderOptions.DefaultScopes.Add("profile");
                 options.ProviderOptions.DefaultScopes.Add("email");
                 options.ProviderOptions.DefaultScopes.Add("roles");
+                options.ProviderOptions.DefaultScopes.Add("LibraryWebsiteAPI");
                 
                 options.ProviderOptions.ResponseType = "code";
             });
