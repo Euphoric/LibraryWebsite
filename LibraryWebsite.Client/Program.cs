@@ -27,6 +27,8 @@ namespace LibraryWebsite.Client
                 options.ProviderOptions.DefaultScopes.Add("openid");
                 options.ProviderOptions.DefaultScopes.Add("profile");
                 options.ProviderOptions.DefaultScopes.Add("email");
+                options.ProviderOptions.DefaultScopes.Add("roles");
+                
                 options.ProviderOptions.ResponseType = "code";
             });
 

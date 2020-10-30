@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using IdentityModel;
 using IdentityServer4.Models;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using IdentityServer4;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Builder;
@@ -54,6 +56,8 @@ namespace LibraryWebsite
                 .AddApiAuthorization<ApplicationUser, LibraryContext>(options =>
                 {
                     options.IdentityResources.AddEmail();
+                    options.IdentityResources.Add(new IdentityResource("roles", "User roles",
+                        new List<string> {JwtClaimTypes.Role}));
 
                     options.ApiResources["LibraryWebsiteAPI"].UserClaims = new List<string>
                     {
@@ -77,24 +81,20 @@ namespace LibraryWebsite
                             AllowedGrantTypes = GrantTypes.Code,
 
                             // for IClientRequestParametersProvider to work correctly, not used by identity server
-                            Properties = { { "Profile", ApplicationProfiles.IdentityServerSPA } },
+                            Properties = {{"Profile", ApplicationProfiles.IdentityServerSPA}},
 
-                            //ClientSecrets =
-                            //{
-                            //    new Secret("secret".Sha256())
-                            //},
-                            //AllowAccessTokensViaBrowser = true,
                             RequireClientSecret = false,
                             RequireConsent = false,
 
-                            RedirectUris = { "/authentication/login-callback" },
-                            PostLogoutRedirectUris = { "/authentication/logout-callback" },
+                            RedirectUris = {"/authentication/login-callback"},
+                            PostLogoutRedirectUris = {"/authentication/logout-callback"},
 
                             AllowedScopes =
                             {
                                 IdentityServerConstants.StandardScopes.OpenId,
                                 IdentityServerConstants.StandardScopes.Profile,
                                 IdentityServerConstants.StandardScopes.Email,
+                                "roles"
                             }
                         }
                     );
