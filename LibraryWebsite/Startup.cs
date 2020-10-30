@@ -4,6 +4,8 @@ using IdentityServer4.Models;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using IdentityServer4;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +30,7 @@ namespace LibraryWebsite
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<LibraryContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("Database")));
+            services.AddDbContext<LibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddTransient<DatabaseMigrations>();
             services.AddTransient<SampleDataSeeder>();
 
@@ -39,7 +41,7 @@ namespace LibraryWebsite
             {
                 options.AddPolicy(Policies.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
                 options.AddPolicy(Policies.IsLibrarian, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Librarian); });
-                options.AddPolicy(Policies.CanEditBooks, policy => policy.RequireClaim(ClaimTypes.Role,Role.Librarian) );
+                options.AddPolicy(Policies.CanEditBooks, policy => policy.RequireClaim(ClaimTypes.Role, Role.Librarian));
             });
 
             services
@@ -67,14 +69,37 @@ namespace LibraryWebsite
                         RequireClientSecret = false
                     });
 
-                    options.Clients.AddIdentityServerSPA("LibraryWebsite", config =>
-                    {
-                        config.WithLogoutRedirectUri("/authentication/logout-callback");
-                        config.WithRedirectUri("/authentication/login-callback");
-                        config.WithScopes("email");
-                    });
+                    options.Clients.Add(
+                        new IdentityServer4.Models.Client()
+                        {
+                            ClientId = "LibraryWebsite",
+                            ClientName = "Library website",
+                            AllowedGrantTypes = GrantTypes.Code,
+
+                            // for IClientRequestParametersProvider to work correctly, not used by identity server
+                            Properties = { { "Profile", ApplicationProfiles.IdentityServerSPA } },
+
+                            //ClientSecrets =
+                            //{
+                            //    new Secret("secret".Sha256())
+                            //},
+                            //AllowAccessTokensViaBrowser = true,
+                            RequireClientSecret = false,
+                            RequireConsent = false,
+
+                            RedirectUris = { "/authentication/login-callback" },
+                            PostLogoutRedirectUris = { "/authentication/logout-callback" },
+
+                            AllowedScopes =
+                            {
+                                IdentityServerConstants.StandardScopes.OpenId,
+                                IdentityServerConstants.StandardScopes.Profile,
+                                IdentityServerConstants.StandardScopes.Email,
+                            }
+                        }
+                    );
                 });
-            
+
             services
                 .AddAuthentication()
                 .AddIdentityServerJwt();
