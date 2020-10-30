@@ -69,5 +69,37 @@ namespace LibraryWebsite.TestEndToEnd
             //    Assert.Contains("disabled", nextPageLink.GetAttribute("class"), StringComparison.InvariantCulture);
             //}
         }
+
+        [Fact]
+        public void Books_add()
+        {
+            _driver.NavigateHome();
+
+            _driver.LoginAsLibrarian();
+
+            WebDriverWait wait = new WebDriverWait(_driver, System.TimeSpan.FromSeconds(15));
+            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
+
+            IWebElement booksLink = wait.Until(driver => driver.FindElement(By.Id("navigate-books")));
+            booksLink.Click();
+
+            IWebElement addBookLink = wait.Until(driver => driver.FindElement(By.Id("books-add")));
+            addBookLink.Click();
+
+            IWebElement titleText = wait.Until(driver => driver.FindElement(By.Id("titleInput")));
+            titleText.SendKeys("testBook");
+
+            IWebElement isbn13Text = wait.Until(driver => driver.FindElement(By.Id("isbn13Input")));
+            isbn13Text.SendKeys("testIsbn");
+
+            IWebElement authorText = wait.Until(driver => driver.FindElement(By.Id("authorInput")));
+            authorText.SendKeys("testAuthor");
+
+            IWebElement descriptionText = wait.Until(driver => driver.FindElement(By.Id("descriptionInput")));
+            descriptionText.SendKeys("testDescription");
+
+            IWebElement saveLink = wait.Until(driver => driver.FindElement(By.Id("book-save")));
+            saveLink.Click();
+        }
     }
 }
