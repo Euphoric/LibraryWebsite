@@ -73,6 +73,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibraryWebsite.Client\LibraryWebsite.Client.csproj" />
+    <ProjectReference Include="..\LibraryWebsite.Shared\LibraryWebsite.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

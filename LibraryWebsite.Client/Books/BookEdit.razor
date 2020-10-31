@@ -1,7 +1,9 @@
 @page "/book-edit"
 @page "/book-edit/{bookId}"
+@using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Policy = Policies.CanEditBooks)]
 
 <h1>Add book</h1>
 

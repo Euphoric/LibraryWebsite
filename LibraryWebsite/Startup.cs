@@ -4,7 +4,6 @@ using IdentityModel;
 using IdentityServer4.Models;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -41,9 +40,7 @@ namespace LibraryWebsite
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Policies.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
-                options.AddPolicy(Policies.IsLibrarian, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Librarian); });
-                options.AddPolicy(Policies.CanEditBooks, policy => policy.RequireClaim(ClaimTypes.Role, Role.Librarian));
+                options.AddPolicies();
             });
 
             services

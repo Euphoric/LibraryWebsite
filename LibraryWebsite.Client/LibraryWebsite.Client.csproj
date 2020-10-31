@@ -20,4 +20,8 @@
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LibraryWebsite.Shared\LibraryWebsite.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

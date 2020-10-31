@@ -5,6 +5,7 @@ WORKDIR /src
 COPY ["LibraryWebsite.sln", "."]
 COPY ["LibraryWebsite/LibraryWebsite.csproj", "LibraryWebsite/"]
 COPY ["LibraryWebsite.Client/LibraryWebsite.Client.csproj", "LibraryWebsite.Client/"]
+COPY ["LibraryWebsite.Shared/LibraryWebsite.Shared.csproj", "LibraryWebsite.Shared/"]
 COPY ["LibraryWebsite.Test/LibraryWebsite.Test.csproj", "LibraryWebsite.Test/"]
 COPY ["LibraryWebsite.TestEndToEnd/LibraryWebsite.TestEndToEnd.csproj", "LibraryWebsite.TestEndToEnd/"]
 COPY ["LibraryWebsite.TestDatabase/LibraryWebsite.TestDatabase.csproj", "LibraryWebsite.TestDatabase/"]

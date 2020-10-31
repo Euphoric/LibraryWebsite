@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -41,7 +42,10 @@ namespace LibraryWebsite
                 options.ProviderOptions.DefaultScopes.Add("LibraryWebsiteAPI");
                 
                 options.ProviderOptions.ResponseType = "code";
+                options.UserOptions.RoleClaim = ClaimTypes.Role;
             });
+
+            builder.Services.AddAuthorizationCore(options => { options.AddPolicies(); });
 
             await builder.Build().RunAsync();
         }
