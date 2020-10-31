@@ -100,6 +100,9 @@ namespace LibraryWebsite.TestEndToEnd
 
             IWebElement saveLink = wait.Until(driver => driver.FindElement(By.Id("book-save")));
             saveLink.Click();
+
+            IWebElement bookChangedAlert = wait.Until(driver => driver.FindElement(By.Id("book-changed-alert")));
+            Assert.Contains("Book changed successfully.", bookChangedAlert.Text, StringComparison.InvariantCulture);
         }
     }
 }

@@ -27,9 +27,9 @@
 
     private async Task Save()
     {
-        await Http.PostJsonAsync<Guid>("api/book", book);
+        var addedBookGuid = await Http.PostJsonAsync<Guid>("api/book", book);
 
-        NavigationManager.NavigateTo("/book-list");
+        NavigationManager.NavigateTo($"/book-list?bookChanged={addedBookGuid}");
     }
 
     private void Cancel()

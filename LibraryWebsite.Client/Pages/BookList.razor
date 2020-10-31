@@ -1,8 +1,16 @@
 @page "/book-list"
 @page "/book-list/{PageNumber:int}"
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <h1>Books</h1>
+
+@if (ChangedBookId.HasValue)
+{
+    <div id="book-changed-alert" class="alert alert-primary">
+        Book changed successfully.
+    </div>
+}
 
 <a href="book-edit" class="btn btn-primary" id="books-add">Add book</a>
 
@@ -65,6 +73,15 @@
     public bool IsLastPage => PageNumber >= LastPage;
 
     private ICollection<BookDto> books = new List<BookDto>();
+
+    Guid? ChangedBookId = null;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        NavigationManager.TryGetQueryString("bookChanged", out ChangedBookId);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
