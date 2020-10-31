@@ -12,31 +12,37 @@
     </div>
 }
 
-<a href="book-edit" class="btn btn-primary" id="books-add">Add book</a>
+<AuthorizeView Policy="@Policies.CanEditBooks">
+    <a href="book-edit" class="btn btn-primary" id="books-add">Add book</a>
+</AuthorizeView>
 
 <table class="table">
     <thead>
-    <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Description</th>
-        <th>ISBN-13</th>
-        <th></th>
-        <th></th>
-    </tr>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Description</th>
+            <th>ISBN-13</th>
+            <AuthorizeView Policy="@Policies.CanEditBooks">
+                <th></th>
+                <th></th>
+            </AuthorizeView>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var book in books)
-    {
-        <tr>
-            <td>@book.Title</td>
-            <td>@book.Author</td>
-            <td>@book.Description</td>
-            <td>@book.Isbn13</td>
-            <td><a href="book-edit/@book.Id" class="btn btn-primary">Edit</a></td>
-            <td><a @onclick="()=>DeleteItem(book.Id)" class="btn btn-outline-danger">Delete</a></td>
-        </tr>
-    }
+        @foreach (var book in books)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.Description</td>
+                <td>@book.Isbn13</td>
+                <AuthorizeView Policy="@Policies.CanEditBooks">
+                    <td><a href="book-edit/@book.Id" class="btn btn-primary">Edit</a></td>
+                    <td><a @onclick="()=>DeleteItem(book.Id)" class="btn btn-outline-danger">Delete</a></td>
+                </AuthorizeView>
+            </tr>
+        }
     </tbody>
 </table>
 
