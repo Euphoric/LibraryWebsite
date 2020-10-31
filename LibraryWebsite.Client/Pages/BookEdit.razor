@@ -1,33 +1,69 @@
 @page "/book-edit"
+@page "/book-edit/{bookId}"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
 <h1>Add book</h1>
 
-<div class="form-group">
-    <label for="titleInput">Title</label>
-    <input type="text" class="form-control" id="titleInput" @bind-value="@book.Title">
+@if (Book == null)
+{
+    <div>Loading book...</div>
+}
+else
+{
 
-    <label for="isbn13Input">Isbn13</label>
-    <input type="text" class="form-control" id="isbn13Input" @bind-value="@book.Isbn13">
+    <div class="form-group">
+        <label for="titleInput">Title</label>
+        <input type="text" class="form-control" id="titleInput" @bind-value="@Book.Title">
 
-    <label for="authorInput">Author</label>
-    <input type="text" class="form-control" id="authorInput" @bind-value="@book.Author">
+        <label for="isbn13Input">Isbn13</label>
+        <input type="text" class="form-control" id="isbn13Input" @bind-value="@Book.Isbn13">
 
-    <label for="descriptionInput">Description</label>
-    <input type="text" class="form-control" id="descriptionInput" @bind-value="@book.Description">
-</div>
+        <label for="authorInput">Author</label>
+        <input type="text" class="form-control" id="authorInput" @bind-value="@Book.Author">
 
-<button id="book-save" class="btn btn-primary" @onclick="Save">Save</button>
-<button id="book-cancel" class="btn btn-primary" @onclick="Cancel">Cancel</button>
+        <label for="descriptionInput">Description</label>
+        <input type="text" class="form-control" id="descriptionInput" @bind-value="@Book.Description">
+    </div>
+
+    <button id="book-save" class="btn btn-primary" @onclick="Save">Save</button>
+    <button id="book-cancel" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+}
 
 @code {
 
-    BookDto book = new BookDto();
+    [Parameter]
+    public String? BookId { get; set; }
+
+    BookDto? Book { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (BookId != null)
+        {
+            Book = await Http.GetJsonAsync<BookDto>($"api/book/{BookId}");
+        }
+        else
+        {
+            Book = new BookDto();
+        }
+
+        await base.OnInitializedAsync();
+    }
 
     private async Task Save()
     {
-        var addedBookGuid = await Http.PostJsonAsync<Guid>("api/book", book);
+        Guid addedBookGuid;
+        if (BookId == null)
+        {
+            addedBookGuid = await Http.PostJsonAsync<Guid>("api/book", Book);
+        }
+        else
+        {
+            var bookId = Book!.Id;
+            await Http.PutAsJsonAsync($"api/book/{bookId}", Book);
+            addedBookGuid = bookId;
+        }
 
         NavigationManager.NavigateTo($"/book-list?bookChanged={addedBookGuid}");
     }

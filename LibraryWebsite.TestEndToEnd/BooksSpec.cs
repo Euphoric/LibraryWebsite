@@ -60,7 +60,7 @@ namespace LibraryWebsite.TestEndToEnd
 
             var lastPageLink = _driver.FindElement(By.ClassName("pagination-last"));
             lastPageLink.Click();
-            
+
             wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
 
             // TODO: Fix
@@ -71,7 +71,7 @@ namespace LibraryWebsite.TestEndToEnd
         }
 
         [Fact]
-        public void Books_add()
+        public void Books_add_and_edit()
         {
             _driver.NavigateHome();
 
@@ -80,29 +80,63 @@ namespace LibraryWebsite.TestEndToEnd
             WebDriverWait wait = new WebDriverWait(_driver, System.TimeSpan.FromSeconds(15));
             wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
 
-            IWebElement booksLink = wait.Until(driver => driver.FindElement(By.Id("navigate-books")));
-            booksLink.Click();
+            wait.Until(driver => driver.FindElement(By.Id("navigate-books"))).Click();
 
-            IWebElement addBookLink = wait.Until(driver => driver.FindElement(By.Id("books-add")));
-            addBookLink.Click();
+            // create new Book
+            {
+                wait.Until(driver => driver.FindElement(By.Id("books-add"))).Click();
 
-            IWebElement titleText = wait.Until(driver => driver.FindElement(By.Id("titleInput")));
-            titleText.SendKeys("testBook");
+                wait.Until(driver => driver.FindElement(By.Id("titleInput"))).SendKeys("testBook");
 
-            IWebElement isbn13Text = wait.Until(driver => driver.FindElement(By.Id("isbn13Input")));
-            isbn13Text.SendKeys("testIsbn");
+                wait.Until(driver => driver.FindElement(By.Id("isbn13Input"))).SendKeys("testIsbn");
 
-            IWebElement authorText = wait.Until(driver => driver.FindElement(By.Id("authorInput")));
-            authorText.SendKeys("testAuthor");
+                wait.Until(driver => driver.FindElement(By.Id("authorInput"))).SendKeys("testAuthor");
 
-            IWebElement descriptionText = wait.Until(driver => driver.FindElement(By.Id("descriptionInput")));
-            descriptionText.SendKeys("testDescription");
+                wait.Until(driver => driver.FindElement(By.Id("descriptionInput"))).SendKeys("testDescription");
 
-            IWebElement saveLink = wait.Until(driver => driver.FindElement(By.Id("book-save")));
-            saveLink.Click();
+                wait.Until(driver => driver.FindElement(By.Id("book-save"))).Click();
+            }
 
-            IWebElement bookChangedAlert = wait.Until(driver => driver.FindElement(By.Id("book-changed-alert")));
-            Assert.Contains("Book changed successfully.", bookChangedAlert.Text, StringComparison.InvariantCulture);
+            Assert.Contains("Book changed successfully.", wait.Until(driver => driver.FindElement(By.Id("book-changed-alert"))).Text, StringComparison.InvariantCulture);
+
+            // Assert that new book has correct values
+            {
+                wait.Until(driver => driver.FindElement(By.Id("book-changed-alert-link"))).Click();
+
+                Assert.Equal("testBook", wait.Until(driver => driver.FindElement(By.Id("titleInput"))).GetAttribute("value"));
+
+                Assert.Equal("testIsbn", wait.Until(driver => driver.FindElement(By.Id("isbn13Input"))).GetAttribute("value"));
+
+                Assert.Equal("testAuthor", wait.Until(driver => driver.FindElement(By.Id("authorInput"))).GetAttribute("value"));
+
+                Assert.Equal("testDescription", wait.Until(driver => driver.FindElement(By.Id("descriptionInput"))).GetAttribute("value"));
+            }
+
+            // edit book
+            {
+                wait.Until(driver => driver.FindElement(By.Id("titleInput"))).ClearAndSendKeys("testBook X");
+
+                wait.Until(driver => driver.FindElement(By.Id("isbn13Input"))).ClearAndSendKeys("testIsbn X");
+
+                wait.Until(driver => driver.FindElement(By.Id("authorInput"))).ClearAndSendKeys("testAuthor X");
+
+                wait.Until(driver => driver.FindElement(By.Id("descriptionInput"))).ClearAndSendKeys("testDescription X");
+
+                wait.Until(driver => driver.FindElement(By.Id("book-save"))).Click();
+            }
+
+            // Assert book was edited correctly
+            {
+                wait.Until(driver => driver.FindElement(By.Id("book-changed-alert-link"))).Click();
+
+                Assert.Equal("testBook X", wait.Until(driver => driver.FindElement(By.Id("titleInput"))).GetAttribute("value"));
+
+                Assert.Equal("testIsbn X", wait.Until(driver => driver.FindElement(By.Id("isbn13Input"))).GetAttribute("value"));
+
+                Assert.Equal("testAuthor X", wait.Until(driver => driver.FindElement(By.Id("authorInput"))).GetAttribute("value"));
+
+                Assert.Equal("testDescription X", wait.Until(driver => driver.FindElement(By.Id("descriptionInput"))).GetAttribute("value"));
+            }
         }
     }
 }

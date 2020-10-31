@@ -8,7 +8,7 @@
 @if (ChangedBookId.HasValue)
 {
     <div id="book-changed-alert" class="alert alert-primary">
-        Book changed successfully.
+        Book changed successfully. <a id="book-changed-alert-link" href="book-edit/@ChangedBookId.Value" class="alert-link">Edit</a>.
     </div>
 }
 
@@ -33,7 +33,7 @@
             <td>@book.Author</td>
             <td>@book.Description</td>
             <td>@book.Isbn13</td>
-            <td></td>
+            <td><a href="book-edit/@book.Id" class="btn btn-primary">Edit</a></td>
             <td></td>
         </tr>
     }
