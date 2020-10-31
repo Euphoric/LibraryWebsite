@@ -39,7 +39,7 @@ namespace LibraryWebsite.TestEndToEnd
             IReadOnlyCollection<IWebElement> headers = table.FindElements(By.XPath("thead//th"));
             var headerTexts = headers.Select(th => th.Text).ToArray();
 
-            Assert.Equal(new[] { "Title", "Author", "Description", "ISBN-13", "", "" }, headerTexts);
+            Assert.Equal(new[] { "Title", "Author", "Description", "ISBN-13" }, headerTexts);
 
             const int defaultRowCount = 10;
             wait.Until(dr => dr.FindElements(By.XPath("//table/tbody/tr")).Count == defaultRowCount);
