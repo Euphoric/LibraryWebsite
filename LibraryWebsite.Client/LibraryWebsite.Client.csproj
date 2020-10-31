@@ -6,6 +6,7 @@
     
     <!-- Non-nullable refernces -->
     <Nullable>enable</Nullable>
+    <RootNamespace>LibraryWebsite</RootNamespace>
 
   </PropertyGroup>
 

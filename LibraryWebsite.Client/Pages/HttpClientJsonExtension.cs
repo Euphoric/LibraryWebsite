@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.AspNetCore.Components
 {
     /// <summary>

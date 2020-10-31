@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
-namespace LibraryWebsite.Client
+namespace LibraryWebsite
 {
     /// <summary>
     /// Custom HttpMessageHandler based on <see cref="AuthorizationMessageHandler"/>, that works even without token.

@@ -1,13 +1,13 @@
 using System;
-using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LibraryWebsite.Client
+namespace LibraryWebsite
 {
     public class Program
     {

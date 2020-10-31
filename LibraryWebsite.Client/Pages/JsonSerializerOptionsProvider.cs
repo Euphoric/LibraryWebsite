@@ -3,6 +3,7 @@
 
 using System.Text.Json;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.AspNetCore.Components
 {
     internal static class JsonSerializerOptionsProvider
