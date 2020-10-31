@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using IdentityModel;
 using IdentityServer4.Models;
 using LibraryWebsite.Identity;
@@ -40,7 +41,7 @@ namespace LibraryWebsite
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicies();
+                options.AddPolicies(ClaimTypes.Role);
             });
 
             services

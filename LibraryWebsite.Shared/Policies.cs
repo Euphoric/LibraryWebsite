@@ -13,11 +13,11 @@ namespace LibraryWebsite
         public const string IsLibrarian = "IsLibrarian";
         public const string CanEditBooks = "CanEditBooks";
 
-        public static void AddPolicies(this AuthorizationOptions options)
+        public static void AddPolicies(this AuthorizationOptions options, string roleClaim)
         {
-            options.AddPolicy(Policies.IsAdmin, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Admin); });
-            options.AddPolicy(Policies.IsLibrarian, policy => { policy.RequireClaim(ClaimTypes.Role, Role.Librarian); });
-            options.AddPolicy(Policies.CanEditBooks, policy => policy.RequireClaim(ClaimTypes.Role, Role.Librarian));
+            options.AddPolicy(IsAdmin, policy => { policy.RequireClaim(roleClaim, Role.Admin); });
+            options.AddPolicy(IsLibrarian, policy => { policy.RequireClaim(roleClaim, Role.Librarian); });
+            options.AddPolicy(CanEditBooks, policy => policy.RequireClaim(roleClaim, Role.Librarian));
         }
     }
 }

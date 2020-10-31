@@ -42,10 +42,10 @@ namespace LibraryWebsite
                 options.ProviderOptions.DefaultScopes.Add("LibraryWebsiteAPI");
                 
                 options.ProviderOptions.ResponseType = "code";
-                options.UserOptions.RoleClaim = ClaimTypes.Role;
+                options.UserOptions.RoleClaim = "role";
             });
 
-            builder.Services.AddAuthorizationCore(options => { options.AddPolicies(); });
+            builder.Services.AddAuthorizationCore(options => { options.AddPolicies("role"); });
 
             await builder.Build().RunAsync();
         }
