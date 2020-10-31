@@ -34,7 +34,7 @@
             <td>@book.Description</td>
             <td>@book.Isbn13</td>
             <td><a href="book-edit/@book.Id" class="btn btn-primary">Edit</a></td>
-            <td></td>
+            <td><a @onclick="()=>DeleteItem(book.Id)" class="btn btn-outline-danger">Delete</a></td>
         </tr>
     }
     </tbody>
@@ -98,4 +98,11 @@
         books = pagedResult.Items;
         LastPage = pagedResult.TotalPages;
     }
+
+    private async Task DeleteItem(Guid id)
+    {
+        await Http.DeleteAsync($"api/book/{id}");
+        await RefreshTodoList();
+    }
+
 }
