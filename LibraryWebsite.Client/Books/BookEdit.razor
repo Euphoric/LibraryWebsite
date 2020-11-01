@@ -13,22 +13,23 @@
 }
 else
 {
-    <div class="form-group">
+    <EditForm Model="@Book" class="form-group" OnValidSubmit="@Save">
+
         <label for="titleInput">Title</label>
-        <input type="text" class="form-control" id="titleInput" @bind-value="@Book.Title">
+        <InputText type="text" class="form-control" id="titleInput" @bind-Value="@Book.Title" />
 
         <label for="isbn13Input">Isbn13</label>
-        <input type="text" class="form-control" id="isbn13Input" @bind-value="@Book.Isbn13">
+        <InputText type="text" class="form-control" id="isbn13Input" @bind-Value="@Book.Isbn13" />
 
         <label for="authorInput">Author</label>
-        <input type="text" class="form-control" id="authorInput" @bind-value="@Book.Author">
+        <InputText type="text" class="form-control" id="authorInput" @bind-Value="@Book.Author" />
 
         <label for="descriptionInput">Description</label>
-        <input type="text" class="form-control" id="descriptionInput" @bind-value="@Book.Description">
-    </div>
+        <InputTextArea type="text" class="form-control" id="descriptionInput" @bind-Value="@Book.Description" />
 
-    <button id="book-save" class="btn btn-primary" @onclick="Save">Save</button>
-    <button id="book-cancel" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        <button id="book-save" type="submit" class="btn btn-primary">Save</button>
+        <button id="book-cancel" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+    </EditForm>
 }
 
 @code {
