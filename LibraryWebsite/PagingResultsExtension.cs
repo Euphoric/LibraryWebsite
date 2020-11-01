@@ -21,5 +21,19 @@ namespace LibraryWebsite
 
             return new PagingResult<T>(items, page, totalPages, totalCount);
         }
+
+        public static PagingResult<TTo> Select<TFrom, TTo>(this PagingResult<TFrom> paging, Func<TFrom, TTo> selector)
+        {
+            return new PagingResult<TTo>(
+                paging.Items.Select(selector).ToArray(),
+                paging.CurrentPage,
+                paging.TotalPages,
+                paging.TotalCount);
+        }
+
+        public static async Task<PagingResult<TTo>> Select<TFrom, TTo>(this Task<PagingResult<TFrom>> paging, Func<TFrom, TTo> selector)
+        {
+            return (await paging).Select(selector);
+        }
     }
 }

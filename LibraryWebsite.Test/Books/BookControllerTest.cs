@@ -33,8 +33,8 @@ namespace LibraryWebsite.Books
 
         public void Dispose()
         {
-            _dbContext?.Dispose();
-            _controller?.Dispose();
+            _dbContext.Dispose();
+            _controller.Dispose();
         }
 
         [Fact]
@@ -46,10 +46,10 @@ namespace LibraryWebsite.Books
         [Fact]
         public async Task Creates_new_book()
         {
-            Book bookToCreate = new Book() { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
+            var bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "IBANQ" };
             await _controller.Post(bookToCreate);
 
-            IEnumerable<Book> books = (await _controller.Get()).ToList();
+            IEnumerable<BookDto> books = (await _controller.Get()).ToList();
             var createdBook = Assert.Single(books);
 
             Assert.NotEqual(Guid.Empty, createdBook.Id);
@@ -66,7 +66,7 @@ namespace LibraryWebsite.Books
         {
             for (int i = 0; i < 30; i++)
             {
-                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                var bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _controller.Post(bookToCreate);
             }
 
@@ -82,7 +82,7 @@ namespace LibraryWebsite.Books
         {
             for (int i = 0; i < 20; i++)
             {
-                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                var bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _controller.Post(bookToCreate);
             }
 
@@ -102,7 +102,7 @@ namespace LibraryWebsite.Books
         {
             for (int i = 0; i < 30; i++)
             {
-                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                var bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _controller.Post(bookToCreate);
             }
 
@@ -128,7 +128,7 @@ namespace LibraryWebsite.Books
 
             for (int i = 0; i < 10; i++)
             {
-                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                var bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _controller.Post(bookToCreate);
             }
 
@@ -140,7 +140,7 @@ namespace LibraryWebsite.Books
 
             for (int i = 0; i < 1; i++)
             {
-                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                var bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _controller.Post(bookToCreate);
             }
 
@@ -158,7 +158,7 @@ namespace LibraryWebsite.Books
 
             for (int i = 0; i < 10; i++)
             {
-                Book bookToCreate = new Book { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
+                var bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
                 await _controller.Post(bookToCreate);
             }
 

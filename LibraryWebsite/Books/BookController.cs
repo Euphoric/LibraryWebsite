@@ -20,28 +20,29 @@ namespace LibraryWebsite.Books
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Book>> Get()
+        public async Task<IEnumerable<BookDto>> Get()
         {
-            return await _context.Books.ToListAsync();
+            return await _context.Books.Select(bk => ToDto(bk)).ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<Book> Get(Guid id)
+        public async Task<BookDto> Get(Guid id)
         {
-            return await _context.Books.SingleOrDefaultAsync(bk => bk.Id == id);
+            var book = await _context.Books.SingleOrDefaultAsync(bk => bk.Id == id);
+            return ToDto(book);
         }
 
         [HttpGet("page")]
-        public async Task<PagingResult<Book>> GetPaginated([FromQuery]int limit = 10, int page = 0)
+        public async Task<PagingResult<BookDto>> GetPaginated([FromQuery] int limit = 10, int page = 0)
         {
-            return await _context.Books.OrderBy(x => x.Title).CreatePaging(limit, page);
+            return await _context.Books.OrderBy(x => x.Title).CreatePaging(limit, page).Select(ToDto);
         }
 
         [Authorize(Policy = Policies.CanEditBooks)]
-        public async Task<Guid> Post([FromBody]Book book)
+        public async Task<Guid> Post([FromBody] BookDto book)
         {
             book.Id = Guid.NewGuid();
-            _context.Books.Add(book);
+            await _context.Books.AddAsync(FromDto(book));
             await _context.SaveChangesAsync();
 
             return book.Id;
@@ -49,7 +50,7 @@ namespace LibraryWebsite.Books
 
         [HttpPut("{id}")]
         [Authorize(Policy = Policies.CanEditBooks)]
-        public async Task<ActionResult> Put(Guid id, [FromBody]Book book)
+        public async Task<ActionResult> Put(Guid id, [FromBody] BookDto book)
         {
             var bookToUpdate = await _context.Books.FirstOrDefaultAsync(bk => bk.Id == id);
             if (bookToUpdate == null)
@@ -83,6 +84,30 @@ namespace LibraryWebsite.Books
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        private static BookDto ToDto(Book bk)
+        {
+            return new BookDto
+            {
+                Id = bk.Id,
+                Title = bk.Title,
+                Isbn13 = bk.Isbn13,
+                Author = bk.Author,
+                Description = bk.Description
+            };
+        }
+
+        private static Book FromDto(BookDto dto)
+        {
+            return new Book
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Isbn13 = dto.Isbn13,
+                Author = dto.Author,
+                Description = dto.Description
+            };
         }
     }
 }
