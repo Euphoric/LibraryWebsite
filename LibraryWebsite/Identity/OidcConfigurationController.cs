@@ -13,6 +13,9 @@ namespace LibraryWebsite.Identity
             _clientRequestParametersProvider = clientRequestParametersProvider;
         }
 
+        /// <summary>
+        /// Provides OICD configuration to clients so they can authenticate against identity server.
+        /// </summary>
         [HttpGet("_configuration/{clientId}")]
         public IActionResult GetClientRequestParameters([FromRoute]string clientId)
         {

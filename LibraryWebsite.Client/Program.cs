@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -17,9 +16,10 @@ namespace LibraryWebsite
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddHttpClient("api", options=>options.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                .AddHttpMessageHandler(sp => 
+            builder.Services.AddHttpClient("api", options => options.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+                .AddHttpMessageHandler(sp =>
                 {
+                    // adds message handler that adds authorization tokens to outgoing requests
                     var handler = new CustomAuthorizationMessageHandler(sp.GetRequiredService<IAccessTokenProvider>())
                         .ConfigureHandler(
                             authorizedUrls: new[] { builder.HostEnvironment.BaseAddress },
@@ -30,21 +30,15 @@ namespace LibraryWebsite
 
             builder.Services.AddScoped(sp => sp.GetService<IHttpClientFactory>().CreateClient("api"));
 
-            builder.Services.AddOidcAuthentication(options =>
+            // adds identity server configuration retrieved from configuration endpoint
+            builder.Services.AddApiAuthorization(options =>
             {
-                // TODO : load from _configuration/LibraryWebsite endpoint
-                options.ProviderOptions.Authority = builder.HostEnvironment.BaseAddress;
-                options.ProviderOptions.ClientId = "LibraryWebsite";
-                options.ProviderOptions.DefaultScopes.Add("openid");
-                options.ProviderOptions.DefaultScopes.Add("profile");
-                options.ProviderOptions.DefaultScopes.Add("email");
-                options.ProviderOptions.DefaultScopes.Add("roles");
-                options.ProviderOptions.DefaultScopes.Add("LibraryWebsiteAPI");
-                
-                options.ProviderOptions.ResponseType = "code";
+                options.ProviderOptions.ConfigurationEndpoint = "_configuration/LibraryWebsite";
+                // make Blazor authorization recognize role claims
                 options.UserOptions.RoleClaim = "role";
             });
 
+            // setup common policies
             builder.Services.AddAuthorizationCore(options => { options.AddPolicies("role"); });
 
             await builder.Build().RunAsync();
