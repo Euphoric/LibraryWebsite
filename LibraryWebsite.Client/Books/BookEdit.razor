@@ -26,6 +26,9 @@ else
 
         <label for="descriptionInput">Description</label>
         <InputTextArea type="text" class="form-control" id="descriptionInput" @bind-Value="@Book.Description" />
+        
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
         <button id="book-save" type="submit" class="btn btn-primary">Save</button>
         <button id="book-cancel" class="btn btn-secondary" @onclick="Cancel">Cancel</button>

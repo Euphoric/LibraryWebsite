@@ -41,18 +41,6 @@ namespace LibraryWebsite.Books
             Assert.Empty(books);
         }
 
-        private class BookDto
-        {
-            public Guid Id { get; set; }
-
-            public string? Title { get; set; }
-            public string? Author { get; set; }
-            public string? Description { get; set; }
-
-            public string? Isbn13 { get; set; }
-        }
-
-
         [Fact]
         public async Task Creates_and_retrieves_books()
         {
