@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.302-alpine3.12 AS publish
+FROM mcr.microsoft.com/dotnet/sdk:5.1.302-alpine3.12 AS publish
 
 # Cache NuGet packages
 WORKDIR /src
@@ -18,7 +18,7 @@ COPY . .
 WORKDIR "/src/LibraryWebsite"
 RUN dotnet publish "LibraryWebsite.csproj" -c Release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.6-alpine3.12 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.0-alpine3.12 AS final
 
 # enable globalization support
 RUN apk add --no-cache icu-libs
