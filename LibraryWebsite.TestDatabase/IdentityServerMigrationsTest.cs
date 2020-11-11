@@ -26,7 +26,7 @@ namespace LibraryWebsite
 
         public async Task DisposeAsync()
         {
-            await _services.GetService<LibraryContext>().Database.EnsureDeletedAsync();
+            await _services.GetRequiredService<LibraryContext>().Database.EnsureDeletedAsync();
         }
 
         [Fact]

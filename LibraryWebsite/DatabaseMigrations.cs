@@ -71,13 +71,13 @@ namespace LibraryWebsite
 
         public async ValueTask<bool> DoesDatabaseExists()
         {
-            var database = _services.GetService<LibraryContext>().Database;
+            var database = _services.GetRequiredService<LibraryContext>().Database;
             return await database.CanConnectAsync();
         }
 
         public async ValueTask<bool> HasNewestMigrations()
         {
-            var database = _services.GetService<LibraryContext>().Database;
+            var database = _services.GetRequiredService<LibraryContext>().Database;
             var pendingMigrations = await database.GetPendingMigrationsAsync();
             return !pendingMigrations.Any();
         }

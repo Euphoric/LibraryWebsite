@@ -26,7 +26,7 @@ namespace Microsoft.AspNetCore.Components
         {
             httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             var stringContent = await httpClient.GetStringAsync(requestUri);
-            return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
+            return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options)!;
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Microsoft.AspNetCore.Components
         private static async Task<T> ParseResponse<T>(HttpResponseMessage response)
         {
             var stringContent = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options);
+            return JsonSerializer.Deserialize<T>(stringContent, JsonSerializerOptionsProvider.Options)!;
         }
 
         private class IgnoreResponse { }

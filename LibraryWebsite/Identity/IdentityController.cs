@@ -13,7 +13,7 @@ namespace LibraryWebsite.Identity
         [HttpGet("testAdmin")]
         public string TestAdmin()
         {
-            var userName = HttpContext.User.Identity.Name;
+            var userName = HttpContext.User.Identity?.Name;
             return userName + " authenticated!";
         }
 
@@ -21,7 +21,7 @@ namespace LibraryWebsite.Identity
         [HttpGet("testLibrarian")]
         public string TestLibrarian()
         {
-            var userName = HttpContext.User.Identity.Name;
+            var userName = HttpContext.User.Identity?.Name;
             return userName + " authenticated!";
         }
     }

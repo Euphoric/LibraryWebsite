@@ -60,7 +60,7 @@ namespace LibraryWebsite.TestEndToEnd
             {
                 var basePath = "../../../../TestResults";
                 string screenshotName = Path.Combine(basePath, "Screenshot", _testName + ".png");
-                Directory.CreateDirectory(Path.GetDirectoryName(screenshotName));
+                Directory.CreateDirectory(Path.GetDirectoryName(screenshotName)!);
 
                 var ss = ((ITakesScreenshot)_driver).GetScreenshot();
                 ss.SaveAsFile(screenshotName);
