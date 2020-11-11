@@ -6,7 +6,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <span id="manage_user">Hello, @context.User.Identity.Name!</span>
+        <span id="manage_user">Hello, @context.User.Identity!.Name!</span>
         <button class="nav-link btn btn-link" @onclick="BeginSignOut" id="logout_user">Log out</button>
     </Authorized>
     <NotAuthorized>

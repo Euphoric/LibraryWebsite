@@ -28,7 +28,7 @@ namespace LibraryWebsite
                     return handler;
                 });
 
-            builder.Services.AddScoped(sp => sp.GetService<IHttpClientFactory>().CreateClient("api"));
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
 
             // adds identity server configuration retrieved from configuration endpoint
             builder.Services.AddApiAuthorization(options =>

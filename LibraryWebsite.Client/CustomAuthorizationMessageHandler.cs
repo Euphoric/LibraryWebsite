@@ -39,7 +39,7 @@ namespace LibraryWebsite
                                                     $"Call '{nameof(CustomAuthorizationMessageHandler.ConfigureHandler)}' and provide a list of endpoint urls to attach the token to.");
             }
 
-            if (_authorizedUris.Any(uri => uri.IsBaseOf(request.RequestUri)))
+            if (_authorizedUris.Any(uri => uri.IsBaseOf(request.RequestUri!)))
             {
                 if (_lastToken == null || now >= _lastToken.Expires.AddMinutes(-5))
                 {
@@ -73,8 +73,8 @@ namespace LibraryWebsite
 
         public CustomAuthorizationMessageHandler ConfigureHandler(
             IEnumerable<string> authorizedUrls,
-            IEnumerable<string> scopes = null,
-            string returnUrl = null)
+            IEnumerable<string>? scopes = null,
+            string? returnUrl = null)
         {
             if (_authorizedUris != null)
             {

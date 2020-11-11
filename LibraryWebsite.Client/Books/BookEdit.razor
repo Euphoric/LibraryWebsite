@@ -58,6 +58,11 @@ else
 
     private async Task Save()
     {
+        if (Book == null)
+        {
+            throw new Exception("Cannot save with non-initialized book");
+        }
+
         Guid addedBookGuid;
         if (BookId == null)
         {
@@ -65,7 +70,7 @@ else
         }
         else
         {
-            var bookId = Book!.Id;
+            var bookId = Book.Id;
             await Http.PutAsJsonAsync($"api/book/{bookId}", Book);
             addedBookGuid = bookId;
         }
