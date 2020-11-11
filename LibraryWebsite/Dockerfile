@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.1.302-alpine3.12 AS publish
+FROM mcr.microsoft.com/dotnet/sdk:5.0.100-alpine3.12 AS publish
 
 # Cache NuGet packages
 WORKDIR /src
