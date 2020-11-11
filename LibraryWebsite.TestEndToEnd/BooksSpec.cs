@@ -46,7 +46,7 @@ namespace LibraryWebsite.TestEndToEnd
 
             // paging
 
-            var selectedTitle = wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text);
+            var selectedTitle = wait.Until(dr => dr.FindElement(By.XPath("//table//tr[1]/td")).Text);
 
             {
                 var nextPageLink = _driver.FindElement(By.ClassName("pagination-next"));
@@ -54,14 +54,14 @@ namespace LibraryWebsite.TestEndToEnd
             }
             wait.Until(dr => dr.Url.Contains("book-list/2", StringComparison.InvariantCulture));
 
-            wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
+            wait.Until(dr => dr.FindElement(By.XPath("//table//tr[1]/td")).Text != selectedTitle);
 
-            selectedTitle = wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text);
+            selectedTitle = wait.Until(dr => dr.FindElement(By.XPath("//table//tr[1]/td")).Text);
 
             var lastPageLink = _driver.FindElement(By.ClassName("pagination-last"));
             lastPageLink.Click();
 
-            wait.Until(dr => dr.FindElement(By.XPath("//table//tr[3]/td")).Text != selectedTitle);
+            wait.Until(dr => dr.FindElement(By.XPath("//table//tr[1]/td")).Text != selectedTitle);
 
             // TODO: Fix
             //{
