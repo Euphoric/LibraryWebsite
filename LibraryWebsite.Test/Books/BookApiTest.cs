@@ -47,14 +47,14 @@ namespace LibraryWebsite.Books
             await _client.LoginAsLibrarian();
 
             BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
-            var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+            var bookId = await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
 
             await _client.LogoutUser();
 
             var books = await _client.GetJsonAsync<BookDto[]>("api/book");
             var createdBook = Assert.Single(books);
 
-            Assert.Equal(bookGuid, createdBook.Id);
+            Assert.Equal(bookId, createdBook.Id);
             Assert.Equal(bookToCreate.Title, createdBook.Title);
             Assert.Equal(bookToCreate.Author, createdBook.Author);
             Assert.Equal(bookToCreate.Description, createdBook.Description);
@@ -69,18 +69,18 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 3; i++)
             {
                 BookDto bookToCreate = new BookDto { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN " + i };
-                await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
             }
 
             {
                 BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
-                Guid bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                var bookId = await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
 
                 await _client.LogoutUser();
 
-                var createdBook = await _client.GetJsonAsync<BookDto>("api/book/" + bookGuid);
+                var createdBook = await _client.GetJsonAsync<BookDto>("api/book/" + bookId);
 
-                Assert.Equal(bookGuid, createdBook.Id);
+                Assert.Equal(bookId, createdBook.Id);
                 Assert.Equal(bookToCreate.Title, createdBook.Title);
                 Assert.Equal(bookToCreate.Author, createdBook.Author);
                 Assert.Equal(bookToCreate.Description, createdBook.Description);
@@ -105,17 +105,17 @@ namespace LibraryWebsite.Books
             await _client.LoginAsLibrarian();
 
             BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
-            var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+            var bookId = await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
 
-            BookDto bookUpdate = new BookDto { Id = bookGuid, Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
-            await _client.PutJsonAsync("api/book/" + bookGuid, bookUpdate);
+            BookDto bookUpdate = new BookDto { Id = bookId, Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
+            await _client.PutJsonAsync("api/book/" + bookId, bookUpdate);
 
             await _client.LogoutUser();
 
             var books = await _client.GetJsonAsync<BookDto[]>("api/book");
             var createdBook = Assert.Single(books);
 
-            Assert.Equal(bookGuid, createdBook.Id);
+            Assert.Equal(bookId, createdBook.Id);
             Assert.Equal(bookUpdate.Title, createdBook.Title);
             Assert.Equal(bookUpdate.Author, createdBook.Author);
             Assert.Equal(bookUpdate.Description, createdBook.Description);
@@ -128,7 +128,7 @@ namespace LibraryWebsite.Books
             await _client.LoginAsLibrarian();
 
             BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
-            var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+            var bookGuid = await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
 
             await _client.DeleteAsync("api/book/" + bookGuid);
 
@@ -143,24 +143,24 @@ namespace LibraryWebsite.Books
         {
             await _client.LoginAsLibrarian();
 
-            List<Guid> createdBookIds = new List<Guid>();
+            List<EntityId> createdBookIds = new List<EntityId>();
             for (int i = 0; i < 3; i++)
             {
                 BookDto bookToCreate = new BookDto { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN " + i };
-                var createdBookId = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                var createdBookId = await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
                 createdBookIds.Add(createdBookId);
             }
 
             {
                 BookDto bookToCreate = new BookDto { Title = "Title X", Author = "Author Y", Description = "Descr Z", Isbn13 = "ISBN 13" };
-                var bookGuid = await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                var bookId = await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
 
-                await _client.DeleteAsync("api/book/" + bookGuid);
+                await _client.DeleteAsync("api/book/" + bookId);
 
                 await _client.LogoutUser();
 
                 var bookIds = (await _client.GetJsonAsync<BookDto[]>("api/book")).Select(bk => bk.Id).ToArray();
-                Assert.DoesNotContain(bookGuid, bookIds);
+                Assert.DoesNotContain(bookId, bookIds);
                 Assert.Equal(createdBookIds, bookIds);
             }
         }
@@ -184,7 +184,7 @@ namespace LibraryWebsite.Books
             for (int i = 5; i > 0; i--)
             {
                 BookDto bookToCreate = new BookDto { Title = "Title " + i, Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
             }
 
             await _client.LogoutUser();
@@ -209,7 +209,7 @@ namespace LibraryWebsite.Books
             for (int i = 0; i < 30; i++)
             {
                 BookDto bookToCreate = new BookDto { Title = $"Title {i:D3}", Author = "Author " + i, Description = "Descr " + i, Isbn13 = "ISBN 13" + i };
-                await _client.PostJsonAsync<Guid>("api/book", bookToCreate);
+                await _client.PostJsonAsync<EntityId>("api/book", bookToCreate);
             }
 
             await _client.LogoutUser();

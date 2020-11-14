@@ -63,19 +63,19 @@ else
             throw new Exception("Cannot save with non-initialized book");
         }
 
-        Guid addedBookGuid;
+        EntityId addedBookId;
         if (BookId == null)
         {
-            addedBookGuid = await Http.PostJsonAsync<Guid>("api/book", Book);
+            addedBookId = await Http.PostJsonAsync<EntityId>("api/book", Book);
         }
         else
         {
-            var bookId = Book.Id;
+            EntityId bookId = Book.Id;
             await Http.PutAsJsonAsync($"api/book/{bookId}", Book);
-            addedBookGuid = bookId;
+            addedBookId = bookId;
         }
 
-        NavigationManager.NavigateTo($"/book-list?bookChanged={addedBookGuid}");
+        NavigationManager.NavigateTo($"/book-list?bookChanged={addedBookId}");
     }
 
     private void Cancel()

@@ -52,7 +52,7 @@ namespace LibraryWebsite.Books
             IEnumerable<BookDto> books = (await _controller.Get()).ToList();
             var createdBook = Assert.Single(books);
 
-            Assert.NotEqual(Guid.Empty, createdBook.Id);
+            Assert.NotEqual(EntityId.Empty, createdBook.Id);
             Assert.Equal(bookToCreate.Title, createdBook.Title);
             Assert.Equal(bookToCreate.Author, createdBook.Author);
             Assert.Equal(bookToCreate.Description, createdBook.Description);

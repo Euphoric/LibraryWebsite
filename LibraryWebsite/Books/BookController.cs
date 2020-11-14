@@ -39,9 +39,9 @@ namespace LibraryWebsite.Books
         }
 
         [Authorize(Policy = Policies.CanEditBooks)]
-        public async Task<Guid> Post([FromBody] BookDto book)
+        public async Task<EntityId> Post([FromBody] BookDto book)
         {
-            book.Id = Guid.NewGuid();
+            book.Id = new EntityId(Guid.NewGuid().ToString());
             await _context.Books.AddAsync(FromDto(book));
             await _context.SaveChangesAsync();
 
@@ -50,9 +50,10 @@ namespace LibraryWebsite.Books
 
         [HttpPut("{id}")]
         [Authorize(Policy = Policies.CanEditBooks)]
-        public async Task<ActionResult> Put(Guid id, [FromBody] BookDto book)
+        public async Task<ActionResult> Put(EntityId id, [FromBody] BookDto book)
         {
-            var bookToUpdate = await _context.Books.AsQueryable().FirstOrDefaultAsync(bk => bk.Id == id);
+            var bookId = Guid.Parse(id.Value);
+            var bookToUpdate = await _context.Books.AsQueryable().FirstOrDefaultAsync(bk => bk.Id == bookId);
             if (bookToUpdate == null)
             {
                 return NotFound(id);
@@ -90,7 +91,7 @@ namespace LibraryWebsite.Books
         {
             return new BookDto
             {
-                Id = bk.Id,
+                Id = new EntityId(bk.Id.ToString()),
                 Title = bk.Title,
                 Isbn13 = bk.Isbn13,
                 Author = bk.Author,
@@ -102,7 +103,7 @@ namespace LibraryWebsite.Books
         {
             return new Book
             {
-                Id = dto.Id,
+                Id = Guid.Parse(dto.Id.Value),
                 Title = dto.Title,
                 Isbn13 = dto.Isbn13,
                 Author = dto.Author,

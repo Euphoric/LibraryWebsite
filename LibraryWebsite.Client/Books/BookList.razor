@@ -108,7 +108,7 @@
         }
     }
 
-    private async Task DeleteItem(Guid id)
+    private async Task DeleteItem(EntityId id)
     {
         await Http.DeleteAsync($"api/book/{id}");
         await RefreshTodoList();

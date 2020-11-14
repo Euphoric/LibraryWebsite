@@ -8,7 +8,7 @@ namespace LibraryWebsite.Books
 {
     public class BookDto
     {
-        public Guid Id { get; set; }
+        public EntityId Id { get; set; } = EntityId.Empty;
 
         [Required]
         public string? Title { get; set; }
