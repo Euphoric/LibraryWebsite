@@ -22,20 +22,20 @@ namespace LibraryWebsite.Books
         [HttpGet]
         public async Task<IEnumerable<BookDto>> Get()
         {
-            return await _context.Books.Select(bk => ToDto(bk)).ToListAsync();
+            return await _context.Books.AsQueryable().Select(bk => ToDto(bk)).ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<BookDto> Get(Guid id)
         {
-            var book = await _context.Books.SingleOrDefaultAsync(bk => bk.Id == id);
+            var book = await _context.Books.AsQueryable().SingleOrDefaultAsync(bk => bk.Id == id);
             return ToDto(book);
         }
 
         [HttpGet("page")]
         public async Task<PagingResult<BookDto>> GetPaginated([FromQuery] int limit = 10, int page = 0)
         {
-            return await _context.Books.OrderBy(x => x.Title).CreatePaging(limit, page).Select(ToDto);
+            return await _context.Books.AsQueryable().OrderBy(x => x.Title).CreatePaging(limit, page).Select(ToDto);
         }
 
         [Authorize(Policy = Policies.CanEditBooks)]
@@ -52,7 +52,7 @@ namespace LibraryWebsite.Books
         [Authorize(Policy = Policies.CanEditBooks)]
         public async Task<ActionResult> Put(Guid id, [FromBody] BookDto book)
         {
-            var bookToUpdate = await _context.Books.FirstOrDefaultAsync(bk => bk.Id == id);
+            var bookToUpdate = await _context.Books.AsQueryable().FirstOrDefaultAsync(bk => bk.Id == id);
             if (bookToUpdate == null)
             {
                 return NotFound(id);
@@ -73,7 +73,7 @@ namespace LibraryWebsite.Books
         public async Task<ActionResult> Delete(Guid id)
         {
             // workaround around broken FirstOrDefault in EFInMemory 3.0-preview7
-            var bookToDelete = (await _context.Books.Where(bk => bk.Id == id).Take(1).ToListAsync()).FirstOrDefault();
+            var bookToDelete = (await _context.Books.AsQueryable().Where(bk => bk.Id == id).Take(1).ToListAsync()).FirstOrDefault();
             if (bookToDelete == null)
             {
                 return Ok();

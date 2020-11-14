@@ -84,7 +84,7 @@ namespace LibraryWebsite
 
             await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
-            Assert.False(await _services.GetRequiredService<LibraryContext>().Books.AnyAsync());
+            Assert.False(await _services.GetRequiredService<LibraryContext>().Books.AsQueryable().AnyAsync());
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace LibraryWebsite
             await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             // books were seeded
-            Assert.True(await _services.GetRequiredService<LibraryContext>().Books.AnyAsync());
+            Assert.True(await _services.GetRequiredService<LibraryContext>().Books.AsQueryable().AnyAsync());
 
             // users were seeded
             var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
