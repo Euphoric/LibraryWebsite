@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public class EventTypeLocator
     {

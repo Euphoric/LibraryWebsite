@@ -1,4 +1,6 @@
-﻿namespace BlazorEventsTodo.EventStorage
+﻿using System;
+
+namespace Euphoric.EventModel
 {
     public interface IProjectionState<TState>
     {

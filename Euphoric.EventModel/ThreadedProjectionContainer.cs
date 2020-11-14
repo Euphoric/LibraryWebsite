@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public class ThreadedProjectionContainerFactory : IProjectionContainerFactory
     {

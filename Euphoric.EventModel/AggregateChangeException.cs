@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public class AggregateChangeException : Exception
     {

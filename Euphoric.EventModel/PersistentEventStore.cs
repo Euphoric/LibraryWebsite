@@ -1,15 +1,15 @@
-﻿using EventStore.Client;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using NodaTime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EventStore.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using NodaTime;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public class PersistentEventStore : IEventStore, IDisposable
     {

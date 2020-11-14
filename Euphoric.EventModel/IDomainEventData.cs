@@ -1,7 +1,7 @@
-﻿using NodaTime;
-using System;
+﻿using System;
+using NodaTime;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public interface IDomainEventData
     {

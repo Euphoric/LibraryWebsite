@@ -1,9 +1,10 @@
-﻿using NodaTime;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NodaTime;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public interface IEventStore
     {

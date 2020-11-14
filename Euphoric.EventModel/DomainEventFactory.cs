@@ -1,8 +1,8 @@
-﻿using NodaTime;
-using System;
+﻿using System;
 using System.Text.Json;
+using NodaTime;
 
-namespace BlazorEventsTodo.EventStorage
+namespace Euphoric.EventModel
 {
     public class DomainEventFactory
     {
