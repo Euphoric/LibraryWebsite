@@ -8,9 +8,9 @@ namespace Euphoric.EventModel
     {
         private readonly EventTypeLocator _eventTypeLocator;
 
-        public DomainEventFactory()
+        public DomainEventFactory(EventTypeLocator eventTypeLocator)
         {
-            _eventTypeLocator = new EventTypeLocator();
+            _eventTypeLocator = eventTypeLocator;
         }
 
         private class DomainEvent<TData> : IDomainEvent<TData>

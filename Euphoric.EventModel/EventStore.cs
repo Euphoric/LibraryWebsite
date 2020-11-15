@@ -30,14 +30,14 @@ namespace Euphoric.EventModel
         }
     }
 
-    public class EventStore : IEventStore
+    public class InMemoryEventStore : IEventStore
     {
         private readonly List<IDomainEvent<IDomainEventData>> _events = new List<IDomainEvent<IDomainEventData>>();
         private readonly DomainEventSender _sender;
         private readonly DomainEventFactory _eventFactory;
         private readonly IClock _clock;
 
-        public EventStore(DomainEventSender sender, DomainEventFactory eventFactory, IClock clock)
+        public InMemoryEventStore(DomainEventSender sender, DomainEventFactory eventFactory, IClock clock)
         {
             _sender = sender;
             _eventFactory = eventFactory;

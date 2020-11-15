@@ -10,9 +10,9 @@ namespace Euphoric.EventModel
         private Dictionary<Type, string> _typeToString;
         private Dictionary<string, Type> _stringToType;
 
-        public EventTypeLocator()
+        public EventTypeLocator(Assembly eventsAssembly)
         {
-            var types = Assembly.GetExecutingAssembly().GetTypes().Select(tp => new { type=tp, attr= tp.GetCustomAttribute<DomainEventAttribute>() } ).Where(x=>x.attr != null);
+            var types = eventsAssembly.GetTypes().Select(tp => new { type=tp, attr= tp.GetCustomAttribute<DomainEventAttribute>() } ).Where(x=>x.attr != null);
 
             _typeToString = types.ToDictionary(x=>x.type, x=>x.attr.EventType);
             _stringToType = types.ToDictionary(x=>x.attr.EventType, x=>x.type);
