@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Options;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -23,17 +24,21 @@ namespace LibraryWebsite.Books
         }
 
         readonly BookController _controller;
-        private readonly LibraryContext _dbContext;
+        readonly ServiceProvider _services;
 
         public BookControllerTest()
         {
-            _dbContext = CreateDbContext();
-            _controller = new BookController(_dbContext);
+            _services = new ServiceCollection()
+                .AddSingleton(sp=>CreateDbContext())
+                .AddTransient<BookController>()
+                .BuildServiceProvider();
+
+            _controller = _services.GetRequiredService<BookController>();
         }
 
         public void Dispose()
         {
-            _dbContext.Dispose();
+            _services.Dispose();
             _controller.Dispose();
         }
 
