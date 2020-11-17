@@ -1,35 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace LibraryWebsite.Books
 {
     public sealed class BookControllerTest : IDisposable
     {
-        private static LibraryContext CreateDbContext()
-        {
-            DbContextOptionsBuilder<LibraryContext> builder = new DbContextOptionsBuilder<LibraryContext>();
-            var dbName = Guid.NewGuid().ToString();
-            builder.UseInMemoryDatabase(dbName);
-
-            var operationalStoreOptions = Options.Create(new OperationalStoreOptions());
-
-            return new LibraryContext(builder.Options, operationalStoreOptions);
-        }
-
         readonly BookController _controller;
         readonly ServiceProvider _services;
 
         public BookControllerTest()
         {
             _services = new ServiceCollection()
-                .AddSingleton(sp=>CreateDbContext())
                 .AddTestEventServices()
                 .AddProjection<BooksListProjection>()
                 .AddTransient<BookController>()

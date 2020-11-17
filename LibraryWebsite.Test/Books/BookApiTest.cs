@@ -93,9 +93,9 @@ namespace LibraryWebsite.Books
         {
             await _client.LoginAsLibrarian();
 
-            Guid bookGuid = Guid.Parse("43864ebe-8507-440f-babf-eb38e91d252c");
+            EntityId bookId = new EntityId("book-43864ebe-8507-440f-babf-eb38e91d252c");
             BookDto bookUpdate = new BookDto { Title = "Title W", Author = "Author G", Description = "Descr C", Isbn13 = "ISBN 987" };
-            var result = await _client.PutJsonErrorResponseAsync("api/book/" + bookGuid, bookUpdate);
+            var result = await _client.PutJsonErrorResponseAsync("api/book/" + bookId, bookUpdate);
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
 
@@ -161,7 +161,7 @@ namespace LibraryWebsite.Books
 
                 var bookIds = (await _client.GetJsonAsync<BookDto[]>("api/book")).Select(bk => bk.Id).ToArray();
                 Assert.DoesNotContain(bookId, bookIds);
-                Assert.Equal(createdBookIds, bookIds);
+                Assert.Equal(createdBookIds.OrderBy(x=>x.Value), bookIds.OrderBy(x=>x.Value));
             }
         }
 
@@ -170,8 +170,8 @@ namespace LibraryWebsite.Books
         {
             await _client.LoginAsLibrarian();
 
-            Guid bookGuid = Guid.Parse("a30b6cd8-2e20-423e-9d81-b48b42ef9f0b");
-            var result = await _client.DeleteAsync("api/book/" + bookGuid);
+            var bookId = new EntityId("book-a30b6cd8-2e20-423e-9d81-b48b42ef9f0b");
+            var result = await _client.DeleteAsync("api/book/" + bookId);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
 

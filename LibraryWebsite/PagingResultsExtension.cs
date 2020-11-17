@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,21 @@ namespace LibraryWebsite
                 .Skip(limit * page)
                 .Take(limit)
                 .ToArrayAsync();
+
+            int totalCount = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalCount / (double)limit);
+
+            return new PagingResult<T>(items, page, totalPages, totalCount);
+        }
+
+        public static async Task<PagingResult<T>> CreatePaging<T>(this IAsyncEnumerable<T> query, int limit, int page)
+        {
+            T[] items =
+                await
+                    query
+                        .Skip(limit * page)
+                        .Take(limit)
+                        .ToArrayAsync();
 
             int totalCount = await query.CountAsync();
             int totalPages = (int)Math.Ceiling(totalCount / (double)limit);

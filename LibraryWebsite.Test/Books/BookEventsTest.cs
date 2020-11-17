@@ -57,7 +57,8 @@ namespace LibraryWebsite.Books
             var storedEvent = await _eventStore.Store(evnt);
             var aggregate = AggregateBuilder<BookAggregate>.Rehydrate(new[] { storedEvent });
 
-            var evnt2 = aggregate.Change("Title Y", "Author Y", "ISBN13 Y", "Description Y");
+            var bookAggregate = await _eventStore.RetrieveAggregate(aggregate.Id);
+            var evnt2 = bookAggregate.Change("Title Y", "Author Y", "ISBN13 Y", "Description Y");
             var storedEvent2 = await _eventStore.Store(evnt2);
             var aggregate2 = AggregateBuilder<BookAggregate>.Update(aggregate, new[] { storedEvent2 });
 

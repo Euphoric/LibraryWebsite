@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Euphoric.EventModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebsite.Books
 {
@@ -13,13 +12,11 @@ namespace LibraryWebsite.Books
     [Route("api/[controller]")]
     public class BookController : Controller
     {
-        private readonly LibraryContext _context;
         private readonly IEventStore _eventStore;
         private readonly IProjectionState<BooksListProjection> _bookList;
 
-        public BookController(LibraryContext context, IEventStore eventStore, IProjectionState<BooksListProjection> bookList)
+        public BookController(IEventStore eventStore, IProjectionState<BooksListProjection> bookList)
         {
-            _context = context;
             _eventStore = eventStore;
             _bookList = bookList;
         }
@@ -27,72 +24,70 @@ namespace LibraryWebsite.Books
         [HttpGet]
         public async Task<IEnumerable<BookDto>> Get()
         {
-            return await _context.Books.AsQueryable().Select(bk => ToDto(bk)).ToListAsync();
+            await Task.Yield();
+
+            return _bookList.State.ListBooks().Select(ToDto);
         }
 
         [HttpGet("{id}")]
-        public async Task<BookDto> Get(Guid id)
+        public async Task<BookDto> Get(EntityId id)
         {
-            var book = await _context.Books.AsQueryable().SingleOrDefaultAsync(bk => bk.Id == id);
+            await Task.Yield();
+            var book = _bookList.State.ListBooks().Single(bk => bk.Id == id);
             return ToDto(book);
         }
 
         [HttpGet("page")]
         public async Task<PagingResult<BookDto>> GetPaginated([FromQuery] int limit = 10, int page = 0)
         {
-            return await _context.Books.AsQueryable().OrderBy(x => x.Title).CreatePaging(limit, page).Select(ToDto);
+            return await _bookList.State.ListBooks().ToAsyncEnumerable().OrderBy(x => x.Title).CreatePaging(limit, page).Select(ToDto);
         }
 
         [Authorize(Policy = Policies.CanEditBooks)]
         public async Task<EntityId> Post([FromBody] BookDto book)
         {
-            book.Id = new EntityId(Guid.NewGuid().ToString());
-            await _context.Books.AddAsync(FromDto(book));
-            await _context.SaveChangesAsync();
+            var evnt = BookAggregate.New(book.Title!, book.Author!, book.Isbn13!, book.Description!);
+            var storedEvent = await _eventStore.Store(evnt);
+            var bookAggregate = AggregateBuilder<BookAggregate>.Rehydrate(new[] { storedEvent });
 
-            return book.Id;
+            return bookAggregate.Id;
         }
 
         [HttpPut("{id}")]
         [Authorize(Policy = Policies.CanEditBooks)]
-        public async Task<ActionResult> Put(EntityId id, [FromBody] BookDto book)
+        public async Task<ActionResult> Put(EntityId id, [FromBody] BookDto bookDto)
         {
-            var bookId = Guid.Parse(id.Value);
-            var bookToUpdate = await _context.Books.AsQueryable().FirstOrDefaultAsync(bk => bk.Id == bookId);
-            if (bookToUpdate == null)
+            var book = await _eventStore.RetrieveAggregate(BookKey.FromEntityId(id));
+            if (book == null)
             {
                 return NotFound(id);
             }
 
-            bookToUpdate.Title = book.Title;
-            bookToUpdate.Author = book.Author;
-            bookToUpdate.Description = book.Description;
-            bookToUpdate.Isbn13 = book.Isbn13;
-
-            await _context.SaveChangesAsync();
+            var evnt = book.Change(bookDto.Title!, bookDto.Author!, bookDto.Isbn13!, bookDto.Description!);
+            await _eventStore.Store(evnt);
 
             return Ok();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Policies.CanEditBooks)]
-        public async Task<ActionResult> Delete(Guid id)
+        public async Task<ActionResult> Delete(EntityId id)
         {
-            // workaround around broken FirstOrDefault in EFInMemory 3.0-preview7
-            var bookToDelete = (await _context.Books.AsQueryable().Where(bk => bk.Id == id).Take(1).ToListAsync()).FirstOrDefault();
+            var bookToDelete = await _eventStore.RetrieveAggregate(BookKey.FromEntityId(id));
             if (bookToDelete == null)
             {
                 return Ok();
             }
 
-            _context.Books.Remove(bookToDelete);
+            // TODO: check if the item is deleted
 
-            await _context.SaveChangesAsync();
+            var evnt = bookToDelete.Delete();
+            await _eventStore.Store(evnt);
 
             return Ok();
         }
 
-        private static BookDto ToDto(Book bk)
+        private static BookDto ToDto(BooksListProjection.Book bk)
         {
             return new BookDto
             {
@@ -101,18 +96,6 @@ namespace LibraryWebsite.Books
                 Isbn13 = bk.Isbn13,
                 Author = bk.Author,
                 Description = bk.Description
-            };
-        }
-
-        private static Book FromDto(BookDto dto)
-        {
-            return new Book
-            {
-                Id = Guid.Parse(dto.Id.Value),
-                Title = dto.Title,
-                Isbn13 = dto.Isbn13,
-                Author = dto.Author,
-                Description = dto.Description
             };
         }
     }
