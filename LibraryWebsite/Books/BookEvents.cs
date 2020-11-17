@@ -78,13 +78,15 @@ namespace LibraryWebsite.Books
         #endregion
     }
 
-    public record BooksListProjection : IProjection
+    public sealed record BooksListProjection : IProjection
     {
-        ImmutableDictionary<BookKey, BookDto> TodoItems { get; init; } = ImmutableDictionary<BookKey, BookDto>.Empty;
+        public sealed record Book(EntityId Id, string Title, string Author, string Isbn13, string Description);
 
-        public IEnumerable<BookDto> ListBooks()
+        ImmutableDictionary<BookKey, Book> Books { get; init; } = ImmutableDictionary<BookKey, Book>.Empty;
+
+        public IEnumerable<Book> ListBooks()
         {
-            return TodoItems.Values;
+            return Books.Values;
         }
 
         public IProjection NextState(IDomainEvent<IDomainEventData> evnt)
@@ -92,17 +94,21 @@ namespace LibraryWebsite.Books
             switch (evnt.Data)
             {
                 case BookCreated created:
-                    var newItem = new BookDto { Id = created.Id, Title = created.Title, Author = created.Author, Isbn13 = created.Isbn13, Description = created.Description};
-                    return this with { TodoItems = TodoItems.Add(created.Id, newItem) };
+                    var newItem = new Book(created.Id, created.Title, created.Author, created.Isbn13, created.Description);
+                    return this with { Books = Books.Add(created.Id, newItem) };
                 case BookChanged changed:
-                    var book = TodoItems[changed.Id];
-                    book.Title = changed.Title;
-                    book.Author = changed.Author;
-                    book.Isbn13 = changed.Isbn13;
-                    book.Description = changed.Description;
-                    return this;
+                    var book = Books[changed.Id];
+                    book = book with
+                        {
+                        Title = changed.Title,
+                        Author = changed.Author,
+                        Isbn13 = changed.Isbn13,
+                        Description = changed.Description
+                        };
+                    return this with { Books = Books.SetItem(changed.Id, book)};
+
                 case BookDeleted deleted:
-                    return this with { TodoItems = TodoItems.Remove(deleted.Id) };
+                    return this with { Books = Books.Remove(deleted.Id) };
                 default:
                     return this;
             }
