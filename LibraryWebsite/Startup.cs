@@ -6,7 +6,9 @@ using IdentityServer4.Models;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Authentication;
 using System.Threading.Tasks;
+using Euphoric.EventModel;
 using IdentityServer4;
+using LibraryWebsite.Books;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
+using SystemClock = Microsoft.AspNetCore.Authentication.SystemClock;
 
 namespace LibraryWebsite
 {
@@ -102,6 +106,18 @@ namespace LibraryWebsite
             services
                 .AddAuthentication()
                 .AddIdentityServerJwt();
+
+            services.AddSingleton<IClock>(NodaTime.SystemClock.Instance);
+
+            services.AddSingleton<IEventStore, PersistentEventStore>();
+            services.AddSingleton<DomainEventSender>();
+            services.AddSingleton<DomainEventFactory>();
+            services.AddSingleton(new EventTypeLocator(typeof(BookDomainEvent).Assembly));
+
+            services.AddSingleton<IProjectionContainerFactory, ThreadedProjectionContainerFactory>();
+
+            services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionState<BooksListProjection>());
+            services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionListener<BooksListProjection>());
         }
 
 

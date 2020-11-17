@@ -30,6 +30,8 @@ namespace LibraryWebsite.Books
         {
             _services = new ServiceCollection()
                 .AddSingleton(sp=>CreateDbContext())
+                .AddTestEventServices()
+                .AddProjection<BooksListProjection>()
                 .AddTransient<BookController>()
                 .BuildServiceProvider();
 

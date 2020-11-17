@@ -8,7 +8,7 @@ namespace LibraryWebsite
 {
     public static class TestSetupExtension
     {
-        public static ServiceCollection AddTestEventServices(this ServiceCollection services)
+        public static IServiceCollection AddTestEventServices(this IServiceCollection services)
         {
             var clock = new NodaTime.Testing.FakeClock(Instant.FromUtc(2020, 01, 01, 01, 01, 01));
             services.AddSingleton<IClock>(clock);
@@ -23,7 +23,7 @@ namespace LibraryWebsite
             return services;
         }
 
-        public static ServiceCollection AddProjection<TProjection>(this ServiceCollection services)
+        public static IServiceCollection AddProjection<TProjection>(this IServiceCollection services)
             where TProjection : IProjection, new()
         {
             services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionState<TProjection>());

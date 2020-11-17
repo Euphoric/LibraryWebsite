@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Euphoric.EventModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,14 @@ namespace LibraryWebsite.Books
     public class BookController : Controller
     {
         private readonly LibraryContext _context;
+        private readonly IEventStore _eventStore;
+        private readonly IProjectionState<BooksListProjection> _bookList;
 
-        public BookController(LibraryContext context)
+        public BookController(LibraryContext context, IEventStore eventStore, IProjectionState<BooksListProjection> bookList)
         {
             _context = context;
+            _eventStore = eventStore;
+            _bookList = bookList;
         }
 
         [HttpGet]
