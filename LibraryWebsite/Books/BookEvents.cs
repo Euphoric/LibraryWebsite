@@ -82,7 +82,7 @@ namespace LibraryWebsite.Books
     {
         ImmutableDictionary<BookKey, BookDto> TodoItems { get; init; } = ImmutableDictionary<BookKey, BookDto>.Empty;
 
-        public IEnumerable<BookDto> TodoList()
+        public IEnumerable<BookDto> ListBooks()
         {
             return TodoItems.Values;
         }
@@ -92,8 +92,15 @@ namespace LibraryWebsite.Books
             switch (evnt.Data)
             {
                 case BookCreated created:
-                    var newItem = new BookDto() { Id = created.Id, Title = created.Title };
+                    var newItem = new BookDto { Id = created.Id, Title = created.Title, Author = created.Author, Isbn13 = created.Isbn13, Description = created.Description};
                     return this with { TodoItems = TodoItems.Add(created.Id, newItem) };
+                case BookChanged changed:
+                    var book = TodoItems[changed.Id];
+                    book.Title = changed.Title;
+                    book.Author = changed.Author;
+                    book.Isbn13 = changed.Isbn13;
+                    book.Description = changed.Description;
+                    return this;
                 case BookDeleted deleted:
                     return this with { TodoItems = TodoItems.Remove(deleted.Id) };
                 default:
