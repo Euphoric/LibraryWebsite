@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Euphoric.EventModel;
+using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using Xunit;
 
@@ -13,14 +14,35 @@ namespace LibraryWebsite.Books
         private readonly IEventStore _eventStore;
         private readonly IProjectionState<BooksListProjection> _listProjection;
 
-        public BookEventsTest()
+        private static void AddTestEventServices(ServiceCollection services)
         {
             var clock = new NodaTime.Testing.FakeClock(Instant.FromUtc(2020, 01, 01, 01, 01, 01));
-            var domainEventFactory = new DomainEventFactory(new EventTypeLocator(typeof(BookDomainEvent).Assembly));
-            var projectionFactory = new SynchronousProjectionContainerFactory();
-            var domainEventSender = new DomainEventSender(new List<IDomainEventListener> { projectionFactory.CreateProjectionListener<BooksListProjection>() });
-            _eventStore = new InMemoryEventStore(domainEventSender, domainEventFactory, clock);
-            _listProjection = projectionFactory.CreateProjectionState<BooksListProjection>();
+            services.AddSingleton<IClock>(clock);
+
+            services.AddSingleton<IEventStore, InMemoryEventStore>();
+            services.AddSingleton<DomainEventSender>();
+            services.AddSingleton<DomainEventFactory>();
+            services.AddSingleton(new EventTypeLocator(typeof(BookDomainEvent).Assembly));
+
+            services.AddSingleton<IProjectionContainerFactory, SynchronousProjectionContainerFactory>();
+        }
+
+        private static void AddProjection<TProjection>(ServiceCollection services)
+        {
+            services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionState<BooksListProjection>());
+            services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionListener<BooksListProjection>());
+        }
+
+        public BookEventsTest()
+        {
+            var services = new ServiceCollection();
+
+            AddTestEventServices(services);
+            AddProjection<BooksListProjection>(services);
+            var provider = services.BuildServiceProvider();
+
+            _eventStore = provider.GetRequiredService<IEventStore>();
+            _listProjection = provider.GetRequiredService<IProjectionState<BooksListProjection>>();
         }
 
         [Fact]
