@@ -76,7 +76,11 @@ jobs:
         - run:
             name: Build test image
             command: |
-              docker build -t radekfalhar/librarywebsite_test:latest -f Dockerfile-test .            
+              docker build -t radekfalhar/librarywebsite_test:latest -f Dockerfile-test .   
+        - run:
+            name: Setup EventStore certificates
+            command: |
+              docker-compose -f docker-compose.setup_cert.yml up
         - run:
             name: Run end-to-end tests
             command: |

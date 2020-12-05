@@ -344,3 +344,6 @@ appsettings.Local.json
 
 # Angular test results
 /LibraryWebsite/ClientApp/src/TESTS.xml
+
+# Generated certificates
+/certs
