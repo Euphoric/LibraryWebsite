@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Euphoric.EventModel;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,11 @@ namespace LibraryWebsite
                 await webHost.Services
                     .GetRequiredService<DatabaseMigrations>()
                     .EnsureDatabaseSchemaIsCurrent();
+
+                if (webHost.Services.GetRequiredService<IEventStore>() is PersistentEventStore pes)
+                {
+                    await pes.SubscribeClient();
+                }
 
                 webHost.Run();
 

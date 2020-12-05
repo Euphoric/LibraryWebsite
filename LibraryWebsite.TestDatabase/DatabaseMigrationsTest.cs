@@ -1,10 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Euphoric.EventModel;
+using LibraryWebsite.Books;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
@@ -84,7 +85,7 @@ namespace LibraryWebsite
 
             await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
-            Assert.False(await _services.GetRequiredService<LibraryContext>().Books.AsQueryable().AnyAsync());
+            Assert.False(_services.GetRequiredService<IProjectionState<BooksListProjection>>().State.ListBooks().Any());
         }
 
         [Fact]
@@ -97,7 +98,7 @@ namespace LibraryWebsite
             await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             // books were seeded
-            Assert.True(await _services.GetRequiredService<LibraryContext>().Books.AsQueryable().AnyAsync());
+            Assert.True(_services.GetRequiredService<IProjectionState<BooksListProjection>>().State.ListBooks().Any());
 
             // users were seeded
             var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();

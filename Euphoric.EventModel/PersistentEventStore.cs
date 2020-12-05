@@ -121,9 +121,27 @@ namespace Euphoric.EventModel
 
         public IAsyncEnumerable<IDomainEvent<IDomainEventData>> GetAggregateEvents(string aggregateKey)
         {
-            var events = _client.ReadStreamAsync(Direction.Forwards, aggregateKey, StreamPosition.Start);
+            var events = _client.ReadStreamAsync(Direction.Forwards, aggregateKey, StreamPosition.Start)!;
+            
+            var parsedEvents = EventsState(events).ToAsyncEnumerable()
+                .SelectMany(CollectionSelector);
 
-            return events.Select(ParseEvent);
+            return parsedEvents;
+        }
+
+        private IAsyncEnumerable<IDomainEvent<IDomainEventData>> CollectionSelector((ReadState, EventStoreClient.ReadStreamResult) x)
+        {
+            var (readState, readStreamResult) = x;
+
+            return readState == ReadState.StreamNotFound
+                ? AsyncEnumerable.Empty<IDomainEvent<IDomainEventData>>()
+                : readStreamResult.Select(ParseEvent);
+        }
+
+        private static async Task<(ReadState, EventStoreClient.ReadStreamResult)> EventsState(EventStoreClient.ReadStreamResult events)
+        {
+            var state = await events.ReadState;
+            return (state, events);
         }
     }
 }

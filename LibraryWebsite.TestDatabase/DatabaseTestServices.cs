@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Euphoric.EventModel;
+using LibraryWebsite.Books;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
+using NodaTime.Testing;
 
 namespace LibraryWebsite
 {
@@ -24,6 +28,18 @@ namespace LibraryWebsite
                 .AddIdentityCore<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<LibraryContext>();
+
+            services.AddSingleton<IClock>(new FakeClock(Instant.FromUtc(2020, 2, 3, 4, 5)));
+
+            services.AddSingleton<IEventStore, InMemoryEventStore>();
+            services.AddSingleton<DomainEventSender>();
+            services.AddSingleton<DomainEventFactory>();
+            services.AddSingleton(new EventTypeLocator(typeof(BookDomainEvent).Assembly));
+
+            services.AddSingleton<IProjectionContainerFactory, SynchronousProjectionContainerFactory>();
+
+            services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionState<BooksListProjection>());
+            services.AddSingleton(sp => sp.GetRequiredService<IProjectionContainerFactory>().CreateProjectionListener<BooksListProjection>());
 
             configure(services);
 

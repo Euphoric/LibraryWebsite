@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Euphoric.EventModel;
 using LibraryWebsite.Books;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -8,15 +9,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebsite
 {
+    [DomainEvent("sample-data-seeded")]
+    public sealed record SampleDataSeeded : IDomainEventData
+    {
+        public static readonly string Key = "sample-data-seeded";
+
+        public string GetAggregateKey()
+        {
+            return Key;
+        }
+    }
+
     public class SampleDataSeeder
     {
-        private readonly LibraryContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEventStore _eventStore;
 
-        public SampleDataSeeder(LibraryContext context, UserManager<ApplicationUser> userManager)
+        public SampleDataSeeder(UserManager<ApplicationUser> userManager, IEventStore eventStore)
         {
-            _context = context;
             _userManager = userManager;
+            _eventStore = eventStore;
         }
 
         public async ValueTask SetupExampleData()
@@ -27,8 +39,8 @@ namespace LibraryWebsite
         }
 
         private async Task SetupBooks()
-        {   
-            if (_context.Books.Any())
+        {
+            if (await _eventStore.GetAggregateEvents(SampleDataSeeded.Key).AnyAsync())
                 return;
 
             BookCsvParser parser = new BookCsvParser();
@@ -36,18 +48,11 @@ namespace LibraryWebsite
 
             foreach (var parsedBook in parsedBooks)
             {
-                var book = new Book()
-                {
-                    Id = Guid.NewGuid(),
-                    Title = parsedBook.Title,
-                    Author = parsedBook.Authors,
-                    Isbn13 = parsedBook.Isbn13
-                };
-
-                await _context.Books.AddAsync(book);
+                var evnt = BookAggregate.New(parsedBook.Title!, parsedBook.Authors!, parsedBook.Isbn13!, "");
+                await _eventStore.Store(evnt);
             }
 
-            await _context.SaveChangesAsync();
+            await _eventStore.Store(new SampleDataSeeded().AsNewAggregate());
         }
 
         private async Task SetupUsers()
