@@ -67,7 +67,7 @@ namespace LibraryWebsite.Books
                 throw new AggregateDeletedException($"Book {Id} is deleted.");
             }
 
-            return new BookChanged(Id, title, author, isbn13, description).AsNewAggregate();
+            return new BookChanged(Id, title, author, isbn13, description).AsVersioned(Version);
         }
 
         public ICreateEvent<BookDomainEvent> Delete()

@@ -52,7 +52,18 @@ namespace Euphoric.EventModel
         public Task<IDomainEvent<IDomainEventData>> Store(ICreateEvent<IDomainEventData> newEvent)
         {
             var eventData = newEvent.Data;
-            var eventVersion = _events.Where(x => x.AggregateKey == eventData.GetAggregateKey()).Select(x => (ulong?)x.Version).Max(x => x) ?? 0;
+            
+            var curentAggregateVersion = 
+                _events.Where(x => x.AggregateKey == eventData.GetAggregateKey())
+                    .Select(x => (ulong?)x.Version).Max(x => x);
+
+            if (newEvent.IsNewAggregate && curentAggregateVersion != null)
+            {
+                throw new Exception("Aggregate already exists.");
+            }
+
+            var eventVersion = curentAggregateVersion ?? 0;
+
             Instant created = _clock.GetCurrentInstant();
             var @event = _eventFactory.CreateEvent(eventVersion, created, eventData);
 
