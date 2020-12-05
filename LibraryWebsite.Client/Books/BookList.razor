@@ -5,10 +5,10 @@
 
 <h1>Books</h1>
 
-@if (ChangedBookId.HasValue)
+@if (ChangedBookId != null)
 {
     <div id="book-changed-alert" class="alert alert-primary">
-        Book changed successfully. <a id="book-changed-alert-link" href="book-edit/@ChangedBookId.Value" class="alert-link">Edit</a>.
+        Book changed successfully. <a id="book-changed-alert-link" href="book-edit/@ChangedBookId" class="alert-link">Edit</a>.
     </div>
 }
 
@@ -80,7 +80,7 @@
 
     private ICollection<BookDto> books = new List<BookDto>();
 
-    Guid? ChangedBookId = null;
+    String? ChangedBookId = null;
 
     protected override void OnInitialized()
     {
