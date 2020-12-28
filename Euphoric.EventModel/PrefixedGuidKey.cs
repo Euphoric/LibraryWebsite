@@ -11,7 +11,12 @@ namespace Euphoric.EventModel
         public PrefixedGuidKey(string prefix)
         {
             _prefix = prefix + "-";
-            _constructor = typeof(TKey).GetConstructor(new[] { typeof(Guid) });
+            var constructorInfo = typeof(TKey).GetConstructor(new[] { typeof(Guid) });
+            if (constructorInfo == null)
+            {
+                throw new NullReferenceException("Key must have constructor with Guid parameter.");
+            }
+            _constructor = constructorInfo;
         }
 
         public string ToValue(Guid id)

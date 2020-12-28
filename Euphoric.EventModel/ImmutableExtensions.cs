@@ -5,7 +5,9 @@ namespace Euphoric.EventModel
 {
     public static class ImmutableExtensions
     {
-        public static ImmutableDictionary<TKey, TValue> Update<TKey, TValue>(this ImmutableDictionary<TKey, TValue> dict, TKey key, Func<TValue, TValue> update)
+        public static ImmutableDictionary<TKey, TValue> Update<TKey, TValue>(
+            this ImmutableDictionary<TKey, TValue> dict, TKey key, Func<TValue, TValue> update)
+            where TKey : notnull
         {
             var prevValue = dict[key];
             var newValue = update(prevValue);

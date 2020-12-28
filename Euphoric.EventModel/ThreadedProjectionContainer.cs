@@ -12,7 +12,7 @@ namespace Euphoric.EventModel
         private ThreadedProjectionContainer<TProjection> CreateProjection<TProjection>()
             where TProjection : IProjection, new()
         {
-            if (_projectionContainers.TryGetValue(typeof(TProjection), out object projection))
+            if (_projectionContainers.TryGetValue(typeof(TProjection), out object? projection))
             {
                 return (ThreadedProjectionContainer<TProjection>)projection;
             }

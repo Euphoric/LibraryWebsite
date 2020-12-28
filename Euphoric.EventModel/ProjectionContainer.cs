@@ -5,12 +5,12 @@ namespace Euphoric.EventModel
 {
     public class SynchronousProjectionContainerFactory : IProjectionContainerFactory
     {
-        Dictionary<Type, object> _projectionContainers = new Dictionary<Type, object>();
+        readonly Dictionary<Type, object> _projectionContainers = new();
 
         private ProjectionContainer<TProjection> CreateProjection<TProjection>()
             where TProjection : IProjection, new() 
         {
-            if (_projectionContainers.TryGetValue(typeof(TProjection), out object projection))
+            if (_projectionContainers.TryGetValue(typeof(TProjection), out object? projection))
             {
                 return (ProjectionContainer<TProjection>)projection;
             }

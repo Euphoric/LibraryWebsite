@@ -37,16 +37,16 @@ namespace Euphoric.EventModel
         public IDomainEvent<IDomainEventData> DeserializeFromData(Guid id, ulong version, string eventName, Instant created, string dataJson)
         {
             var eventType = _eventTypeLocator.GetClrType(eventName);
-
             if (eventType == null)
             {
                 throw new Exception("Unknown event name: " + eventName);
             }
 
-            var data = JsonSerializer.Deserialize(dataJson, eventType);
+            object data = JsonSerializer.Deserialize(dataJson, eventType)!;
 
             var domainEventContainerType = typeof(DomainEvent<>).MakeGenericType(eventType);
-            return (IDomainEvent<IDomainEventData>)Activator.CreateInstance(domainEventContainerType, args: new object[] { id, version, data, eventName, created });
+            var domainEvent = (IDomainEvent<IDomainEventData>?)Activator.CreateInstance(domainEventContainerType, args: new object[] { id, version, data, eventName, created });
+            return domainEvent!;
         }
 
         public IDomainEvent<IDomainEventData> CreateEvent(ulong version, Instant created, IDomainEventData eventData)
@@ -55,7 +55,8 @@ namespace Euphoric.EventModel
             var id = Guid.NewGuid();
             var eventName = EventName(eventData);
             var domainEventContainerType = typeof(DomainEvent<>).MakeGenericType(eventType);
-            return (IDomainEvent<IDomainEventData>)Activator.CreateInstance(domainEventContainerType, args: new object[] { id, version, eventData, eventName, created });
+            var domainEvent = (IDomainEvent<IDomainEventData>?)Activator.CreateInstance(domainEventContainerType, args: new object[] { id, version, eventData, eventName, created });
+            return domainEvent!;
         }
 
         public string EventName(IDomainEventData eventData)
