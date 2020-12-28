@@ -20,16 +20,16 @@ namespace LibraryWebsite
 
             try
             {
-                await webHost.Services
-                    .GetRequiredService<DatabaseMigrations>()
-                    .EnsureDatabaseSchemaIsCurrent();
-
                 if (webHost.Services.GetRequiredService<IEventStore>() is PersistentEventStore pes)
                 {
                     await pes.SubscribeClient();
                 }
+                
+                await webHost.Services
+                    .GetRequiredService<DatabaseMigrations>()
+                    .EnsureDatabaseSchemaIsCurrent();
 
-                webHost.Run();
+                await webHost.RunAsync();
 
                 return 0;
             }

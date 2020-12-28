@@ -8,6 +8,7 @@ using EventStore.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using Polly;
 
 namespace Euphoric.EventModel
 {
@@ -41,6 +42,19 @@ namespace Euphoric.EventModel
         }
 
         public async Task SubscribeClient()
+        {
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(5, retryCount => TimeSpan.FromSeconds(retryCount * 5), OnSubscriptionRetry)
+                .ExecuteAsync(SubscribeClientInner);
+        }
+        
+        private void OnSubscriptionRetry(Exception exception, TimeSpan nextTryTimeout, int retryCount, Context context)
+        {
+            _logger.LogWarning(exception, "Failed try {0} of migrating database. Waiting {1} before next try.", retryCount, nextTryTimeout);
+        }
+
+        private async Task SubscribeClientInner()
         {
             await _client.SubscribeToAllAsync(HandleNewEvent);
             _logger.LogInformation("Subscribed to events.");
