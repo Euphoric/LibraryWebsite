@@ -23,3 +23,6 @@
 TestResults
 .circleci
 **/*.Local.json
+
+# Runtime generated and accessed through mount
+certs
