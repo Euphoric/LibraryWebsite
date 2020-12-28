@@ -14,19 +14,18 @@ namespace LibraryWebsite
 {
     public class LibraryContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public LibraryContext(
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             DbContextOptions<LibraryContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions)
             :base(options, operationalStoreOptions)
         {
         }
 
-        public DbSet<Book> Books { get; set; }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            if (builder == null) 
+                throw new ArgumentNullException(nameof(builder));
+            
             base.OnModelCreating(builder);
 
             builder.Entity<IdentityRole>().HasData(
