@@ -17,7 +17,6 @@ COPY ["LibraryWebsite.Shared/LibraryWebsite.Shared.csproj", "LibraryWebsite.Shar
 COPY ["Euphoric.EventModel/Euphoric.EventModel.csproj", "Euphoric.EventModel/"]
 COPY ["LibraryWebsite.Test/LibraryWebsite.Test.csproj", "LibraryWebsite.Test/"]
 COPY ["LibraryWebsite.TestEndToEnd/LibraryWebsite.TestEndToEnd.csproj", "LibraryWebsite.TestEndToEnd/"]
-COPY ["LibraryWebsite.TestDatabase/LibraryWebsite.TestDatabase.csproj", "LibraryWebsite.TestDatabase/"]
 RUN dotnet restore
 
 # copy remaining application files
