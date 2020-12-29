@@ -24,10 +24,6 @@ namespace LibraryWebsite
                 {
                     await pes.SubscribeClient();
                 }
-                
-                await webHost.Services
-                    .GetRequiredService<DatabaseMigrations>()
-                    .EnsureDatabaseSchemaIsCurrent();
 
                 await webHost.Services
                     .GetRequiredService<SampleDataSeeder>()

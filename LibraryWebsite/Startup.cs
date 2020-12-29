@@ -35,7 +35,6 @@ namespace LibraryWebsite
         {
             services.AddControllersWithViews();
 
-            services.AddTransient<DatabaseMigrations>();
             services.AddTransient<SampleDataSeeder>();
 
             services.AddHealthChecks();

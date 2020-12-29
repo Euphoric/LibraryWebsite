@@ -19,9 +19,7 @@ namespace LibraryWebsite
             ServiceCollection services = new ServiceCollection();
 
             services.AddSingleton(configuration);
-            services.AddTransient<DatabaseMigrations>();
             services.AddLogging();
-            services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
             services.AddTransient<SampleDataSeeder>();
 
             services
@@ -60,13 +58,6 @@ namespace LibraryWebsite
                     .AddEnvironmentVariables()
                     .AddInMemoryCollection(new Dictionary<string, string>())
                     .Build();
-
-            configuration["MigrateOnStartup"] = "true";
-
-            string databaseServer = configuration.GetConnectionString("TestDatabaseServer");
-            string databaseName = "LibraryTestDb_" + Guid.NewGuid();
-            string databaseConnectionString = $"{databaseServer}Database={databaseName};";
-            configuration["ConnectionStrings:Database"] = databaseConnectionString;
 
             return SetupServices(configuration, configure);
         }

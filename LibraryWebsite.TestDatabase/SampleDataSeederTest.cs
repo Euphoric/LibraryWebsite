@@ -24,14 +24,14 @@ namespace LibraryWebsite
             _configuration = _services.GetRequiredService<IConfiguration>();
         }
 
-        public async Task InitializeAsync()
+        public Task InitializeAsync()
         {
-            await _services.GetRequiredService<DatabaseMigrations>().EnsureDatabaseSchemaIsCurrent();
+            return Task.CompletedTask;
         }
 
-        public async Task DisposeAsync()
+        public Task DisposeAsync()
         {
-            await _services.GetRequiredService<LibraryContext>().Database.EnsureDeletedAsync();
+            return Task.CompletedTask;
         }
         
         [Fact]
