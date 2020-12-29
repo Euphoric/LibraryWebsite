@@ -4,10 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Euphoric.EventModel;
-using LibraryWebsite.Books;
-using LibraryWebsite.Identity;
-using Microsoft.AspNetCore.Identity;
 using Xunit;
 
 namespace LibraryWebsite
@@ -74,38 +70,6 @@ namespace LibraryWebsite
             await dbMigrations.EnsureDatabaseSchemaIsCurrent();
 
             Assert.True(await dbMigrations.HasNewestMigrations());
-        }
-
-        [Fact]
-        public async Task Doesnt_seed_sample_data_after_migration_if_not_configured()
-        {
-            _configuration["SeedSampleData"] = "false";
-
-            var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
-
-            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
-
-            Assert.False(_services.GetRequiredService<IProjectionState<BooksListProjection>>().State.ListBooks().Any());
-        }
-
-        [Fact]
-        public async Task Seeds_sample_data_after_migration()
-        {
-            _configuration["SeedSampleData"] = "true";
-
-            var dbMigrations = _services.GetRequiredService<DatabaseMigrations>();
-
-            await dbMigrations.EnsureDatabaseSchemaIsCurrent();
-
-            // books were seeded
-            Assert.True(_services.GetRequiredService<IProjectionState<BooksListProjection>>().State.ListBooks().Any());
-
-            // users were seeded
-            var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
-            
-            Assert.NotEmpty(await userManager.GetUsersInRoleAsync(Role.Admin));
-            Assert.NotEmpty(await userManager.GetUsersInRoleAsync(Role.Librarian));
-            Assert.NotEmpty(await userManager.GetUsersInRoleAsync(Role.Reader));
         }
     }
 }

@@ -29,6 +29,10 @@ namespace LibraryWebsite
                     .GetRequiredService<DatabaseMigrations>()
                     .EnsureDatabaseSchemaIsCurrent();
 
+                await webHost.Services
+                    .GetRequiredService<SampleDataSeeder>()
+                    .SetupExampleData();
+                
                 await webHost.RunAsync();
 
                 return 0;

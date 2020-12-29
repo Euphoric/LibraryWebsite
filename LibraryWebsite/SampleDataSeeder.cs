@@ -6,6 +6,8 @@ using LibraryWebsite.Books;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace LibraryWebsite
 {
@@ -24,17 +26,25 @@ namespace LibraryWebsite
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEventStore _eventStore;
+        private readonly ILogger<SampleDataSeeded> _logger;
+        private readonly IConfiguration _configuration;
 
-        public SampleDataSeeder(UserManager<ApplicationUser> userManager, IEventStore eventStore)
+        public SampleDataSeeder(UserManager<ApplicationUser> userManager, IEventStore eventStore, ILogger<SampleDataSeeded> logger, IConfiguration configuration)
         {
             _userManager = userManager;
             _eventStore = eventStore;
+            _logger = logger;
+            _configuration = configuration;
         }
 
         public async ValueTask SetupExampleData()
         {
+            if (!_configuration.GetValue("SeedSampleData", false))
+            {
+                return;
+            }
+            
             await SetupBooks();
-
             await SetupUsers();
         }
 
@@ -60,6 +70,8 @@ namespace LibraryWebsite
             if (await _userManager.Users.AnyAsync())
                 return;
 
+            _logger.LogInformation("No users found, seeding default users.");
+            
             var admin = new ApplicationUser {UserName = "admin@sample.com", Email = "admin@sample.com"};
             await _userManager.CreateAsync(admin, "Abcdefgh!1");
             await _userManager.AddToRoleAsync(admin, Role.Admin);

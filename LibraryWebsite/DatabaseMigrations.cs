@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using Polly;
-using Polly.Retry;
 
 namespace LibraryWebsite
 {
@@ -53,20 +52,11 @@ namespace LibraryWebsite
             var libraryContext = scope.ServiceProvider.GetRequiredService<LibraryContext>();
 
             await MigrateDatabase(libraryContext);
-            await SeedSampleData(scope.ServiceProvider.GetRequiredService<SampleDataSeeder>());
         }
 
         private static async ValueTask MigrateDatabase(LibraryContext libraryContext)
         {
             await libraryContext.Database.MigrateAsync();
-        }
-
-        private async ValueTask SeedSampleData(SampleDataSeeder sampleDataSeeder)
-        {
-            if (_configuration.GetValue("SeedSampleData", false))
-            {
-                await sampleDataSeeder.SetupExampleData();
-            }
         }
 
         public async ValueTask<bool> DoesDatabaseExists()
