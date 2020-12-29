@@ -25,25 +25,6 @@ jobs:
         - store_test_results:
             path: TestResults
 
-  test_dotnet_database:
-    machine:
-        image: ubuntu-1604:201903-01
-    steps:
-        - checkout
-        - run:
-            name: Build test image
-            command: |
-              docker build -t radekfalhar/librarywebsite_test:latest -f Dockerfile-test .
-        - run:
-            name: Run database tests
-            command: |
-              docker-compose -f docker-compose.databasetest.yml up --build --abort-on-container-exit --exit-code-from database_test
-        - store_artifacts:
-            path: TestResults
-            destination: TestResults
-        - store_test_results:
-            path: TestResults
-
 
 # docker build inspired by https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
   docker_build:
@@ -111,7 +92,6 @@ workflows:
   build_and_publish:
     jobs:
       - test_unit_dotnet
-      - test_dotnet_database
       - docker_build
       - end_to_end_test:
           requires:

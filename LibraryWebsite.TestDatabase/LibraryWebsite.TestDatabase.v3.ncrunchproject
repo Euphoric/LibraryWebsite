@@ -1,7 +1,0 @@
-﻿<ProjectConfiguration>
-  <Settings>
-    <CustomBuildProperties>
-      <Value>RunAnalyzers = false</Value>
-    </CustomBuildProperties>
-  </Settings>
-</ProjectConfiguration>
