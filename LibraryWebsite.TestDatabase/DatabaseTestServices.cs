@@ -26,8 +26,11 @@ namespace LibraryWebsite
 
             services
                 .AddIdentityCore<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<LibraryContext>();
+                .AddRoles<IdentityRole>();
+            
+            services.AddSingleton<UsersRolesMemoryStore>();
+            services.AddScoped<IUserStore<ApplicationUser?>, UserEventStore>();
+            services.AddScoped<IRoleStore<IdentityRole?>, RoleEventStore>();
 
             services.AddSingleton<IClock>(new FakeClock(Instant.FromUtc(2020, 2, 3, 4, 5)));
 

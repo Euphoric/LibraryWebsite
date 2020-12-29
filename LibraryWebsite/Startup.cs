@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -16,9 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using NodaTime;
-using SystemClock = Microsoft.AspNetCore.Authentication.SystemClock;
 
 namespace LibraryWebsite
 {
@@ -36,12 +35,10 @@ namespace LibraryWebsite
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<LibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddTransient<DatabaseMigrations>();
             services.AddTransient<SampleDataSeeder>();
 
-            services.AddHealthChecks()
-                .AddDbContextCheck<LibraryContext>();
+            services.AddHealthChecks();
 
             services.AddAuthorization(options =>
             {
@@ -50,12 +47,15 @@ namespace LibraryWebsite
 
             services
                 .AddDefaultIdentity<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<LibraryContext>();
+                .AddRoles<IdentityRole>();
+
+            services.AddSingleton<UsersRolesMemoryStore>();
+            services.AddScoped<IUserStore<ApplicationUser?>, UserEventStore>();
+            services.AddScoped<IRoleStore<IdentityRole?>, RoleEventStore>();
 
             services
                 .AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, LibraryContext>(options =>
+                .AddApiAuthorization<ApplicationUser>(options =>
                 {
                     options.IdentityResources.AddEmail();
                     options.IdentityResources.Add(new IdentityResource("roles", "User roles",

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -44,7 +43,7 @@ namespace LibraryWebsite
             await userManager.CreateAsync(user, "TestPassword_1");
             await userManager.AddToRoleAsync(user, "TestRole");
 
-            var storedUsers = await userManager.Users.Where(x => x.UserName == "TestUser").ToListAsync();
+            var storedUsers = userManager.Users.Where(x => x.UserName == "TestUser").ToList();
 
             var storedUser = Assert.Single(storedUsers);
 

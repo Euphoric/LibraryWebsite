@@ -10,14 +10,15 @@ namespace LibraryWebsite
     {
         public static async Task<PagingResult<T>> CreatePaging<T>(this IQueryable<T> query, int limit, int page)
         {
+            await Task.CompletedTask;
+            
             T[] items =
-                await
                 query
-                .Skip(limit * page)
-                .Take(limit)
-                .ToArrayAsync();
+                    .Skip(limit * page)
+                    .Take(limit)
+                    .ToArray();
 
-            int totalCount = await query.CountAsync();
+            int totalCount = query.Count();
             int totalPages = (int)Math.Ceiling(totalCount / (double)limit);
 
             return new PagingResult<T>(items, page, totalPages, totalCount);

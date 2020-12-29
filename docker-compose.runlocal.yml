@@ -10,13 +10,20 @@ services:
            - "8010:80"
            - "44310:443"
         depends_on:
-            - db
+            - eventstore
         environment:
             "ASPNETCORE_ENVIRONMENT": "Staging"
-            "ConnectionStrings:Database": "Server=db;Database=Library;User=sa;Password=Your_password123;"
-
-    db:
-        image: "mcr.microsoft.com/mssql/server"
+            "ConnectionStrings:EventStore": "esdb://admin:changeit@eventstore:2113/?TlsVerifyCert=false"
+            
+    eventstore:
+        image: eventstore/eventstore:20.6.1-bionic
         environment:
-            SA_PASSWORD: "Your_password123"
-            ACCEPT_EULA: "Y"
+            - EVENTSTORE_CERTIFICATE_FILE=/etc/eventstore/certs/node1/node.crt
+            - EVENTSTORE_CERTIFICATE_PRIVATE_KEY_FILE=/etc/eventstore/certs/node1/node.key
+            - EVENTSTORE_TRUSTED_ROOT_CERTIFICATES_PATH=/etc/eventstore/certs/ca
+        ports:
+            - 1111:1113
+            - 2111:2113
+        volumes:
+            - ./certs:/etc/eventstore/certs
+        restart: unless-stopped

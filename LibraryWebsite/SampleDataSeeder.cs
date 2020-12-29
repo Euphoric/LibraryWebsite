@@ -67,7 +67,7 @@ namespace LibraryWebsite
 
         private async Task SetupUsers()
         {
-            if (await _userManager.Users.AnyAsync())
+            if (_userManager.Users.Any())
                 return;
 
             _logger.LogInformation("No users found, seeding default users.");

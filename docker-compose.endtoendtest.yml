@@ -8,18 +8,10 @@ services:
 #           - "80:80"
 #           - "443:443:
         depends_on:
-            - db
             - eventstore
         environment:
             "ASPNETCORE_ENVIRONMENT": "Staging"
-            "ConnectionStrings:Database": "Server=db;Database=Library;User=sa;Password=Your_password123;"
             "ConnectionStrings:EventStore": "esdb://admin:changeit@eventstore:2113/?TlsVerifyCert=false"
-
-    db:
-        image: "mcr.microsoft.com/mssql/server"
-        environment:
-            SA_PASSWORD: "Your_password123"
-            ACCEPT_EULA: "Y"
 
     eventstore:
         image: eventstore/eventstore:20.6.1-bionic
