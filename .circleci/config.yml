@@ -100,7 +100,6 @@ workflows:
           requires:
             - end_to_end_test
             - test_unit_dotnet
-            - test_dotnet_database
           context: "Docker hub credentials"
           filters:
             branches:
