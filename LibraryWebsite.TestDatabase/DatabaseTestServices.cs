@@ -4,7 +4,6 @@ using Euphoric.EventModel;
 using LibraryWebsite.Books;
 using LibraryWebsite.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
