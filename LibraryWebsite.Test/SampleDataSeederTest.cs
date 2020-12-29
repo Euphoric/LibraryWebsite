@@ -13,27 +13,33 @@ using Xunit;
 
 namespace LibraryWebsite
 {
-    public class SampleDataSeederTest : IAsyncLifetime
+    public sealed class SampleDataSeederTest : IDisposable
     {
         readonly IConfiguration _configuration;
         readonly ServiceProvider _services;
 
         public SampleDataSeederTest()
         {
-            _services = DatabaseTestServices.SetupDatabaseTestServices();
+            _services = new ServiceCollection()
+                .AddTestEventServices()
+                .AddProjection<BooksListProjection>()
+                .AddTransient<SampleDataSeeder>()
+                .AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .Services
+                .AddSingleton<UsersRolesMemoryStore>()
+                .AddScoped<IUserStore<ApplicationUser?>, UserEventStore>()
+                .AddScoped<IRoleStore<IdentityRole?>, RoleEventStore>()
+                .BuildServiceProvider();
+
             _configuration = _services.GetRequiredService<IConfiguration>();
         }
 
-        public Task InitializeAsync()
+        public void Dispose()
         {
-            return Task.CompletedTask;
+            _services.Dispose();
         }
 
-        public Task DisposeAsync()
-        {
-            return Task.CompletedTask;
-        }
-        
         [Fact]
         public async Task Doesnt_seed_sample_data_after_migration_if_not_configured()
         {

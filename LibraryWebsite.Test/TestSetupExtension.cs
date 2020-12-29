@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Euphoric.EventModel;
 using LibraryWebsite.Books;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 
@@ -19,6 +21,13 @@ namespace LibraryWebsite
             services.AddSingleton(new EventTypeLocator(typeof(BookDomainEvent).Assembly));
 
             services.AddSingleton<IProjectionContainerFactory, SynchronousProjectionContainerFactory>();
+
+            var configuration =
+                new ConfigurationBuilder()
+                    .AddInMemoryCollection(new Dictionary<string, string>())
+                    .Build();
+
+            services.AddSingleton<IConfiguration>(configuration);
 
             return services;
         }
